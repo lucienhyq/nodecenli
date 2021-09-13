@@ -9,6 +9,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var orderRouter = require('./routes/order');
 var viadanteRouter = require('./routes/viadante');
+var testRouter = require('./routes/apitest');
 //引入session模块
 var session = require("express-session");
 
@@ -42,4 +43,5 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/order',orderRouter);
 app.use('/viadante',viadanteRouter);
+app.use('/apitest',testRouter)
 module.exports = app;
