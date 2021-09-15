@@ -242,12 +242,12 @@
         showTabsind:1,
         // 表单
         form: {
-          name: '',
-          phone: '',
-          adress: '',
-          Remark: '',
-          contactAddress: '',
-          state: '',
+          name: 'test',
+          phone: 'test',
+          adress: 'test',
+          Remark: 'test',
+          contactAddress: 'test',
+          state: 'test',
         }
       }
     },
@@ -259,11 +259,16 @@
         this.showTabsind = e;
       },
       onSubmit(){
-
+        axios.post('/apitest/overList', this.form)
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
       },
       getDataOrder(ordernos, appid) {
         let _this = this;
-        // let Url = 'localhost:3000/apitest/checkUser';
         axios.post('/apitest/checkUser', {
           name: 'qwe',
         })

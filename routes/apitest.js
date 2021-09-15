@@ -32,7 +32,14 @@ router.post('/test', function (req, res, next) {
 
 });
 router.post('/overList', function (req, res, next) {
-  console.log(req.query.id)
+  console.log(req.body)
+  mongo("add","list_order_li",req.body,function(result){
+    if(result.length!=0){
+    res.send('{"success":"创建成功"}')
+  }else{
+    res.send('{"success":"创建失败"}')
+  }
+})
 });
 
 // 检查是否登录
@@ -41,7 +48,6 @@ router.post('/checkUser', function (req, res, next) {
   mongo("find", "user", { userName: req.body.name }, function (data) {
     if (data.length != 0) {
       console.log(data[0].password)
-
       res.send(data[0])
     } else {
       res.send('{"err":"用户信息获取失败"}');
