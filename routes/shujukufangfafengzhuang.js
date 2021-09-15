@@ -95,7 +95,7 @@ var MongoClient=mongo.MongoClient;
 //暴露出的函数
 module.exports=function(type,collections,selector,fn){
 			
-		MongoClient.connect(url,function(err,client){
+		MongoClient.connect(url,{useNewUrlParser:true},function(err,client){
 				
 			//添加	
 			

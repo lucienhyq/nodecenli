@@ -230,6 +230,7 @@ function User(users){
 				if(oldpassword==data[0].password){
 					console.log(req.body.oldpassword)
 					console.log(req.body.newPwd)
+					console.log(req.session.user)
 					mongo("updates","user",[{userName:req.session.user.userName},{password:newpassword}],function(date){
 						if(date.result.n==1){
 							res.send('{"success":"修改成功"}');
