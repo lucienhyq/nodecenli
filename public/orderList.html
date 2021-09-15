@@ -25,13 +25,13 @@
         <el-aside width="200px" style="height: 100vh;background: #eee;">
           <el-row>
             <el-col :span="12">
-              <el-menu :default-active="activeIndex1">
+              <el-menu :default-active="activeIndex1" @select="handleSelect">
                 <el-menu-item index="1">
                   <i class="el-icon-menu"></i>
                   <span slot="title">任务清单</span>
                 </el-menu-item>
                 <el-menu-item index="2">
-                  <i class="el-icon-menu"></i>
+                  <i class="el-icon-s-help"></i>
                   <span slot="title">创建任务</span>
                 </el-menu-item>
               </el-menu>
@@ -41,56 +41,84 @@
 
         </el-aside>
         <el-main>
-          <div class="mainBox">
-            <el-descriptions class="margin-top" :column="2" :size="size" border>
-              <!-- <template slot="extra">
-                <el-button type="primary" size="small">操作</el-button>
-              </template> -->
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-user"></i>
-                  客户
-                </template>
-                kooriookami
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-mobile-phone"></i>
-                  手机号
-                </template>
-                18100000000
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-location-outline"></i>
-                  居住地
-                </template>
-                苏州市
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-tickets"></i>
-                  备注
-                </template>
-                <el-tag size="small">学校</el-tag>
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-office-building"></i>
-                  联系地址
-                </template>
-                江苏省苏州市吴中区吴中大道 1188 号
-              </el-descriptions-item>
-              <el-descriptions-item>
-                <template slot="label">
-                  <i class="el-icon-guide"></i>
-                  状态
-                </template>
-                <el-button class="mainBoxBtn" size="small" disabled>跟进中</el-button>
-                <el-button type="primary" size="small" plain>结束任务</el-button>
-              </el-descriptions-item>
-            </el-descriptions>
-          </div>
+          <transition name="fade">
+            <div class="mainBox" v-if="showTabsind == 1">
+              <el-descriptions class="margin-top" :column="2" :size="size" border>
+                <!-- <template slot="extra">
+                  <el-button type="primary" size="small">操作</el-button>
+                </template> -->
+                <el-descriptions-item>
+                  <template slot="label">
+                    <i class="el-icon-user"></i>
+                    客户
+                  </template>
+                  kooriookami
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template slot="label">
+                    <i class="el-icon-mobile-phone"></i>
+                    手机号
+                  </template>
+                  18100000000
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template slot="label">
+                    <i class="el-icon-location-outline"></i>
+                    居住地
+                  </template>
+                  苏州市
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template slot="label">
+                    <i class="el-icon-tickets"></i>
+                    备注
+                  </template>
+                  <el-tag size="small">学校</el-tag>
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template slot="label">
+                    <i class="el-icon-office-building"></i>
+                    联系地址
+                  </template>
+                  江苏省苏州市吴中区吴中大道 1188 号
+                </el-descriptions-item>
+                <el-descriptions-item>
+                  <template slot="label">
+                    <i class="el-icon-guide"></i>
+                    状态
+                  </template>
+                  <el-button class="mainBoxBtn" size="small" disabled>跟进中</el-button>
+                  <el-button type="primary" size="small" plain>结束任务</el-button>
+                </el-descriptions-item>
+              </el-descriptions>
+            </div>
+            <div class="mainBox" v-if="showTabsind == 2">
+              <el-form ref="form" :model="form" label-width="80px">
+                <el-form-item label="客户姓名">
+                  <el-input v-model="form.name"></el-input>
+                </el-form-item>
+                <el-form-item label="手机号">
+                  <el-input v-model="form.phone"></el-input>
+                </el-form-item>
+                <el-form-item label="居住地">
+                  <el-input v-model="form.adress"></el-input>
+                </el-form-item>
+                <el-form-item label="备注">
+                  <el-input v-model="form.Remark"></el-input>
+                </el-form-item>
+                <el-form-item label="联系地址">
+                  <el-input v-model="form.contactAddress"></el-input>
+                </el-form-item>
+                <el-form-item label="状态">
+                  <el-input v-model="form.state"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-button type="primary" @click="onSubmit">立即创建</el-button>
+                  <el-button>取消</el-button>
+                </el-form-item>
+              </el-form>
+            </div>
+          </transition>
         </el-main>
       </el-container>
     </el-container>
@@ -210,13 +238,29 @@
         activeIndex: '1',
         activeIndex1: '1',
         size:'small',
-        listinfo:[]
+        listinfo:[],
+        showTabsind:1,
+        // 表单
+        form: {
+          name: '',
+          phone: '',
+          adress: '',
+          Remark: '',
+          contactAddress: '',
+          state: '',
+        }
       }
     },
     mounted() {
       console.log("页面初始化完成222");
     },
     methods:{
+      handleSelect(e){
+        this.showTabsind = e;
+      },
+      onSubmit(){
+
+      },
       getDataOrder(ordernos, appid) {
         let _this = this;
         // let Url = 'localhost:3000/apitest/checkUser';
@@ -235,6 +279,12 @@
   })
 </script>
 <style type="text/css">
+  .fade-enter-active, .fade-leave-active {
+    transition: opacity .2s;
+  }
+  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+    opacity: 0;
+  }
   .el-header {
     padding: 0;
   }
