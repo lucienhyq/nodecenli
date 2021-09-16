@@ -45,10 +45,9 @@ router.post('/overList', function (req, res, next) {
 // 检查是否登录
 router.post('/checkUser', function (req, res, next) {
   console.log(req.body)
-  mongo("find", "user", { userName: req.body.name }, function (data) {
+  mongo("find", "list_order_li", {}, function (data) {
     if (data.length != 0) {
-      console.log(data[0].password)
-      res.send(data[0])
+      res.send(data)
     } else {
       res.send('{"err":"用户信息获取失败"}');
     }

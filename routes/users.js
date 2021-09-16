@@ -47,8 +47,8 @@ function User(users){
 	});
 	
 	//登录接口
-	router.post('/login',function(req,res){
-		
+	router.get('/login',function(req,res){
+		console.log(req.session)
 		//先寻找前段传过来的userName
 		mongo("find","user",{phone:req.body.userName},function(data){
 			if(data.length!=0){
@@ -194,7 +194,7 @@ function User(users){
 		console.log(req.session)
 		if(req.session.user){
 //			console.log(88888)
-			console.log(req.session.user.userName);
+			console.log(req.session.user,'ssssssss');
 			mongo("find","user",{userName:req.session.user.userName},function(data){
 				console.log(data)
 			})
