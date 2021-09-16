@@ -125,8 +125,8 @@
       </el-container>
     </el-container>
 
-    <el-dialog :visible.sync="visible" title="Hello world">
-      <p>Try Element</p>
+    <el-dialog :visible.sync="visible" :title="visibleTitle">
+      <p>{{visibleConten}}</p>
     </el-dialog>
   </div>
 </body>
@@ -237,6 +237,8 @@
     data() {
       return {
         visible: false,
+        visibleConten:'',
+        visibleTitle:'',
         activeIndex: '1',
         activeIndex1: '1',
         size:'small',
@@ -275,7 +277,13 @@
         axios.post('/apitest/checkUser', {})
         .then(function (response) {
           console.log(response);
-          _this.listinfo = response.data;
+          if(response.data.result == 1){
+            _this.listinfo = response.data;
+          }else{
+            _this.visible = true;
+            _this.visibleConten = response.data.msg;
+            window.location.href='/yzm.html';
+          }
         })
         .catch(function (error) {
           console.log(error);
