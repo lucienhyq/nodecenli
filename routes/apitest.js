@@ -50,8 +50,7 @@ router.post('/overList', function (req, res, next) {
 
 // 检查是否登录
 router.post('/checkUser', function (req, res, next) {
-  let resuleData = checkLogin(req);
-  console.log(resuleData);
+  let resuleData = checkLogin(req); //检查登录
   if(resuleData.result){
     mongo("find", "list_order_li", {}, function (data) {
       if (data.length != 0) {

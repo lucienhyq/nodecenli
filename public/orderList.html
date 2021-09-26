@@ -246,12 +246,12 @@
         showTabsind:1,
         // 表单
         form: {
-          name: 'test',
-          phone: 'test',
-          adress: 'test',
-          Remark: 'test',
-          contactAddress: 'test',
-          state: 'test',
+          name: '',
+          phone: '',
+          adress: '',
+          Remark: '',
+          contactAddress: '',
+          state: '',
         }
       }
     },
@@ -275,20 +275,22 @@
       getDataOrder(ordernos, appid) {
         let _this = this;
         axios.post('/apitest/checkUser', {})
-        .then(function (response) {
-          console.log(response);
+        .then( (response)=>{
           if(response.data.result == 1){
-            _this.listinfo = response.data;
+            this.listinfo = response.data;
           }else{
-            _this.visible = true;
-            _this.visibleConten = response.data.msg;
-            window.location.href='/yzm.html';
+            this.visible = true;
+            this.visibleConten = response.data.msg;
+            // this.gourl('https://www.baidu.com')
           }
         })
         .catch(function (error) {
           console.log(error);
         });
       },
+      gourl(url){
+        window.location.href = url;
+      }
     }
   })
 </script>
