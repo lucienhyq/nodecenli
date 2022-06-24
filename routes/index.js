@@ -25,10 +25,11 @@ router.get('/test', async (req, res, next) => {
 			user_name: "swag",
 			password: 123123,
 			id: 1,
-			create_time: dtime().format('YYYY-MM-DD'),
+			create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
 			admin: "管理员",
 			status: 0,
 		}
+		console.log(dtime().format('YYYY-MM-DD HH:mm:ss'))
 		await AdminModel.create(newAdmin)
 		res.send({
 			status: 1,
