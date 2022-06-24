@@ -1,5 +1,7 @@
 //报错文件
-//var createError = require('http-errors');
+var createError = require('http-errors');
+var logger = require('./logs/logs').logger;
+var log = require('./logs/logs');
 var express = require('express');
 var path = require('path');
 //cookie处理模块
@@ -15,16 +17,16 @@ var session = require("express-session");
 
 var app = express();
 app.use(session({
-	    name:'tianmao',
-	    secret:'tianmao',
-	    cookie:{
-	    	maxAge:80000000000 //
-	    },
-	    resave:false, //每次请求是否重新设置session
-//	指每次请求重新设置 session cookie ,假如你设置的 cookie有效 10分钟    
-	    saveUninitialized:false //每次请求是否初始化session	    
+	name: 'tianmao',
+	secret: 'tianmao',
+	cookie: {
+		maxAge: 80000000000 //
+	},
+	resave: false, //每次请求是否重新设置session
+	//	指每次请求重新设置 session cookie ,假如你设置的 cookie有效 10分钟    
+	saveUninitialized: false //每次请求是否初始化session	    
 }))
-
+log.use(app)
 
 //引入解析post参数的模块 
 var bodypaeser = require('body-parser')
@@ -41,7 +43,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 //引用路由
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/order',orderRouter);
-app.use('/viadante',viadanteRouter);
-app.use('/apitest',testRouter)
+app.use('/order', orderRouter);
+app.use('/viadante', viadanteRouter);
+app.use('/apitest', testRouter);
+// catch 404 and forward to error handler
+app.use(function (req, res, next) {
+	next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
 module.exports = app;
