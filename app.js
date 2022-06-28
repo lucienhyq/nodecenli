@@ -30,7 +30,8 @@ log.use(app)
 
 //引入解析post参数的模块 
 var bodypaeser = require('body-parser')
-
+// app.use(bodypaeser.urlencoded({extended:false}))
+app.use(bodypaeser.json())
 
 
 

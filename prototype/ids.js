@@ -16,6 +16,7 @@ var getId = async function (type) {
     throw new Error(err)
   }
 }
+
 module.exports = {
   getId
 }
