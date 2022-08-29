@@ -6,7 +6,7 @@ var login = async (req, res, next) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
       var user = await AdminModel.findOne({ user_name: fields.user_name })
-      console.log(user,fields)
+      console.log(user,fields,'dddddddddd')
       if (!user || !fields) {
         res.send({
           status: 0,
@@ -18,7 +18,8 @@ var login = async (req, res, next) => {
           // 密码一样，添加session
           req.session.user = {
             userName: user.user_name,
-            password: user.password
+            password: user.password,
+            uid:user.id,
           };
           res.send({
             status: 1,

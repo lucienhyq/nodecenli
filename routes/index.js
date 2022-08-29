@@ -3,16 +3,41 @@ var router = express.Router();
 // const AdminModel = require('../models/admin/admin');
 // const dtime = require('time-formater');
 // const getIdmethod = require('../prototype/ids');
-const register_Controller = require('../controller/admin/register')
-const login_Controller = require('../controller/admin/login')
+const register_Controller = require('../controller/admin/register');
+const login_Controller = require('../controller/admin/login');
+const usetEdit_Controller = require('../controller/admin/usetEdit_Controller')
+// const postsAuction_Controller = require('../controller/admin/postsAuction');
+
+// 1. 引入配置好的multerConfig
+const upload = require('../js/upload');
+
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-	res.redirect("index.html");
+  res.redirect("index.html");
 });
 // 注册
 router.post('/register', register_Controller);
 // 登录
-router.post('/login',login_Controller)
+router.post('/login', login_Controller)
+// 编辑会员信息
+router.post('/usetEdit', usetEdit_Controller)
+router.post('/posts', (req, res) => {
+  //这里的req.body是经过uploadFile中间件进行处理后的,包含了表单中所有的提交内容
+  upload(req, res).then(imgsrc => {
+    // 上传成功 存储文件路径 到数据库中
+    res.send({ 'data': imgsrc, result: 1 });
+  }).catch(err => {
+    formatErrorMessage(res, err.error)
+  })
+})
+// 格式化错误信息
+function formatErrorMessage(res, message,) {
+  res.status(500).send({
+    "code": "error",
+    "message": message || '',
+  });
+}
+
 
 module.exports = router;
