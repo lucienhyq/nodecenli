@@ -6,11 +6,12 @@ var usetEdit = async (req, res, next) => {
     console.log(req.session.user, req.query)
     let json = {};
     json = req.query;
-    console.log(json)
     if (!req.session.user) {
+      logger.info('fail')
       res.send({
         status: 0,
         success: '请登录',
+        result:0
       })
       return
     }
