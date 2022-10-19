@@ -6,7 +6,6 @@ var login = async (req, res, next) => {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
       var user = await AdminModel.findOne({ user_name: fields.user_name })
-      console.log(user,fields,'dddddddddd')
       if (!user || !fields) {
         res.send({
           status: 0,

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-// const AdminModel = require('../models/admin/admin');
+const AdminModel = require('../models/admin/admin');
 // const dtime = require('time-formater');
 // const getIdmethod = require('../prototype/ids');
 const register_Controller = require('../controller/admin/register');
@@ -31,11 +31,27 @@ router.post('/posts', (req, res) => {
     formatErrorMessage(res, err.error)
   })
 })
+router.get('/getUserIndex', async (req, res) => {
+  try {
+    var user = await AdminModel.findOne({ user_name: req.session.user.userName })
+    res.send({
+      result: 1,
+      msg: '成功',
+      data: {
+        member: user
+      },
+      session: req.session
+    })
+  } catch (err) {
+    formatErrorMessage(res, err.error)
+  }
+})
 // 格式化错误信息
 function formatErrorMessage(res, message,) {
   res.status(500).send({
     "code": "error",
-    "message": message || '',
+    "result": 0,
+    "msg": message || '',
   });
 }
 

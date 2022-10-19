@@ -4,7 +4,6 @@ const getIdmethod = require('../../prototype/ids');
 // const formidable = require('formidable');
 const logger = require('../../logs/logs').logger
 var register = async (req, res, next) => {
-  console.log(req, ':dddddddddd')
   try {
     if (req.session.user) {
       res.send({
@@ -30,7 +29,6 @@ var register = async (req, res, next) => {
     } else {
       // 可以注册后增加id总数
       const admin_id = await getIdmethod.getId('admin_id');
-      
       const newAdmin = {
         user_name: fields.user_name,
         password: fields.password,

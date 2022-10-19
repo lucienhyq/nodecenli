@@ -15,7 +15,7 @@ function upload(req, res) {
             } else {
                 // `req.file.filename`  请求文件名称后缀 
                 // `updateBaseUrl + imgPath + req.file.filename` 完整的服务器虚拟目录
-                // console.log(updateBaseUrl + imgPath + req.file.filename)
+                console.log(updateBaseUrl , imgPath , req.file.filename,req.file)
                 resolve(updateBaseUrl +'/'+ req.file.filename)
             }
         });
