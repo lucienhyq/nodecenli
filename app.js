@@ -42,7 +42,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 //匹配静态资源路径
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads',express.static(path.join(__dirname,'./uploads')))
 
 
 //引用路由

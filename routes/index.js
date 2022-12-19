@@ -34,7 +34,7 @@ router.post('/posts', (req, res) => {
     // 上传成功 存储文件路径 到数据库中
     res.send({ 'data': imgsrc, result: 1 });
   }).catch(err => {
-    formatErrorMessage(res, err.error)
+    formatErrorMessage(res, err)
   })
 });
 
