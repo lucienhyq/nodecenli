@@ -18,6 +18,16 @@ const upload = require('../js/upload');
 router.get('/', function (req, res, next) {
   res.redirect("index.html");
 });
+// 检查是否有登录
+router.post('/checkLogin',(req,res)=>{
+  console.log(req.session.user)
+  res.send({
+    result: 0,
+    msg: '此用户已经存在无法注册',
+    data: [],
+    session: req.session
+  })
+})
 // 注册
 router.post('/register', register_Controller);
 
