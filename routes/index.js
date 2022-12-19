@@ -6,7 +6,9 @@ const AdminModel = require('../models/admin/admin');
 const register_Controller = require('../controller/admin/register');
 const login_Controller = require('../controller/admin/login');
 const usetEdit_Controller = require('../controller/admin/usetEdit_Controller')
-// const postsAuction_Controller = require('../controller/admin/postsAuction');
+const referee_all_Controller = require('../controller/refereeController/referee_all');
+const referee_add_Controller = require('../controller/refereeController/referee_add');
+
 
 // 1. 引入配置好的multerConfig
 const upload = require('../js/upload');
@@ -18,10 +20,14 @@ router.get('/', function (req, res, next) {
 });
 // 注册
 router.post('/register', register_Controller);
+
 // 登录
-router.post('/login', login_Controller)
+router.post('/login', login_Controller);
+
 // 编辑会员信息
-router.post('/usetEdit', usetEdit_Controller)
+router.post('/usetEdit', usetEdit_Controller);
+
+// 上传图片
 router.post('/posts', (req, res) => {
   //这里的req.body是经过uploadFile中间件进行处理后的,包含了表单中所有的提交内容
   upload(req, res).then(imgsrc => {
@@ -30,7 +36,9 @@ router.post('/posts', (req, res) => {
   }).catch(err => {
     formatErrorMessage(res, err.error)
   })
-})
+});
+
+// 获取会员信息
 router.get('/getUserIndex', async (req, res) => {
   try {
     var user = await AdminModel.findOne({ user_name: req.session.user.userName })
@@ -46,6 +54,11 @@ router.get('/getUserIndex', async (req, res) => {
     formatErrorMessage(res, err.error)
   }
 })
+
+router.post('/allReferee',referee_all_Controller);
+router.post('/addReferee',referee_add_Controller);
+
+
 // 格式化错误信息
 function formatErrorMessage(res, message,) {
   res.status(500).send({
