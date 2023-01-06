@@ -5,6 +5,7 @@ var login = async (req, res, next) => {
   try {
     const form = new formidable.IncomingForm();
     form.parse(req, async (err, fields, files) => {
+      console.log(fields,'ddddddddddddddddd')
       var user = await AdminModel.findOne({ user_name: fields.user_name })
       if (!user || !fields) {
         res.send({
@@ -23,7 +24,8 @@ var login = async (req, res, next) => {
           res.send({
             status: 1,
             success: '登录成功',
-            data: user,
+            data: {id:user.id},
+            // data:[],
             session: req.session
           })
           return

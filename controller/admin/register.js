@@ -14,7 +14,7 @@ var register = async (req, res, next) => {
       return
     }
     let fields = req.body;
-    var user = await AdminModel.findOne({ user_name: fields.user_name })
+    var user = await AdminModel.findOne({ user_name: fields.user_name });
     if (user) {
       req.session.user = {
         userName: fields.user_name,
@@ -29,6 +29,34 @@ var register = async (req, res, next) => {
     } else {
       // 可以注册后增加id总数
       const admin_id = await getIdmethod.getId('admin_id');
+      console.log(fields,'ddddddddd')
+      if(!fields.user_name || !fields.password){
+        res.send({
+          result: 0,
+          msg: '请输入正确的账号密码',
+          data: [],
+          session: req.session
+        })
+        return
+      }
+      if(!fields.status){
+        res.send({
+          result: 0,
+          msg: '请选择会员等级',
+          data: [],
+          session: req.session
+        })
+        return
+      }
+      // if(!fields.image){
+      //   res.send({
+      //     result: 0,
+      //     msg: '请选择会员头像',
+      //     data: [],
+      //     session: req.session
+      //   })
+      //   return
+      // }
       const newAdmin = {
         user_name: fields.user_name,
         password: fields.password,
