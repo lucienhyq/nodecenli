@@ -12,11 +12,10 @@ var usersRouter = require("./routes/users");
 var orderRouter = require("./routes/order");
 var viadanteRouter = require("./routes/viadante");
 var testRouter = require("./routes/apitest");
-var blog = require("./routes/blog");
-var blogConten = require("./routes/blogConten");
-const loginCheck = require("./middleware/checkLogin");
+// var blog = require("./routes/blog");
+// var blogConten = require("./routes/blogConten");
 
-const errHandler = require("./middleware/error-handler");
+// const errHandler = require("./middleware/error-handler");
 //引入session模块
 var session = require("express-session");
 
@@ -26,7 +25,7 @@ app.use(
     name: "tianmao",
     secret: "tianmao",
     cookie: {
-      maxAge: 80000000000, //
+      maxAge: 10800000, //
     },
     resave: false, //每次请求是否重新设置session
     //	指每次请求重新设置 session cookie ,假如你设置的 cookie有效 10分钟

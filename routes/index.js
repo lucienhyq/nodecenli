@@ -21,12 +21,11 @@ router.get('/', function (req, res, next) {
 // 检查是否有登录
 router.post('/checkLogin',(req,res)=>{
   console.log(req.session.user)
-  res.send({
-    result: 0,
-    msg: '此用户已经存在无法注册',
-    data: [],
-    session: req.session
-  })
+  if(!req.session.user){
+    res.send({ 'msg': '未登录', result: 0 });
+  }else{
+    res.send({ 'msg': '已登录', result: 1 });
+  }
 })
 // 注册
 router.post('/register', register_Controller);

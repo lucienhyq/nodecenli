@@ -1,110 +1,178 @@
 <!DOCTYPE html>
 <html>
-
-	<head>
-		<meta charset="UTF-8">
-		<title></title>
-		<script src="javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
-		<script src="javascripts/tools.js" type="text/javascript" charset="utf-8"></script>
-		<script src="javascripts/zy.js" type="text/javascript" charset="utf-8"></script>
-		<style type="text/css">
-			#xg {
-				color: bisque;
-				cursor: pointer;
-			}
-			
-			#passwordMask {
-				display: none;
-			}
-		</style>
-
-	</head>
-
-	<body>
-
-		<span>主页</span>
+  <head>
+    <meta charset="UTF-8" />
+    <title>裁判预约</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+  </head>
+  <script src="javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="javascripts/tools.js" type="text/javascript" charset="utf-8"></script>
+  <script src="javascripts/zy.js" type="text/javascript" charset="utf-8"></script>
+  <script src="javascripts/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="javascripts/axios.js"></script>
+  <body>
+    <!-- <span>主页</span>
 		<a href="yzm.html">跳转</a>
 		<a id="login">登录</a>
 		<a id="zc">注册</a>
 		<div id="xg">修改密码</div>
-		<div id="quit">退出登录</div>
-
-		<div id="passwordMask">
-
-			<div style="background: skyblue; width: 500px;  margin: 30px auto;">
-				<h1>修改密码  <span id="close_mask" style="font-size: 80px; color: red; cursor: pointer;">×</span></h1>
-				<b id="passModifyMess" style="color: red;"></b>
-				<form onsubmit="return false">
-					<table border="1" cellpadding="0" width="20%">
-						<tr>
-							<!--<td>用户名：</td>
+		<div id="quit">退出登录</div> -->
+    <div id="app">
+      <el-menu :default-active="activeIndex" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+        <el-menu-item index="1">主页</el-menu-item>
+        <el-menu-item index="2">登录</el-menu-item>
+        <el-menu-item index="3">发布裁判信息</el-menu-item>
+      </el-menu>
+      <div class="tabForm">
+        <template>
+          <el-table :data="tableData" style="width: 100%">
+            <el-table-column prop="referee_name" label="裁判姓名" width="180"> </el-table-column>
+            <el-table-column prop="referee_Price" label="裁判价格" width="180"> </el-table-column>
+            <el-table-column prop="city" label="地区"> </el-table-column>
+            <el-table-column prop="create_time" label="注册日期"> </el-table-column>
+            <el-table-column fixed="right" label="操作" width="100">
+              <template slot-scope="scope">
+                <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                <el-button type="text" size="small">预约</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </template>
+      </div>
+    </div>
+    <div id="passwordMask">
+      <div style="background: skyblue; width: 500px; margin: 30px auto">
+        <h1>修改密码 <span id="close_mask" style="font-size: 80px; color: red; cursor: pointer">×</span></h1>
+        <b id="passModifyMess" style="color: red"></b>
+        <form onsubmit="return false">
+          <table border="1" cellpadding="0" width="20%">
+            <tr>
+              <!--<td>用户名：</td>
 			<td><input type="text" id="userName" /></td>
 			</tr>-->
+            </tr>
 
-							<tr>
-								<td>旧密码：</td>
-								<td><input type="text" id="oldpass" /></td>
-							</tr>
-							<tr>
-								<td>新密码：</td>
-								<td><input type="text" id="newpass" /></td>
-							</tr>
-							<tr>
-								<td>确认密码：</td>
-								<td><input type="text" id="confirmpass" /></td>
-							</tr>
-							<tr>
-								<td colspan="2" align="center">
-									<input type="submit" id="submit" value="提交" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									<input type="reset" id="reset" value="重置" />
-								</td>
-							</tr>
-					</table>
-				</form>
+            <tr>
+              <td>旧密码：</td>
+              <td><input type="text" id="oldpass" /></td>
+            </tr>
+            <tr>
+              <td>新密码：</td>
+              <td><input type="text" id="newpass" /></td>
+            </tr>
+            <tr>
+              <td>确认密码：</td>
+              <td><input type="text" id="confirmpass" /></td>
+            </tr>
+            <tr>
+              <td colspan="2" align="center">
+                <input type="submit" id="submit" value="提交" /> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="reset" id="reset" value="重置" />
+              </td>
+            </tr>
+          </table>
+        </form>
+      </div>
+    </div>
+  </body>
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          value: true,
+          activeIndex: "1",
+          tableData: [],
+        };
+      },
+      mounted() {
+        console.log("页面初始化完成222");
+        console.log(this.tableData);
+        this.activeIndex = "1";
+        this.getData();
+      },
+      methods: {
+				handleClick(e){
+					console.log(e)
+				},
+        handleSelect(e) {
+          if (e == 2) {
+            this.activeIndex = 1;
+            setTimeout(() => {
+              window.location.href = "./login.html";
+            }, 0);
+          }
+          if(e == 3){
+            window.location.href = "./addReferee.html";
+          }
+        },
+        getData(){
+          $.ajax({
+            type: "post",
+            url: "/allReferee",
+            async: true,
+            dataType: "json",
+          }).done((res)=> {
+            console.log(res,'dddddddddd')
+            if (res.result) {
+              this.tableData = res.data.data;
+            }else{
+              this.$message({
+                type: 'info',
+                message: res.msg
+              });
+            }
+          });
+        }
+      },
+    });
+  </script>
+  <script type="text/javascript">
+    function GetQueryString(name) {
+      var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+      var r = window.location.search.substr(1).match(reg);
+      if (r != null) return r[2];
+      return null;
+    }
+    var username = decodeURI(GetQueryString("userName"));
+    console.log(typeof username);
+    console.log(username);
+    if (username != "null") {
+      $('<a style="cursor: pointer;color:red;margin-right: 15px;margin-left: 15px;"id="username">欢迎您：' + username + "</a>").insertBefore($("#login"));
 
-			</div>
+      $("#login").hide();
+      $("#quit").show();
+    } else {
+      $("#login").show();
+      $("#quit").hide();
+    }
 
-		</div>
-		<script type="text/javascript">
-			
-			function GetQueryString(name) {
-				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-				var r = window.location.search.substr(1).match(reg);
-				if(r != null) return(r[2]);
-				return null;
-			}
-				var username = decodeURI(GetQueryString("userName"));
-				console.log(typeof username)
-				console.log(username)
-			if(username!="null") {
-				$('<a style="cursor: pointer;color:red;margin-right: 15px;margin-left: 15px;"id="username">欢迎您：' + username + '</a>').insertBefore($("#login"));
-				
-				$("#login").hide();
-				$("#quit").show();
-			} else {
-				$("#login").show();
-				$("#quit").hide();
-				
-			}
-			
-			$("#quit").click(function(){
-				$.ajax({
-					type:"get",
-					url:"/users/quit",
-					async:true,
-					dataType:"json"
-				}).done(function(res){
-					if(res.success){
-						alert("退出成功")
-					}
-					if(res.err){
-						alert("请登录")
-					}
-				})
-			})
-			
-		</script>
+    $("#quit").click(function () {
+      $.ajax({
+        type: "get",
+        url: "/users/quit",
+        async: true,
+        dataType: "json",
+      }).done(function (res) {
+        if (res.success) {
+          alert("退出成功");
+        }
+        if (res.err) {
+          alert("请登录");
+        }
+      });
+    });
+  </script>
+  <style type="text/css">
+    #xg {
+      color: bisque;
+      cursor: pointer;
+    }
 
-	</body>
-
+    #passwordMask {
+      display: none;
+    }
+  </style>
 </html>

@@ -1,196 +1,258 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+    <title>图书馆</title>
+  </head>
+  <script src="javascripts/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="javascripts/axios.js"></script>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-  <title>图书馆</title>
-</head>
-<script src="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js"></script>
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-
-<body>
-  <div id="app">
-    <div class="userBox" v-if="loginStatus">
-      <el-input v-model="user_name" placeholder="请输入用户名" style="margin-bottom: 10px"></el-input>
-      <el-input placeholder="请输入密码" v-model="password" show-password style="margin-bottom: 10px"></el-input>
-      <template>
-        <el-radio v-model="radio" label="0">管理员</el-radio>
-        <el-radio v-model="radio" label="1">超级管理员</el-radio>
-      </template>
-      <el-upload style="margin-top: 20px" enctype="multipart/form-data" accept="image/*" class="avatar-uploader"
-        action="http://localhost:3000/posts" :show-file-list="false" :on-success="handleAvatarSuccess">
-        <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-      </el-upload>
-      <span>上传</span>
-      <el-button @click="registerPost">注册</el-button>
+  <body>
+    <div id="app">
+      <div class="userBox" v-if="loginStatus">
+        <template>
+          <el-radio-group v-model="selectState" @input="selectInput">
+            <el-radio v-model="selectState" label="1">注册新用户</el-radio>
+            <el-radio v-model="selectState" label="2">登录已有账户</el-radio>
+          </el-radio-group>
+        </template>
+        <div v-if="selectState == 1" style="margin-top: 1rem">
+          <el-input v-model="user_name" placeholder="请输入用户名" style="margin-bottom: 10px"></el-input>
+          <el-input placeholder="请输入密码" v-model="password" show-password style="margin-bottom: 10px"></el-input>
+          <template>
+            <el-radio v-model="radio" label="0">管理员</el-radio>
+            <el-radio v-model="radio" label="1">超级管理员</el-radio>
+          </template>
+          <el-upload
+            style="margin-top: 20px"
+            enctype="multipart/form-data"
+            accept="image/*"
+            class="avatar-uploader"
+            action="http://localhost:3000/posts"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <span>上传</span>
+          <el-button @click="registerPost">注册</el-button>
+        </div>
+        <div v-else style="margin-top: 1rem">
+          <el-input v-model="user_name" placeholder="请输入用户名" style="margin-bottom: 10px"></el-input>
+          <el-input placeholder="请输入密码" v-model="password" show-password style="margin-bottom: 10px"></el-input>
+          <el-button @click="loginPost">登录</el-button>
+        </div>
+      </div>
     </div>
-    <!-- <div v-if="!loginStatus" class="loginBox">
-        
-      </div> -->
-  </div>
-</body>
+  </body>
 
-<script>
-  new Vue({
-    el: "#app",
-    data() {
-      return {
-        user_name: "",
-        password: "",
-        radio: "0",
-        imageUrl: "",
-        loginStatus: false,
-      };
-    },
-    mounted() {
-      console.log("页面初始化完成222");
-      this.checkLogin()
-    },
-    methods: {
-      checkLogin() {
-        axios
-          .post('/checkLogin', {})
-          .then((response) => {
-            console.log(response)
-            if (!response.data.result) {
-              this.loginStatus = true;
-            }
-          })
-          .catch((error) => {
-            console.log(error)
-          })
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          user_name: "",
+          password: "",
+          radio: "0",
+          imageUrl: "",
+          loginStatus: false,
+          selectState: "1",
+        };
       },
-      getData() {
-        axios
-          .post("/getUserIndex", {})
-          .then((response) => {
-            if (response.data.result == 1) {
-              this.loginStatus = true;
-            } else {
-              this.loginStatus = false;
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+      mounted() {
+        console.log("页面初始化完成222");
+        this.checkLogin();
       },
-      handleAvatarSuccess(res, file) {
-        console.log(res);
-        this.imageUrl = res.data;
-      },
-      async beforeAvatarUpload(file) {
-        alert('ddddddddd')
-        let formData = new FormData();
-        formData.append("file", file);
-        let rs = await this.admin_apiUpload(formData);
-        return true;
-      },
-      admin_apiUpload(formData) {
-        new Promise((resolve, reject) => {
+      methods: {
+        selectInput(e){
+          console.log(e)
+          this.user_name = '';
+          this.password = '';
+        },
+        checkLogin() {
           axios
-            .post("/posts", formData)
+            .post("/checkLogin", {})
+            .then((response) => {
+              let res = response.data;
+              this.loginStatus = true;
+              if (!res.result) {
+              } else {
+                // window.location.href = "./index.html";
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        },
+        loginPost() {
+          if (!this.user_name || !this.password) {
+            this.$message({
+              type: "info",
+              message: "请输入正确账号密码",
+            });
+            return;
+          }
+          let json = {
+            user_name: this.user_name,
+            password: this.password,
+          };
+          axios
+            .post("/login", json)
+            .then((response) => {
+              let resdata = response.data;
+              console.log(resdata);
+              if (!resdata.status) {
+                this.$message({
+                  type: "info",
+                  message: resdata.success,
+                });
+              } else {
+                this.$message({
+                  type: "info",
+                  message: resdata.success,
+                });
+                window.location.href = "./index.html";
+                // window.location('./index.html')
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        },
+        getData() {
+          axios
+            .post("/getUserIndex", {})
             .then((response) => {
               if (response.data.result == 1) {
-                alert(response)
-                resolve(response);
+                this.loginStatus = true;
               } else {
-                alert(response)
-                resolve(response);
+                this.loginStatus = false;
               }
             })
             .catch(function (error) {
-              reject(error);
               console.log(error);
             });
-        });
-      },
-      registerPost() {
-        let _this = this;
-        let json = {
-          user_name: this.user_name,
-          password: this.password,
-          admin: this.radio,
-          status: 0,
-          image: this.imageUrl,
-        };
-        axios
-          .post("/register", json)
-          .then((response) => {
-            if (response.data.result == 1) {
-              this.info = response.data.data;
-            } else {
-              this.$message.error(response.data.msg);
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
+        },
+        handleAvatarSuccess(res, file) {
+          console.log(res);
+          this.imageUrl = res.data;
+        },
+        async beforeAvatarUpload(file) {
+          alert("ddddddddd");
+          let formData = new FormData();
+          formData.append("file", file);
+          let rs = await this.admin_apiUpload(formData);
+          return true;
+        },
+        admin_apiUpload(formData) {
+          new Promise((resolve, reject) => {
+            axios
+              .post("/posts", formData)
+              .then((response) => {
+                if (response.data.result == 1) {
+                  alert(response);
+                  resolve(response);
+                } else {
+                  alert(response);
+                  resolve(response);
+                }
+              })
+              .catch(function (error) {
+                reject(error);
+                console.log(error);
+              });
           });
+        },
+        registerPost() {
+          let _this = this;
+          let json = {
+            user_name: this.user_name,
+            password: this.password,
+            admin: this.radio,
+            image: this.imageUrl,
+          };
+          axios
+            .post("/register", json)
+            .then((response) => {
+              console.log(response.data.result)
+              if (response.data.result == 1) {
+                this.$message({
+                  message: response.data.msg
+                });
+                window.location.href = './index.html';
+              } else {
+                this.$message.error(response.data.msg);
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        },
       },
-    },
-  });
-</script>
-<style>
-  * {
-    margin: 0;
-  }
+    });
+  </script>
+  <style>
+    * {
+      margin: 0;
+    }
 
-  .userBox {
-    width: 428px;
-    min-height: 545px;
-    box-sizing: border-box;
-    background: #999;
-    border-radius: 3px;
-    max-height: 545px;
-    margin: 0 auto;
-    margin-top: 60px;
-    padding: 15px;
-  }
+    .userBox {
+      width: 428px;
+      min-height: 545px;
+      box-sizing: border-box;
+      background: #999;
+      border-radius: 3px;
+      max-height: 545px;
+      margin: 0 auto;
+      margin-top: 60px;
+      padding: 15px;
+    }
 
-  .avatar-uploader i {
-    background-color: #fff;
-  }
+    .avatar-uploader i {
+      background-color: #fff;
+    }
 
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
+    .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
+    .avatar-uploader .el-upload:hover {
+      border-color: #409eff;
+    }
 
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 178px;
+      height: 178px;
+      line-height: 178px;
+      text-align: center;
+    }
 
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+    .avatar {
+      width: 178px;
+      height: 178px;
+      display: block;
+    }
 
-  /* 登录 */
-  .loginBox {
-    width: 45vw;
-    height: 40vh;
-    border-radius: 10px;
-    background-color: #999;
-  }
-</style>
-<script>
+    /* 登录 */
+    .loginBox {
+      width: 45vw;
+      height: 40vh;
+      border-radius: 10px;
+      background-color: #999;
+    }
+  </style>
+  <!-- <script>
   !(function () {
     function n(n, e, t) {
       return n.getAttribute(e) || t;
@@ -288,6 +350,5 @@
         i();
       }, 100);
   })();
-</script>
-
+</script> -->
 </html>

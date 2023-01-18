@@ -2,10 +2,10 @@ const AdminModel = require('../../models/admin/admin');
 const formidable = require('formidable');
 const logger = require('../../logs/logs').logger
 var login = async (req, res, next) => {
+  console.log(req.body,'login1111111')
   try {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async (err, fields, files) => {
-      console.log(fields,'ddddddddddddddddd')
+      let fields = req.body;
+      console.log(fields,'ddddddddddddddddd112132')
       var user = await AdminModel.findOne({ user_name: fields.user_name })
       if (!user || !fields) {
         res.send({
@@ -36,8 +36,6 @@ var login = async (req, res, next) => {
           })
         }
       }
-
-    })
   } catch (error) {
     logger.info('error' + error)
     next()
