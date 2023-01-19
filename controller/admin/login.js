@@ -3,13 +3,12 @@ const formidable = require('formidable');
 const logger = require('../../logs/logs').logger
 var login = async (req, res, next) => {
   try {
-    const form = new formidable.IncomingForm();
-    form.parse(req, async (err, fields, files) => {
+      let fields = req.body;
       var user = await AdminModel.findOne({ user_name: fields.user_name })
       if (!user || !fields) {
         res.send({
-          status: 0,
-          success: '没有此用户',
+          result: 0,
+          msg: '没有此用户',
         })
         return
       } else {
@@ -21,16 +20,17 @@ var login = async (req, res, next) => {
             uid:user.id,
           };
           res.send({
-            status: 1,
-            success: '登录成功',
-            data: user,
+            result: 1,
+            msg: '登录成功',
+            data: {id:user.id},
+            // data:[],
             session: req.session
           })
           return
         } else {
           res.send({
-            status: 0,
-            success: '账号密码错误',
+            result: 0,
+            msg: '账号密码错误',
           })
         }
       }
