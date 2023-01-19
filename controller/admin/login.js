@@ -4,7 +4,7 @@ const logger = require('../../logs/logs').logger
 var login = async (req, res, next) => {
   console.log(req.body,'login1111111')
   try {
-      let fields = req.body;
+      let fields = req.body; 
       console.log(fields,'ddddddddddddddddd112132')
       var user = await AdminModel.findOne({ user_name: fields.user_name })
       if (!user || !fields) {
