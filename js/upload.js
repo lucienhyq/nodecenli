@@ -9,14 +9,15 @@ const imgPath = "/uploads/" // 上传到服务器的虚拟目录
 // 上传接口的 请求参数req  响应参数res
 function upload(req, res) {
     return new Promise((resolve, reject) => {
-        multerConfig.single(fileName)(req, res, function (err) {
+        multerConfig.single(fileName)(req, res,  (err)=> {
             if (err) {
+                console.log(err)
                 reject(err)
             } else {
                 // `req.file.filename`  请求文件名称后缀 
                 // `updateBaseUrl + imgPath + req.file.filename` 完整的服务器虚拟目录
                 console.log(updateBaseUrl , imgPath , req.file.filename,req.file)
-                resolve(updateBaseUrl +'/'+ req.file.filename)
+                resolve(updateBaseUrl +'/uploads/'+ req.file.filename)
             }
         });
     })

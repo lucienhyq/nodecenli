@@ -20,6 +20,7 @@ router.get('/', function (req, res, next) {
 });
 // 检查是否有登录
 router.post('/checkLogin',(req,res)=>{
+  console.log(req.session.user)
   if(!req.session.user){
     res.send({ 'msg': '未登录', result: 0 });
   }else{
@@ -37,12 +38,11 @@ router.post('/usetEdit', usetEdit_Controller);
 
 // 上传图片
 router.post('/posts', (req, res) => {
-  //这里的req.body是经过uploadFile中间件进行处理后的,包含了表单中所有的提交内容
   upload(req, res).then(imgsrc => {
     // 上传成功 存储文件路径 到数据库中
     res.send({ 'data': imgsrc, result: 1 });
   }).catch(err => {
-    formatErrorMessage(res, err.error)
+    formatErrorMessage(res, err)
   })
 });
 
