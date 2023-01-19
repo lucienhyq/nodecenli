@@ -13,7 +13,6 @@ function User(users){
 	this.id=users.id;
 }
 	
-
 	//验证码接口
 	router.get('/admin', function(req, res, next) {
 		//req。query前段get方式传来的数据

@@ -9,8 +9,8 @@ var login = async (req, res, next) => {
       var user = await AdminModel.findOne({ user_name: fields.user_name })
       if (!user || !fields) {
         res.send({
-          status: 0,
-          success: '没有此用户',
+          result: 0,
+          msg: '没有此用户',
         })
         return
       } else {
@@ -31,8 +31,8 @@ var login = async (req, res, next) => {
           return
         } else {
           res.send({
-            status: 0,
-            success: '账号密码错误',
+            result: 0,
+            msg: '账号密码错误',
           })
         }
       }
