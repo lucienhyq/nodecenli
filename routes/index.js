@@ -19,12 +19,20 @@ router.get('/', function (req, res, next) {
   res.redirect("index.html");
 });
 // 检查是否有登录
-router.post('/checkLogin',(req,res)=>{
-  console.log(req.session.user)
-  if(!req.session.user){
+router.post('/checkLogin', async (req, res, next) => {
+  if (!req.session.user) {
     res.send({ 'msg': '未登录', result: 0 });
-  }else{
-    res.send({ 'msg': '已登录', result: 1,data:req.session.user });
+  } else {
+    console.log("2222222", req.session.user.userName)
+    var user = await AdminModel.findOne({ user_name: req.session.user.userName })
+    console.log(req.session.user, 'ddddddd', user)
+    let json = {
+      user_name: user.user_name,
+      id: user.id,
+      admin: user.admin,
+      avatar: user.avatar
+    }
+    res.send({ 'msg': '已登录', result: 1, data: json });
   }
 })
 // 注册
@@ -63,8 +71,8 @@ router.get('/getUserIndex', async (req, res) => {
   }
 })
 
-router.post('/allReferee',referee_all_Controller);
-router.post('/addReferee',referee_add_Controller);
+router.post('/allReferee', referee_all_Controller);
+router.post('/addReferee', referee_add_Controller);
 
 
 // 格式化错误信息

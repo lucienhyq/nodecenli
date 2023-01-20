@@ -25,7 +25,7 @@ app.use(
     name: "referrs",
     secret: "referrs",
     cookie: {
-      maxAge: 10800000, //
+      maxAge: 86400000, //一天后过期
     },
     resave: false, //每次请求是否重新设置session
     //	指每次请求重新设置 session cookie ,假如你设置的 cookie有效 10分钟
