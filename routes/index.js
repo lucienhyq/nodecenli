@@ -24,7 +24,7 @@ router.post('/checkLogin',(req,res)=>{
   if(!req.session.user){
     res.send({ 'msg': '未登录', result: 0 });
   }else{
-    res.send({ 'msg': '已登录', result: 1 });
+    res.send({ 'msg': '已登录', result: 1,data:req.session.user });
   }
 })
 // 注册

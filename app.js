@@ -22,8 +22,8 @@ var session = require("express-session");
 var app = express();
 app.use(
   session({
-    name: "tianmao",
-    secret: "tianmao",
+    name: "referrs",
+    secret: "referrs",
     cookie: {
       maxAge: 10800000, //
     },
