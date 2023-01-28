@@ -8,6 +8,7 @@ const login_Controller = require('../controller/admin/login');
 const usetEdit_Controller = require('../controller/admin/usetEdit_Controller')
 const referee_all_Controller = require('../controller/refereeController/referee_all');
 const referee_add_Controller = require('../controller/refereeController/referee_add');
+const referee_update_Controller = require('../controller/refereeController/referee_update');
 
 
 // 1. 引入配置好的multerConfig
@@ -73,12 +74,13 @@ router.get('/getUserIndex', async (req, res) => {
 
 router.post('/allReferee', referee_all_Controller);
 router.post('/addReferee', referee_add_Controller);
+router.post('/updateReferee', referee_update_Controller);
 
 
 // 格式化错误信息
 function formatErrorMessage(res, message,) {
   res.status(500).send({
-    "code": "error",
+    "data": "error",
     "result": 0,
     "msg": message || '',
   });

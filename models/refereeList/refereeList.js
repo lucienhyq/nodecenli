@@ -11,7 +11,10 @@ const adminSchema = new Schema({
   // 裁判价格
   referee_Price:Number,
   // 裁判ids
-  referee_ids:Number,
+  referee_ids:{
+    type:Number,
+    unique:true,
+  },
   // 创建时间
   create_time:String,
   create:String,

@@ -41,7 +41,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 //匹配静态资源路径
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/uploads',express.static(path.join(__dirname,'./uploads')))
+app.use('/uploads', express.static(path.join(__dirname, './uploads')))
 
 
 //引用路由
@@ -52,11 +52,11 @@ app.use('/viadante', viadanteRouter);
 app.use('/apitest', testRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-	next(createError(404));
+  next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
@@ -64,7 +64,12 @@ app.use(function(err, req, res, next) {
   // render the error page
   // res.status(err.status || 500);
   // res.render('error');
-  res.status(500).send({ error: 'Unknown Request' })
+  // { error: err || 'Unknown Request' }
+  res.status(500).send({
+    "data": "error",
+    "result": 0,
+    "msg": err || 'Unknown Request',
+  })
 });
 
 module.exports = app;

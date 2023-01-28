@@ -1,9 +1,9 @@
 const dtime = require('time-formater');
 const getIdmethod = require('../../prototype/ids');
 const refereeListModel = require('../../models/refereeList/refereeList');
+const logger = require('../../logs/logs').logger;
 
 var addReferee = async (req, res, next) => {
-  console.log(req.session)
   try {
     if (!req.session.user) {
       res.send({
@@ -23,7 +23,7 @@ var addReferee = async (req, res, next) => {
       create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
       create: Date.parse(new Date()),
       city: cBody.city,
-      avatar: cBody.avatar ? cBody.avatar : "default.jpg",
+      avatar: cBody.avatar ? cBody.avatar : "photo-mr.jpg",
       mobile: cBody.mobile,
       createID: uid
     }
@@ -39,6 +39,7 @@ var addReferee = async (req, res, next) => {
       data: [],
       msg: error,
     })
+    logger.info('error' + error)
   }
 }
 module.exports = addReferee;

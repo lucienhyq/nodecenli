@@ -2,12 +2,11 @@ const refereeListModel = require('../../models/refereeList/refereeList');
 const logger = require('../../logs/logs').logger
 
 var allReferee = async (req, res, next) => {
-  console.log(req.session.user)
-  if(req.body.is = 1){
-    let list = await refereeListModel.find({});
+  if(req.body.is == 1){
+    let list = await refereeListModel.find({}).sort({referee_ids:-1});
     res.send({
       result: 1,
-      msg: '已经登录',
+      msg: '测试接口',
       data: list,
       total: await refereeListModel.find({}).count(),
     })
@@ -24,11 +23,6 @@ var allReferee = async (req, res, next) => {
       }
     })
   } else {
-    // res.send({
-    //   result: 0,
-    //   msg: '请先登录',
-    //   data: {}
-    // })
     formatErrorMessage(res,'请先登录')
   }
 }
