@@ -1,8 +1,9 @@
 module.exports = function (req, res, next) {
   let jsonArr = {
-    data: [] || {},
+    data: [],
     result: 0,
-    msg: "ok",
+    msg: "请登录",
+    login:false
   };
   if (!req.session.user) {
     res.json(jsonArr);

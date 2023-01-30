@@ -1013,3 +1013,8 @@
 {"startTime":"2022-08-29T06:14:45.027Z","categoryName":"服务器访问日志","data":["GET/login.html"],"level":{"level":20000,"levelStr":"INFO","colour":"green"},"context":{},"pid":16276},
 {"startTime":"2022-08-29T06:14:47.130Z","categoryName":"服务器访问日志","data":["POST/register"],"level":{"level":20000,"levelStr":"INFO","colour":"green"},"context":{},"pid":16276},
 {"startTime":"2022-08-29T06:15:49.563Z","categoryName":"服务器访问日志","data":["POST/register"],"level":{"level":20000,"levelStr":"INFO","colour":"green"},"context":{},"pid":16276},
+{"startTime":"2023-01-29T01:23:41.170Z","categoryName":"服务器访问日志","data":["请登录"],"level":{"level":40000,"levelStr":"ERROR","colour":"red"},"context":{},"pid":22908},
+{"startTime":"2023-01-29T03:43:43.863Z","categoryName":"服务器访问日志","data":["errorMongoServerError: E11000 duplicate key error collection: qq.referees index: referee_ids_1 dup key: { referee_ids: 4 }"],"level":{"level":20000,"levelStr":"INFO","colour":"green"},"context":{},"pid":19812},
+{"startTime":"2023-01-29T07:17:20.193Z","categoryName":"服务器访问日志","data":["errorReferenceError: findArr is not defined"],"level":{"level":20000,"levelStr":"INFO","colour":"green"},"context":{},"pid":28416},
+{"startTime":"2023-01-29T08:43:34.561Z","categoryName":"服务器访问日志","data":["errorMongooseError: Query was already executed: referee.count({})"],"level":{"level":20000,"levelStr":"INFO","colour":"green"},"context":{},"pid":10512},
+{"startTime":"2023-01-29T08:44:12.838Z","categoryName":"服务器访问日志","data":["errorMongooseError: Query was already executed: referee.count({})"],"level":{"level":20000,"levelStr":"INFO","colour":"green"},"context":{},"pid":33664},

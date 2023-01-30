@@ -6,29 +6,20 @@ var usetEdit = async (req, res, next) => {
     console.log(req.session.user, req.query)
     let json = {};
     json = req.query;
-    if (!req.session.user) {
-      logger.info('fail')
-      res.send({
-        status: 0,
-        success: '请登录',
-        result:0
-      })
-      return
-    }
     AdminModel.findOneAndUpdate({ id: req.session.user.uid }, json, (err, result) => {
       console.log(err, result)
       if (err) {
         res.send({
           status: 0,
           success: '没有该用户',
-          result:0
+          result: 0
         })
         return
       }
       res.send({
         status: 1,
         success: '修改成功',
-        result:1
+        result: 1
       })
     });
 

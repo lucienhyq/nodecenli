@@ -7,26 +7,31 @@ const Schema = mongoose.Schema;
 
 const adminSchema = new Schema({
   // 裁判称呼
-  referee_name:String,
+  referee_name: String,
   // 裁判价格
-  referee_Price:Number,
+  referee_Price: Number,
   // 裁判ids
-  referee_ids:{
-    type:Number,
-    unique:true,
+  referee_ids: {
+    type: Number,
+    unique: true,
   },
   // 创建时间
-  create_time:String,
-  create:String,
+  create_time: String,
+  create: String,
   // 头像
   avatar: { type: String, default: 'default.jpg' },
   // 所在城市
   city: String,
   // 联系电话
-  mobile:String,
-  createID:{
-    type:Number,
-    default:0
+  mobile: String,
+  createID: {
+    type: Number,
+    default: 0
+  },
+  // 一级0，二级1，三级2
+  level: {
+    type: Number,
+    default: 0
   }
 })
 

@@ -20,6 +20,10 @@ var testRouter = require("./routes/apitest");
 var session = require("express-session");
 
 var app = express();
+//引入解析post参数的模块
+var bodypaeser = require("body-parser");
+app.use(bodypaeser.urlencoded({ extended: false }));
+app.use(bodypaeser.json());
 app.use(
   session({
     name: "referrs",
@@ -33,11 +37,7 @@ app.use(
   })
 );
 
-//引入解析post参数的模块
-var bodypaeser = require("body-parser");
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 //匹配静态资源路径
 app.use(express.static(path.join(__dirname, 'public')));

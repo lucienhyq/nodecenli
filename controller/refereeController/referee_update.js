@@ -9,11 +9,6 @@ const logger = require('../../logs/logs').logger;
  */
 const updateReferee = async (req, res, next) => {
   try {
-    if (!req.session.user) {
-      logger.error('请登录')
-      next("请登录")
-      return
-    }
     // updateOne 更新一个，updateMany 更新多个
     let json = {};
     if (req.body.referee_name) {
@@ -54,11 +49,7 @@ const updateReferee = async (req, res, next) => {
       msg: '编辑成功',
     })
   } catch (error) {
-    res.send({
-      result: 0,
-      data: [],
-      msg: error,
-    })
+    formatErrorMessage(res,error)
     logger.info('error' + error)
   }
 }
