@@ -8,6 +8,12 @@ const login_Controller = require('../controller/admin/login');
 const usetEdit_Controller = require('../controller/admin/usetEdit_Controller')
 const referee_all_Controller = require('../controller/refereeController/referee_all');
 const referee_add_Controller = require('../controller/refereeController/referee_add');
+const referee_update_Controller = require('../controller/refereeController/referee_update');
+const referee_search_Controller = require('../controller/refereeController/referee_search');
+const acquirePost_Controller = require('../controller/acquirePost');
+const qrCode_Controller = require('../controller/qrCode');
+const outLogin_Controller = require('../controller/outLogin');
+const checkLogin = require('../middleware/checkLogin');
 
 
 // 1. 引入配置好的multerConfig
@@ -19,12 +25,13 @@ router.get('/', function (req, res, next) {
   res.redirect("index.html");
 });
 // 检查是否有登录
-router.post('/checkLogin',(req,res)=>{
-  console.log(req.session.user)
-  if(!req.session.user){
-    res.send({ 'msg': '未登录', result: 0 });
-  }else{
-    res.send({ 'msg': '已登录', result: 1 });
+router.post('/checkLogin', checkLogin, async (req, res, next) => {
+  var user = await AdminModel.findOne({ user_name: req.session.user.userName })
+  let json = {
+    user_name: user.user_name,
+    id: user.id,
+    admin: user.admin,
+    avatar: user.avatar
   }
 })
 // 注册
@@ -63,8 +70,14 @@ router.get('/getUserIndex', async (req, res) => {
   }
 })
 
-router.post('/allReferee',referee_all_Controller);
-router.post('/addReferee',referee_add_Controller);
+router.post('/allReferee', checkLogin, referee_all_Controller);
+router.post('/addReferee', checkLogin, referee_add_Controller);
+router.post('/updateReferee', checkLogin, referee_update_Controller);
+router.post('/searchReferee', checkLogin, referee_search_Controller);
+
+router.post('/acquirePost', acquirePost_Controller);
+router.get('/outLogin', outLogin_Controller);
+router.post('/qrCode',checkLogin, qrCode_Controller);
 
 
 // 格式化错误信息
