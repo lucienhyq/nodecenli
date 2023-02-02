@@ -68,8 +68,15 @@ router.get('/getUserIndex', checkLogin, async (req, res) => {
   }
 })
 
-router.post('/allReferee',referee_all_Controller);
-router.post('/addReferee',referee_add_Controller);
+router.post('/allReferee', checkLogin, referee_all_Controller);
+router.post('/addReferee', checkLogin, referee_add_Controller);
+router.post('/updateReferee', checkLogin, referee_update_Controller);
+router.post('/searchReferee', checkLogin, referee_search_Controller);
+
+router.post('/acquirePost', acquirePost_Controller);
+router.get('/outLogin', outLogin_Controller);
+router.post('/qrCode',checkLogin, qrCode_Controller);
+
 
 
 // 格式化错误信息
