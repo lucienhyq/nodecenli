@@ -1,23 +1,21 @@
 //报错文件
 var createError = require('http-errors');
-var logger = require('./logs/logs').logger;
-var log = require('./logs/logs');
-var express = require('express');
-var path = require('path');
+const express = require('express');
+const path = require('path');
 //cookie处理模块
-var cookieParser = require("cookie-parser");
+const cookieParser = require("cookie-parser");
 //引入路由
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var orderRouter = require("./routes/order");
-var viadanteRouter = require("./routes/viadante");
-var testRouter = require("./routes/apitest");
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+const orderRouter = require("./routes/order");
+const viadanteRouter = require("./routes/viadante");
+const testRouter = require("./routes/apitest");
+//引入session模块
+const session = require("express-session");
 // var blog = require("./routes/blog");
 // var blogConten = require("./routes/blogConten");
-
 // const errHandler = require("./middleware/error-handler");
-//引入session模块
-var session = require("express-session");
+
 
 var app = express();
 //引入解析post参数的模块
@@ -57,14 +55,8 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  // res.status(err.status || 500);
-  // res.render('error');
-  // { error: err || 'Unknown Request' }
   res.status(500).send({
     "data": "error",
     "result": 0,
