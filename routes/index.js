@@ -40,6 +40,22 @@ router.post('/checkLoginUser', async (req, res) => {
     }
   }
 })
+router.get('/checkLoginUser', async (req, res) => {
+  if (!req.session.user) {
+    res.send({ 'msg': '未登录', result: 0 });
+  } else {
+    try {
+      let user = await AdminModel.findOne({ user_name: req.session.user.userName })
+      res.send({
+        result: 1,
+        msg: '成功',
+        data: user,
+      })
+    } catch (err) {
+      formatErrorMessage(res, err.error)
+    }
+  }
+})
 // 注册
 router.post('/register', register_Controller);
 
