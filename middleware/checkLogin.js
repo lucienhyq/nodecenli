@@ -6,7 +6,7 @@ module.exports = function (req, res, next) {
     login:false
   };
   if (!req.session.user && req.body.is != 1) {
-    res.json(jsonArr);
+    res.send(jsonArr);
   } else {
     next();
   }

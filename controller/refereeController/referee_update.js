@@ -9,6 +9,10 @@ const logger = require('../../logs/logs').logger;
  */
 const updateReferee = async (req, res, next) => {
   try {
+    if(!req.body.id){
+      formatErrorMessage(res,'请选择编辑的裁判')
+      return
+    }
     // updateOne 更新一个，updateMany 更新多个
     let json = {};
     if (req.body.referee_name) {

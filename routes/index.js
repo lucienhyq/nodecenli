@@ -12,7 +12,8 @@ const acquirePost_Controller = require('../controller/acquirePost');
 const qrCode_Controller = require('../controller/qrCode');
 const outLogin_Controller = require('../controller/outLogin');
 const checkLogin = require('../middleware/checkLogin');
-
+const multipart = require('connect-multiparty');
+const multipartMiddleware = multipart();
 
 // 1. 引入配置好的multerConfig
 const upload = require('../js/upload');
@@ -23,14 +24,21 @@ router.get('/', function (req, res, next) {
   res.redirect("index.html");
 });
 // 检查是否有登录
-router.post('/checkLogin',(req,res)=>{
-  console.log(req.session.user)
-  if(!req.session.user){
+router.post('/checkLoginUser', async (req, res) => {
+  if (!req.session.user) {
     res.send({ 'msg': '未登录', result: 0 });
-  }else{
-    res.send({ 'msg': '已登录', result: 1 });
+  } else {
+    try {
+      let user = await AdminModel.findOne({ user_name: req.session.user.userName })
+      res.send({
+        result: 1,
+        msg: '成功',
+        data: user,
+      })
+    } catch (err) {
+      formatErrorMessage(res, err.error)
+    }
   }
-  res.send({ 'msg': '已登录', result: 1, data: json });
 })
 // 注册
 router.post('/register', register_Controller);
@@ -73,9 +81,10 @@ router.post('/addReferee', checkLogin, referee_add_Controller);
 router.post('/updateReferee', checkLogin, referee_update_Controller);
 router.post('/searchReferee', checkLogin, referee_search_Controller);
 
-router.post('/acquirePost', acquirePost_Controller);
+router.post('/acquirePost',multipartMiddleware, acquirePost_Controller);
+router.get('/acquirePost',multipartMiddleware, acquirePost_Controller);
 router.get('/outLogin', outLogin_Controller);
-router.post('/qrCode',checkLogin, qrCode_Controller);
+router.post('/qrCode', checkLogin, qrCode_Controller);
 
 
 
