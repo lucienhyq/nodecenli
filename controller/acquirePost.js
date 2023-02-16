@@ -20,7 +20,7 @@ const acquirePost = async (req, res, next) => {
         })
         res.send({
           result: 1,
-
+          data:resultArr,
           msg: '',
         })
       })
