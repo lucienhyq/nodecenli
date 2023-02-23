@@ -14,6 +14,8 @@ const outLogin_Controller = require('../controller/outLogin');
 const checkLogin = require('../middleware/checkLogin');
 const multipart = require('connect-multiparty');
 const multipartMiddleware = multipart();
+const courseIndex_Controller = require("../controller/course/courseIndex_Controller")
+const courseList_Controller = require("../controller/course/courseList_Controller")
 
 // 1. 引入配置好的multerConfig
 const upload = require('../js/upload');
@@ -101,7 +103,10 @@ router.post('/acquirePost',multipartMiddleware, acquirePost_Controller);
 router.get('/acquirePost',multipartMiddleware, acquirePost_Controller);
 router.get('/outLogin', outLogin_Controller);
 router.post('/qrCode', checkLogin, qrCode_Controller);
-
+// 添加文章
+router.post('/courseIndex', multipartMiddleware,courseIndex_Controller);
+// 获取文章列表
+router.post('/courseList', multipartMiddleware,courseList_Controller);
 
 
 // 格式化错误信息
