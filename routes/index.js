@@ -18,6 +18,7 @@ const courseIndex_Controller = require("../controller/course/courseIndex_Control
 const courseList_Controller = require("../controller/course/courseList_Controller");
 const coursePay_Controller = require("../controller/course/coursePay_Controller");
 const orderPay_Controller = require("../controller/orderPay_Controller")
+const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller")
 // 1. 引入配置好的multerConfig
 const upload = require('../js/upload');
 
@@ -105,13 +106,15 @@ router.get('/acquirePost', multipartMiddleware, acquirePost_Controller);
 router.get('/outLogin', outLogin_Controller);
 router.post('/qrCode', checkLogin, qrCode_Controller);
 // 添加课程文章
-router.post('/courseIndex', multipartMiddleware,checkLogin, courseIndex_Controller);
+router.post('/courseIndex', multipartMiddleware, courseIndex_Controller);
 // 获取课程文章列表
-router.post('/courseList', multipartMiddleware,checkLogin, courseList_Controller);
+router.post('/courseList', multipartMiddleware, courseList_Controller);
 // 课程文章创建订单
 router.get('/courseCreate', multipartMiddleware,checkLogin, coursePay_Controller);
 // 支付订单
 router.post('/orderPay',multipartMiddleware, orderPay_Controller);
+//签到
+router.post('/appointmentIndex',multipartMiddleware, appointmentIndex_Controller);
 
 
 // 格式化错误信息

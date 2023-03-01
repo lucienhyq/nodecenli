@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,viewport-fit=cover" />
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
     <title>图书馆</title>
   </head>
@@ -69,10 +69,10 @@
         this.checkLogin();
       },
       methods: {
-        selectInput(e){
-          console.log(e)
-          this.user_name = '';
-          this.password = '';
+        selectInput(e) {
+          console.log(e);
+          this.user_name = "";
+          this.password = "";
         },
         checkLogin() {
           axios
@@ -179,12 +179,12 @@
           axios
             .post("/register", json)
             .then((response) => {
-              console.log(response.data.result)
+              console.log(response.data.result);
               if (response.data.result == 1) {
                 this.$message({
-                  message: response.data.msg
+                  message: response.data.msg,
                 });
-                window.location.href = './index.html';
+                window.location.href = "./index.html";
               } else {
                 this.$message.error(response.data.msg);
               }
