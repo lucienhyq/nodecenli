@@ -17,6 +17,7 @@ const addCourse = async (req, res, next) => {
       shelfStatus: req.body.shelfStatus == 'true' ? true : false,
       goodimg: req.body.goodimg,
       inventory: Number(req.body.inventory),
+      goodStatus:req.body.goodStatus
     }
     await courseModel.create(json)
     let list = await courseModel.find({}).sort({ goods_id: -1 });

@@ -15,7 +15,6 @@ const courseList = async (req, res, next) => {
     formatErrorMessage(res, error);
     logger.error('error' + error);
   }
-
 }
 
 // 格式化错误信息

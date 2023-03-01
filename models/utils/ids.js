@@ -35,6 +35,7 @@ Ids.findOne((err, data) => {
       sku_id: 0,
       admin_id: 0,
       statis_id: 0,
+      goods_id: 0,
     });
     newIds.save();
   }

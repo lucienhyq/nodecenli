@@ -24,6 +24,8 @@ const courseSchema = new Schema({
   },
   // 库存
   inventory: Number,
+  // 商品类型：1：普通商品，2：预约商品
+  goodStatus:String
 })
 courseSchema.index({ id: 1 });
 
