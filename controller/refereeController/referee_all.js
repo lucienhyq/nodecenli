@@ -2,6 +2,7 @@ const refereeListModel = require('../../models/refereeList/refereeList');
 const logger = require('../../logs/logs').logger
 
 var allReferee = async (req, res, next) => {
+  logger.info(req.body,req.route)
   try {
     if (req.body.is == 1) {
       let list = await refereeListModel.find({}).sort({ referee_ids: -1 }).limit(6);

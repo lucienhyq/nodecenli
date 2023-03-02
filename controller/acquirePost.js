@@ -6,6 +6,7 @@ const logger = require('../logs/logs').logger;
 
 
 const acquirePost = async (req, res, next) => {
+  logger.info(req.body,req.route);
   try {
     if (!req.body.news) {
       const url = 'https://news.baidu.com/';

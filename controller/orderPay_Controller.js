@@ -2,6 +2,7 @@ const orderModel = require('../models/order/order');
 const logger = require('../logs/logs').logger;
 
 const orderPay = async (req, res, next) => {
+  logger.info(req.body,req.route);
   try {
     // orderModel
     let order_id = req.query.orderId;

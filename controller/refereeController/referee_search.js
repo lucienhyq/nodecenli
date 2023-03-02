@@ -8,6 +8,7 @@ const logger = require('../../logs/logs').logger;
  * @returns 
  */
 const searchReferee = async (req, res, next) => {
+  logger.info(req.body,req.route);
   try {
     let json = {};
     // 用正则进行模糊搜索

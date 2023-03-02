@@ -2,6 +2,7 @@ const QRCode = require('qrcode');
 const fs = require("fs");
 
 const qrCode = async (req, res, next) => {
+  logger.info(req.body,req.route);
   try {
     let uid = req.session.user.uid;
     let imgpath = `./uploads/code/card_id_${uid}.png`;

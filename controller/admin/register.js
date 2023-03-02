@@ -4,6 +4,7 @@ const getIdmethod = require('../../prototype/ids');
 const formidable = require('formidable');
 const logger = require('../../logs/logs').logger
 var register = async (req, res, next) => {
+  logger.info(req.body,req.url,req.method,req.route)
   try {
     if (req.session.user) {
       res.send({
