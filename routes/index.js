@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
+// 会员信息model
 const AdminModel = require('../models/admin/admin');
+// 路由控制器 中间件
 const register_Controller = require('../controller/admin/register');
 const login_Controller = require('../controller/admin/login');
 const usetEdit_Controller = require('../controller/admin/usetEdit_Controller')
@@ -11,17 +13,18 @@ const referee_search_Controller = require('../controller/refereeController/refer
 const acquirePost_Controller = require('../controller/acquirePost');
 const qrCode_Controller = require('../controller/qrCode');
 const outLogin_Controller = require('../controller/outLogin');
-const checkLogin = require('../middleware/checkLogin');
 const multipart = require('connect-multiparty');
-const multipartMiddleware = multipart();
 const courseIndex_Controller = require("../controller/course/courseIndex_Controller");
 const courseList_Controller = require("../controller/course/courseList_Controller");
 const coursePay_Controller = require("../controller/course/coursePay_Controller");
 const orderPay_Controller = require("../controller/orderPay_Controller")
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller")
-// 1. 引入配置好的multerConfig
+// 中间件
 const upload = require('../js/upload');
 const logger = require('../logs/logs').logger;
+const checkLogin = require('../middleware/checkLogin');
+const multipartMiddleware = multipart();
+
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -29,7 +32,7 @@ router.get('/', function (req, res, next) {
 });
 // 检查是否有登录
 router.post('/checkLoginUser', async (req, res) => {
-  logger.info(req.body,req.route)
+  logger.info(req.body, req.route)
   if (!req.session.user) {
     res.send({ 'msg': '未登录', result: 0 });
   } else {
@@ -46,7 +49,7 @@ router.post('/checkLoginUser', async (req, res) => {
   }
 })
 router.get('/checkLoginUser', async (req, res) => {
-  logger.info(req.query,req.route)
+  logger.info(req.query, req.route)
   if (!req.session.user) {
     res.send({ 'msg': '未登录', result: 0 });
   } else {
@@ -73,7 +76,7 @@ router.post('/usetEdit', checkLogin, usetEdit_Controller);
 
 // 上传图片
 router.post('/posts', (req, res) => {
-  logger.info(req.body,req.route)
+  logger.info(req.body, req.route)
   upload(req, res).then(imgsrc => {
     // 上传成功 存储文件路径 到数据库中
     res.send({ 'data': imgsrc, result: 1 });
@@ -84,7 +87,7 @@ router.post('/posts', (req, res) => {
 
 // 获取会员信息
 router.get('/getUserIndex', checkLogin, async (req, res) => {
-  logger.info(req.query,req.route)
+  logger.info(req.query, req.route)
   try {
     var user = await AdminModel.findOne({ user_name: req.session.user.userName })
     res.send({
@@ -115,12 +118,12 @@ router.post('/courseIndex', multipartMiddleware, courseIndex_Controller);
 router.post('/courseList', multipartMiddleware, courseList_Controller);
 
 // 课程文章创建订单
-router.get('/courseCreate', multipartMiddleware,checkLogin, coursePay_Controller);
+router.get('/courseCreate', multipartMiddleware, checkLogin, coursePay_Controller);
 // 支付订单
-router.post('/orderPay',multipartMiddleware, orderPay_Controller);
+router.post('/orderPay', multipartMiddleware, orderPay_Controller);
 
 //签到
-router.post('/appointmentIndex',multipartMiddleware, appointmentIndex_Controller);
+router.post('/appointmentIndex', multipartMiddleware, appointmentIndex_Controller);
 
 
 // 格式化错误信息
