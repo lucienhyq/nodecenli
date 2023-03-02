@@ -34,6 +34,7 @@ router.get('/', function (req, res, next) {
 router.post('/checkLoginUser', async (req, res) => {
   logger.info(req.body, req.route)
   if (!req.session.user) {
+    res.redirect("login.html");
     res.send({ 'msg': '未登录', result: 0 });
   } else {
     try {
@@ -51,6 +52,7 @@ router.post('/checkLoginUser', async (req, res) => {
 router.get('/checkLoginUser', async (req, res) => {
   logger.info(req.query, req.route)
   if (!req.session.user) {
+    res.redirect("login.html");
     res.send({ 'msg': '未登录', result: 0 });
   } else {
     try {
@@ -116,12 +118,10 @@ router.post('/qrCode', checkLogin, qrCode_Controller);
 router.post('/courseIndex', multipartMiddleware, courseIndex_Controller);
 // 获取课程文章列表
 router.post('/courseList', multipartMiddleware, courseList_Controller);
-
 // 课程文章创建订单
 router.get('/courseCreate', multipartMiddleware, checkLogin, coursePay_Controller);
 // 支付订单
 router.post('/orderPay', multipartMiddleware, orderPay_Controller);
-
 //签到
 router.post('/appointmentIndex', multipartMiddleware, appointmentIndex_Controller);
 
