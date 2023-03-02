@@ -7,7 +7,7 @@
       <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,viewport-fit=cover" />
       <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
       <link rel="stylesheet" href="https://unpkg.com/vant@2.12/lib/index.css" />
-      <title>图书馆</title>
+      <title>课程列表</title>
     </head>
     <script src="javascripts/vue.js"></script>
     <script src="https://unpkg.com/element-ui/lib/index.js"></script>
@@ -66,6 +66,7 @@
       mounted() {
         console.log("页面初始化完成222");
         this.getData();
+        this.checkUser();
       },
       methods: {
         showTap() {
@@ -73,6 +74,21 @@
         },
         onSubmit(e) {
           console.log(e);
+        },
+        checkUser(){
+          axios
+            .get("/getUserIndex", {})
+            .then((response) => {
+              let res = response.data;
+              console.log(res);
+              if (!res.result) {
+                window.location.href="./login.html"
+              };
+              this.list = res.data.data;
+            })
+            .catch((error) => {
+              console.log(error);
+            });
         },
         getData() {
           axios
