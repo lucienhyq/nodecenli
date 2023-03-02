@@ -50,15 +50,15 @@ var register = async (req, res, next) => {
           })
           return
         }
-        if(!fields.image){
-          res.send({
-            result: 0,
-            msg: '请选择会员头像',
-            data: [],
-            session: req.session
-          })
-          return
-        }
+        // if(!fields.image){
+        //   res.send({
+        //     result: 0,
+        //     msg: '请选择会员头像',
+        //     data: [],
+        //     session: req.session
+        //   })
+        //   return
+        // }
         const newAdmin = {
           user_name: fields.user_name,
           password: fields.password,
@@ -66,7 +66,7 @@ var register = async (req, res, next) => {
           create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
           admin: fields.status == 0 ? '管理员' : '超级管理员',
           // status: fields.status,
-          avatar: fields.image
+          avatar: fields.image?fields.image:''
         }
         let userList = await AdminModel.create(newAdmin)
         req.session.user = {

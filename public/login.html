@@ -1,255 +1,422 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,viewport-fit=cover"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+    />
+    <link rel="stylesheet" href="https://unpkg.com/vant@2.12/lib/index.css" />
+    <title>登录页</title>
+  </head>
+  <script src="javascripts/vue.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <script src="javascripts/axios.js"></script>
+  <script src="https://unpkg.com/vant@2.12.54/lib/vant.min.js"></script>
+  <script src="javascripts/rem.js"></script>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport"
-    content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,viewport-fit=cover" />
-  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
-  <title>图书馆</title>
-</head>
-<script src="javascripts/vue.js"></script>
-<script src="https://unpkg.com/element-ui/lib/index.js"></script>
-<script src="javascripts/axios.js"></script>
-<script src="https://unpkg.com/vant@2.12.54/lib/vant.min.js"></script>
-<script src="javascripts/rem.js"></script>
-
-<body>
-  <div id="app">
-    <div class="userBox" v-if="loginStatus">
-      <template>
-        <el-radio-group v-model="selectState" @input="selectInput">
-          <el-radio v-model="selectState" label="1">注册新用户</el-radio>
-          <el-radio v-model="selectState" label="2">登录已有账户</el-radio>
-        </el-radio-group>
-      </template>
-      <div v-if="selectState == 1" style="margin-top: 1rem">
-        <el-input v-model="user_name" placeholder="请输入用户名" style="margin-bottom: 10px"></el-input>
-        <el-input placeholder="请输入密码" v-model="password" show-password style="margin-bottom: 10px"></el-input>
-        <template>
-          <el-radio v-model="radio" label="0">管理员</el-radio>
-          <el-radio v-model="radio" label="1">超级管理员</el-radio>
-        </template>
-        <el-upload style="margin-top: 20px" enctype="multipart/form-data" accept="image/*" class="avatar-uploader"
-          action="http://localhost:3000/posts" :show-file-list="false" :on-success="handleAvatarSuccess">
-          <img v-if="imageUrl" :src="imageUrl" class="avatar" />
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-        <span>上传</span>
-        <el-button @click="registerPost">注册</el-button>
+  <body>
+    <div id="app">
+      <div class="memberLogin">
+        <!-- <van-nav-bar title="登录页"></van-nav-bar> -->
+        <div class="logoTitle">
+          <div>
+            <img
+              src="https://dev4.yunzmall.com/attachment/image/172d8de0ca470ef666828e24818de13d.png"
+              alt=""
+            />
+          </div>
+          <div class="title">
+            <div>欢迎来到劲步健身房</div>
+            <div style="font-size: 0.875rem; margin-top: 0.15rem">
+              登录尽享各种资讯！
+            </div>
+          </div>
+        </div>
       </div>
-      <div v-else style="margin-top: 1rem">
-        <el-input v-model="user_name" placeholder="请输入用户名" style="margin-bottom: 10px"></el-input>
-        <el-input placeholder="请输入密码" v-model="password" show-password style="margin-bottom: 10px"></el-input>
-        <el-button @click="loginPost">登录</el-button>
+      <div class="login">
+        <div class="head">
+          <van-icon name="arrow-left" class="icon"></van-icon>
+          <div class="name">登录</div>
+        </div>
+      </div>
+      <!-- <ul>
+        <li>
+          <van-field v-model.trim="mobile" type="number" clearable placeholder="请输入您的手机号" ></van-field>
+          <van-field v-model.trim="userName" type="number" clearable placeholder="请输入您的姓名" ></van-field>
+        </li>
+      </ul> -->
+      <div class="inputBox">
+        <van-form @submit="onSubmit">
+          <van-field
+            v-model="user_name"
+            name="用户名"
+            label="用户名"
+            placeholder="用户名"
+            :rules="[{ required: true, message: '请填写用户名' }]"
+          ></van-field>
+          <van-field
+            v-model="password"
+            type="password"
+            name="密码"
+            label="密码"
+            placeholder="密码"
+            :rules="[{ required: true, message: '请填写密码' }]"
+          ></van-field>
+        </van-form>
+      </div>
+      <div class="btn" @click="loginPost">
+        <van-icon name="share-o" size="40" color="#10a8bf" />
+      </div>
+
+      <div class="userBox" v-if="loginStatus">
+        <template>
+          <el-radio-group v-model="selectState" @input="selectInput">
+            <el-radio v-model="selectState" label="1">注册新用户</el-radio>
+            <el-radio v-model="selectState" label="2">登录已有账户</el-radio>
+          </el-radio-group>
+        </template>
+        <div v-if="selectState == 1" style="margin-top: 1rem">
+          <el-input
+            v-model="user_name"
+            placeholder="请输入用户名"
+            style="margin-bottom: 10px"
+          ></el-input>
+          <el-input
+            placeholder="请输入密码"
+            v-model="password"
+            show-password
+            style="margin-bottom: 10px"
+          ></el-input>
+          <template>
+            <el-radio v-model="radio" label="0">管理员</el-radio>
+            <el-radio v-model="radio" label="1">超级管理员</el-radio>
+          </template>
+          <el-upload
+            style="margin-top: 20px"
+            enctype="multipart/form-data"
+            accept="image/*"
+            class="avatar-uploader"
+            action="http://localhost:3000/posts"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess"
+          >
+            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+          <span>上传</span>
+          <el-button @click="registerPost">注册</el-button>
+        </div>
+        <div v-else style="margin-top: 1rem">
+          <el-input
+            v-model="user_name"
+            placeholder="请输入用户名"
+            style="margin-bottom: 10px"
+          ></el-input>
+          <el-input
+            placeholder="请输入密码"
+            v-model="password"
+            show-password
+            style="margin-bottom: 10px"
+          ></el-input>
+          <el-button @click="loginPost">登录</el-button>
+        </div>
       </div>
     </div>
-  </div>
-</body>
+  </body>
 
-<script>
-  new Vue({
-    el: "#app",
-    data() {
-      return {
-        user_name: "",
-        password: "",
-        radio: "0",
-        imageUrl: "",
-        loginStatus: false,
-        selectState: "1",
-      };
-    },
-    mounted() {
-      console.log("页面初始化完成222");
-      this.checkLogin();
-    },
-    methods: {
-      selectInput(e) {
-        console.log(e);
-        this.user_name = "";
-        this.password = "";
-      },
-      checkLogin() {
-        axios
-          .post("/checkLogin", {})
-          .then((response) => {
-            let res = response.data;
-            this.loginStatus = true;
-            if (!res.result) {
-            } else {
-              // window.location.href = "./index.html";
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      },
-      loginPost() {
-        if (!this.user_name || !this.password) {
-          this.$message({
-            type: "info",
-            message: "请输入正确账号密码",
-          });
-          return;
-        }
-        let json = {
-          user_name: this.user_name,
-          password: this.password,
+  <script>
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          user_name: "",
+          password: "",
+          radio: "0",
+          imageUrl: "",
+          loginStatus: false,
+          selectState: "1",
+          username: "",
+          mobile: "",
         };
-        axios
-          .post("/login", json)
-          .then((response) => {
-            let resdata = response.data;
-            console.log(resdata);
-            if (!resdata.status) {
-              this.$message({
-                type: "info",
-                message: resdata.success,
-              });
-            } else {
-              this.$message({
-                type: "info",
-                message: resdata.success,
-              });
-              window.location.href = "./index.html";
-              // window.location('./index.html')
-            }
-          })
-          .catch((error) => {
-            console.log(error);
-          });
       },
-      getData() {
-        axios
-          .post("/getUserIndex", {})
-          .then((response) => {
-            if (response.data.result == 1) {
-              this.loginStatus = true;
-            } else {
-              this.loginStatus = false;
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
+      mounted() {
+        console.log("页面初始化完成222");
+        // this.checkLogin();
       },
-      handleAvatarSuccess(res, file) {
-        console.log(res);
-        this.imageUrl = res.data;
-      },
-      async beforeAvatarUpload(file) {
-        alert("ddddddddd");
-        let formData = new FormData();
-        formData.append("file", file);
-        let rs = await this.admin_apiUpload(formData);
-        return true;
-      },
-      admin_apiUpload(formData) {
-        new Promise((resolve, reject) => {
+      methods: {
+        onSubmit() {
+          console.log(e);
+        },
+        selectInput(e) {
+          console.log(e);
+          this.user_name = "";
+          this.password = "";
+        },
+        checkLogin() {
           axios
-            .post("/posts", formData)
+            .get("/checkLoginUser", {})
+            .then((response) => {
+              let res = response.data;
+              this.loginStatus = false;
+              if (!res.result) {
+              } else {
+                // window.location.href = "./index.html";
+              }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        },
+        loginPost() {
+          if (!this.user_name || !this.password) {
+            this.$message({
+              type: "info",
+              message: "请输入正确账号密码",
+            });
+            return;
+          }
+          let json = {
+            user_name: this.user_name,
+            password: this.password,
+          };
+          axios
+            .post("/login", json)
+            .then((response) => {
+              let resdata = response.data;
+              console.log(resdata);
+              // if (!resdata.status) {
+              //   // this.$message({
+              //   //   type: "info",
+              //   //   message: resdata.success,
+              //   // });
+              //   this.$notify(resdata.msg);
+              // } else {
+                // this.$message({
+                //   type: "info",
+                //   message: resdata.success,
+                // });
+                this.$toast(resdata.msg);
+                setTimeout(() => {
+                  window.location.href = "./chakan.html";
+                }, 1000);
+                // Toast.success(resdata.msg);
+                // window.location('./index.html')
+              // }
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        },
+        getData() {
+          axios
+            .post("/getUserIndex", {})
             .then((response) => {
               if (response.data.result == 1) {
-                alert(response);
-                resolve(response);
+                this.loginStatus = true;
               } else {
-                alert(response);
-                resolve(response);
+                this.loginStatus = false;
               }
             })
             .catch(function (error) {
-              reject(error);
               console.log(error);
             });
-        });
-      },
-      registerPost() {
-        let _this = this;
-        let json = {
-          user_name: this.user_name,
-          password: this.password,
-          admin: this.radio,
-          image: this.imageUrl,
-        };
-        axios
-          .post("/register", json)
-          .then((response) => {
-            console.log(response.data.result);
-            if (response.data.result == 1) {
-              this.$message({
-                message: response.data.msg,
+        },
+        handleAvatarSuccess(res, file) {
+          console.log(res);
+          this.imageUrl = res.data;
+        },
+        async beforeAvatarUpload(file) {
+          alert("ddddddddd");
+          let formData = new FormData();
+          formData.append("file", file);
+          let rs = await this.admin_apiUpload(formData);
+          return true;
+        },
+        admin_apiUpload(formData) {
+          new Promise((resolve, reject) => {
+            axios
+              .post("/posts", formData)
+              .then((response) => {
+                if (response.data.result == 1) {
+                  alert(response);
+                  resolve(response);
+                } else {
+                  alert(response);
+                  resolve(response);
+                }
+              })
+              .catch(function (error) {
+                reject(error);
+                console.log(error);
               });
-              window.location.href = "./index.html";
-            } else {
-              this.$message.error(response.data.msg);
-            }
-          })
-          .catch(function (error) {
-            console.log(error);
           });
+        },
+        registerPost() {
+          let _this = this;
+          let json = {
+            user_name: this.user_name,
+            password: this.password,
+            admin: this.radio,
+            image: this.imageUrl,
+          };
+          axios
+            .post("/register", json)
+            .then((response) => {
+              console.log(response.data.result);
+              if (response.data.result == 1) {
+                this.$message({
+                  message: response.data.msg,
+                });
+                window.location.href = "./index.html";
+              } else {
+                this.$message.error(response.data.msg);
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        },
       },
-    },
-  });
-</script>
-<style>
-  * {
-    margin: 0;
-  }
+    });
+  </script>
+  <style>
+    * {
+      margin: 0;
+    }
 
-  .userBox {
-    width: 428px;
-    min-height: 545px;
-    box-sizing: border-box;
-    background: #999;
-    border-radius: 3px;
-    max-height: 545px;
-    margin: 0 auto;
-    margin-top: 60px;
-    padding: 15px;
-  }
+    /* 劲步健身登录页 */
+    .memberLogin {
+    }
+    .memberLogin img {
+      width: 3.156rem;
+      height: 3.156rem;
+      border-radius: 50px;
+    }
+    .logoTitle {
+      display: flex;
+      height: 120px;
+      padding: 2rem 1.3rem 0.906rem;
+      background-color: #10a8bf;
+    }
+    .memberLogin .title {
+      margin-left: 0.563rem;
+      color: #fff;
+      text-align: left;
+      font-size: 1.5rem;
+    }
+    .login {
+      position: absolute;
+      top: 6rem;
+      width: 100%;
+      border-radius: 1.563rem 1.563rem 0rem 0rem;
+      background-color: #ffffff;
+      padding-top: 36px;
+      padding-bottom: 19px;
+    }
+    .head {
+      display: flex;
+      align-items: center;
+      margin-left: 28.5px;
+      font-weight: 550;
+    }
+    .icon {
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .name {
+      font-size: 1.5rem;
+      margin-left: 10px;
+    }
 
-  .avatar-uploader i {
-    background-color: #fff;
-  }
+    .inputBox {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding-left: 5px;
+      padding-right: 20px;
+      text-align: left;
+      margin-top: 25px;
+    }
+    .inputBox .van-form {
+      width: 100%;
+    }
+    .btn {
+      border-radius: 50%;
+      width: 65px;
+      height: 65px;
+      position: relative;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgb(212, 212, 212);
+      margin-top: 3rem;
+    }
+    /* end */
 
-  .avatar-uploader .el-upload {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-  }
+    .userBox {
+      width: 428px;
+      min-height: 545px;
+      box-sizing: border-box;
+      background: #999;
+      border-radius: 3px;
+      max-height: 545px;
+      margin: 0 auto;
+      margin-top: 60px;
+      padding: 15px;
+    }
 
-  .avatar-uploader .el-upload:hover {
-    border-color: #409eff;
-  }
+    .avatar-uploader i {
+      background-color: #fff;
+    }
 
-  .avatar-uploader-icon {
-    font-size: 28px;
-    color: #8c939d;
-    width: 178px;
-    height: 178px;
-    line-height: 178px;
-    text-align: center;
-  }
+    .avatar-uploader .el-upload {
+      border: 1px dashed #d9d9d9;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
 
-  .avatar {
-    width: 178px;
-    height: 178px;
-    display: block;
-  }
+    .avatar-uploader .el-upload:hover {
+      border-color: #409eff;
+    }
 
-  /* 登录 */
-  .loginBox {
-    width: 45vw;
-    height: 40vh;
-    border-radius: 10px;
-    background-color: #999;
-  }
-</style>
-<!-- <script>
+    .avatar-uploader-icon {
+      font-size: 28px;
+      color: #8c939d;
+      width: 178px;
+      height: 178px;
+      line-height: 178px;
+      text-align: center;
+    }
+
+    .avatar {
+      width: 178px;
+      height: 178px;
+      display: block;
+    }
+
+    /* 登录 */
+    .loginBox {
+      width: 45vw;
+      height: 40vh;
+      border-radius: 10px;
+      background-color: #999;
+    }
+  </style>
+  <!-- <script>
   !(function () {
     function n(n, e, t) {
       return n.getAttribute(e) || t;
@@ -348,5 +515,4 @@
       }, 100);
   })();
 </script> -->
-
 </html>
