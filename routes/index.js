@@ -24,7 +24,17 @@ const upload = require('../js/upload');
 const logger = require('../logs/logs').logger;
 const checkLogin = require('../middleware/checkLogin');
 const multipartMiddleware = multipart();
-const crypto = require('crypto')
+const crypto = require('crypto');
+const { request, ClientRequest } = require('http');
+const { response } = require('express');
+
+var parseString = require('xml2js').parseString;
+var msg  = require('../js/ismsg');
+var config = require("../js/isWcConfig");
+var accessTokenJson = require("../js/wcAccess_token");
+var util = require("util");
+var menu = require("../js/menu");
+const https = require('https')
 
 
 /* GET home page. */
@@ -123,10 +133,23 @@ router.post('/orderPay', multipartMiddleware, orderPay_Controller);
 router.post('/appointmentIndex', multipartMiddleware, appointmentIndex_Controller);
 
 const token = 'quan36091355';
-let secret = '71ef6ea6470f58dcd741c05f1493b11d';
-let appid = 'wxab206bb4cbe7857a';
+// let secret = '71ef6ea6470f58dcd741c05f1493b11d';
+// let appid = 'wxab206bb4cbe7857a';
 // &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d
-let access_token = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential'
+let access_token = '';
+router.get('/getAccessToken',async (req,res,next)=>{
+  await getAccessToken().then(function(response){
+    console.log(response,'response => /getAccessToken')
+    // var url = util.format(config.diyApi.createMenu, config.prefix, data);
+        // requestPost(url,JSON.stringify(menu)).then(function(data){
+        //     //将结果打印
+        //     // console.log(data);
+        // });
+  })
+  res.status(200).send({
+    data:response
+  })
+})
 // 微信
 router.get('/wx', multipartMiddleware, async (req, res, next) => {
   let signature = req.query.signature;
@@ -148,7 +171,7 @@ router.get('/wx', multipartMiddleware, async (req, res, next) => {
       res.send("error");
   }
 });
-router.get('/get')
+
 
 
 /**
@@ -156,7 +179,7 @@ router.get('/get')
  */
  let requestGet = function(url) {
   return new Promise (function(resolve, reject) {
-      request(url, (error, response, body)=> {
+      https.get(url, (error, response, body)=> {
           resolve(body);
       })
   })
@@ -169,6 +192,43 @@ function formatErrorMessage(res, message,) {
     "msg": message || '',
   });
 }
+
+//获取全局access_token
+let getAccessToken = function(){
+  let that = this;
+  return new Promise(function(resolve,reject){
+    var currentTime = new Date().getTime();
+    //格式化请求地址，把刚才的%s按顺序替换
+    var url = util.format(config.diyApi.getAccessToken, config.prefix, config.appID, config.appScrect);
+    if(accessTokenJson.access_token === "" || accessTokenJson.expires_time < currentTime){
+        requestGet(url).then(function(data){
+          console.log('dasdasdasd',url)
+            // var result = JSON.parse(data); 
+            resolve(data);
+            return
+            if(data.indexOf("errcode") < 0){
+                accessTokenJson.access_token = result.access_token;
+                accessTokenJson.expires_time = new Date().getTime() + (parseInt(result.expires_in) - 200) * 1000;
+                console.log('更新本地存储的' + result)
+                //更新本地存储的
+                fs.writeFile('../js/wcAccess_token.json',JSON.stringify(accessTokenJson),function(err){
+                  if(err){
+                    console.log(err)
+                  }
+                });
+                resolve(accessTokenJson.access_token);
+            }else{
+              console.log('本地存储的')
+                // resolve(result);
+            } 
+        });
+    }else{
+        //将本地存储的 access_token 返回
+        resolve(accessTokenJson.access_token);  
+    }
+  })
+  
+};
 
 
 module.exports = router;
