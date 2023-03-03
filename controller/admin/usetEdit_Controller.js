@@ -2,7 +2,6 @@ const logger = require('../../logs/logs').logger;
 const AdminModel = require('../../models/admin/admin');
 
 var usetEdit = async (req, res, next) => {
-  logger.info(req.body,req.url,req.method,req.route)
   try {
     console.log(req.session.user, req.query)
     let json = {};

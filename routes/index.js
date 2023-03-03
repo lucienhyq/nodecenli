@@ -32,7 +32,6 @@ router.get('/', function (req, res, next) {
 });
 // 检查是否有登录
 router.post('/checkLoginUser', async (req, res) => {
-  logger.info(req.body, req.route)
   if (!req.session.user) {
     res.redirect("login.html");
     res.send({ 'msg': '未登录', result: 0 });
@@ -50,7 +49,6 @@ router.post('/checkLoginUser', async (req, res) => {
   }
 })
 router.get('/checkLoginUser', async (req, res) => {
-  logger.info(req.query, req.route)
   if (!req.session.user) {
     res.redirect("login.html");
     res.send({ 'msg': '未登录', result: 0 });
@@ -78,7 +76,6 @@ router.post('/usetEdit', checkLogin, usetEdit_Controller);
 
 // 上传图片
 router.post('/posts', (req, res) => {
-  logger.info(req.body, req.route)
   upload(req, res).then(imgsrc => {
     // 上传成功 存储文件路径 到数据库中
     res.send({ 'data': imgsrc, result: 1 });
@@ -89,7 +86,6 @@ router.post('/posts', (req, res) => {
 
 // 获取会员信息
 router.get('/getUserIndex', checkLogin, async (req, res) => {
-  logger.info(req.query, req.route)
   try {
     var user = await AdminModel.findOne({ user_name: req.session.user.userName })
     res.send({

@@ -1,8 +1,6 @@
 const AdminModel = require('../../models/admin/admin');
 const formidable = require('formidable');
-const logger = require('../../logs/logs').logger;
 var login = async (req, res, next) => {
-  logger.info(req.body, req.url, req.method, req.route)
   try {
     let fields = req.body;
     var user = await AdminModel.findOne({ user_name: fields.user_name })

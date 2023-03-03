@@ -4,7 +4,6 @@ const refereeListModel = require('../../models/refereeList/refereeList');
 const logger = require('../../logs/logs').logger;
 
 var addReferee = async (req, res, next) => {
-  logger.info(req.body,req.route)
   try {
     const restaurant_id = await getIdmethod.getId('restaurant_id');
     let cBody = req.body;
