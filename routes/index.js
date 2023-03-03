@@ -24,6 +24,7 @@ const upload = require('../js/upload');
 const logger = require('../logs/logs').logger;
 const checkLogin = require('../middleware/checkLogin');
 const multipartMiddleware = multipart();
+const crypto = require('crypto')
 
 
 /* GET home page. */
@@ -125,7 +126,45 @@ router.post('/orderPay', multipartMiddleware, orderPay_Controller);
 //签到
 router.post('/appointmentIndex', multipartMiddleware, appointmentIndex_Controller);
 
+const token = 'quan36091355';
+let secret = '71ef6ea6470f58dcd741c05f1493b11d';
+let appid = 'wxab206bb4cbe7857a';
+// &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d
+let access_token = 'https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential'
+// 微信
+router.get('/wx', multipartMiddleware, async (req, res, next) => {
+  let signature = req.query.signature;
+  let timestamp = req.query.timestamp;
+  let nonce = req.query.nonce;
+  let echostr = req.query.echostr;
+  console.log('ddddddddddddddddd')
+  let array = new Array(token,timestamp,nonce);
+  array.sort();
+  let str = array.toString().replace(/,/g,"");
+  //2. 将三个参数字符串拼接成一个字符串进行sha1加密
+  var sha1Code = crypto.createHash("sha1");
+  var code = sha1Code.update(str,'utf-8').digest("hex");
 
+  //3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
+  if(code===signature){
+      res.send(echostr)
+  }else{
+      res.send("error");
+  }
+});
+router.get('/get')
+
+
+/**
+ * 封装请求get
+ */
+ let requestGet = function(url) {
+  return new Promise (function(resolve, reject) {
+      request(url, (error, response, body)=> {
+          resolve(body);
+      })
+  })
+};
 // 格式化错误信息
 function formatErrorMessage(res, message,) {
   res.status(500).send({
