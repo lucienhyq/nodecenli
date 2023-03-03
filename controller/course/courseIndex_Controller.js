@@ -6,7 +6,6 @@ const logger = require('../../logs/logs').logger;
 
 
 const addCourse = async (req, res, next) => {
-  logger.info(req.body,req.route);
   try {
     let gid = await getIdmethod.getId('goods_id')
     let json = {

@@ -8,7 +8,6 @@ const logger = require('../../logs/logs').logger;
  * @param {*} next 
  */
 const updateReferee = async (req, res, next) => {
-  logger.info(req.body,req.route);
   try {
     if(!req.body.id){
       formatErrorMessage(res,'请选择编辑的裁判')

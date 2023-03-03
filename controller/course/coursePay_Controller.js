@@ -4,7 +4,6 @@ const logger = require('../../logs/logs').logger;
 const getIdmethod = require('../../prototype/ids');
 const dtime = require('time-formater');
 const coursePay = async (req, res, next) => {
-  logger.info(req.body,req.route);
   try {
     let curseId = req.query.id;
     let orderList;

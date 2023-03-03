@@ -1,7 +1,6 @@
 const courseModel = require('../../models/course/course');
 const logger = require('../../logs/logs').logger;
 const courseList = async (req, res, next) => {
-  logger.info(req.body,req.route);
   try {
     let list = await courseModel.find({});
     res.send({

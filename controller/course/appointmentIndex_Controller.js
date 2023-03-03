@@ -1,10 +1,8 @@
 const dtime = require('time-formater');
 const appointmentModel = require('../../models/course/appointment');
 const courseModel = require('../../models/course/course');
-const logger = require('../../logs/logs').logger;
 
 const appointment = async (req, res, next) => {
-  logger.info(req.body,req.url,req.method,req.route)
   try {
     let good = await courseModel.find({ id: req.body.courseId });
     if (good.length <= 0) throw new Error('签到课程不存在');
