@@ -154,12 +154,11 @@ const token = "quan36091355";
 // let appid = 'wxab206bb4cbe7857a';
 // &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d
 router.post("/wx", async (req, res, next) => {
-  await getAccessToken().then(function (response) {
-    console.log(response, "response => /getAccessToken");
-    var url = util.format(config.diyApi.createMenu, config.prefix, response);
-    // requestGet(url, JSON.stringify(menu)).then(function (resData) {
-    //   //将结果打印
-    //   console.log(resData);
+  await getAccessToken().then(function (data) {
+    var url = util.format(config.diyApi.createMenu, config.prefix, data);
+    // requestPost(url,JSON.stringify(menu)).then(function(data){
+    //     //将结果打印
+    //     // console.log(data);
     // });
   });
   var buffer = [],
@@ -169,16 +168,9 @@ router.post("/wx", async (req, res, next) => {
   });
   req.on("end", function () {
     var msgXml = Buffer.concat(buffer).toString("utf-8");
-    console.log(msgXml,'ddddd21')
     parseString(msgXml, { explicitArray: false }, function (err, result) {
       // 如果有错误直接抛出
-      if (err) {
-        formatErrorMessage(res,err);
-      };
-      if(!result){
-        formatErrorMessage(res,"!result");
-        return
-      }
+      if (err) throw err;
       result = result.xml;
 
       var toUser = result.ToUserName;
@@ -187,7 +179,7 @@ router.post("/wx", async (req, res, next) => {
       // console.log(result)
       console.log(result.MsgType);
       // 判断消息类型
-      if (result.MsgType === "event" && result) {
+      if (result.MsgType === "event") {
         console.log(result.Event);
         // 关注微信公众号
         if (result.Event === "subscribe") {
@@ -218,10 +210,10 @@ router.post("/wx", async (req, res, next) => {
       }
     });
   });
-  res.status(200).send({
-    data: response,
-    info:buffer
-  });
+  // res.status(200).send({
+  //   data: response,
+  //   info:buffer
+  // });
 });
 // 微信
 router.get("/wx", multipartMiddleware, async (req, res, next) => {
@@ -292,7 +284,7 @@ let getAccessToken = function () {
             __dirname,
             "../js/wcAccess_token.json"
           );
-          console.log(PUBLIC_PATH, "2222222222");
+          console.log(PUBLIC_PATH, "2222222222", accessTokenJson);
           fs.writeFile(
             PUBLIC_PATH,
             JSON.stringify(accessTokenJson),
