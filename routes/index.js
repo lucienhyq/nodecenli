@@ -153,7 +153,7 @@ const token = "quan36091355";
 // let secret = '71ef6ea6470f58dcd741c05f1493b11d';
 // let appid = 'wxab206bb4cbe7857a';
 // &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d
-router.get("/getAccessToken", async (req, res, next) => {
+router.post("/wx", async (req, res, next) => {
   await getAccessToken().then(function (response) {
     console.log(response, "response => /getAccessToken");
     var url = util.format(config.diyApi.createMenu, config.prefix, response);
@@ -170,7 +170,6 @@ router.get("/getAccessToken", async (req, res, next) => {
   req.on("end", function () {
     var msgXml = Buffer.concat(buffer).toString("utf-8");
     console.log(msgXml,'ddddd21')
-    return
     parseString(msgXml, { explicitArray: false }, function (err, result) {
       // 如果有错误直接抛出
       if (err) {
