@@ -19,23 +19,14 @@ const courseList_Controller = require("../controller/course/courseList_Controlle
 const coursePay_Controller = require("../controller/course/coursePay_Controller");
 const orderPay_Controller = require("../controller/orderPay_Controller");
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
+const wxIndex_Controller = require("../controller/wx/index");
+const wxaccessToken_Controller = require("../controller/wx/index");
 // 中间件
 const upload = require("../js/upload");
 const logger = require("../logs/logs").logger;
 const checkLogin = require("../middleware/checkLogin");
 const multipartMiddleware = multipart();
-const crypto = require("crypto");
 const request = require("request"); //http请求模块
-const { response } = require("express");
-
-var parseString = require("xml2js").parseString;
-var msg = require("../js/ismsg");
-var config = require("../js/isWcConfig");
-var accessTokenJson = require("../js/wcAccess_token");
-var util = require("util");
-var menu = require("../js/menu");
-const fs = require("fs");
-const path = require("path");
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
@@ -149,104 +140,16 @@ router.post(
   appointmentIndex_Controller
 );
 
-const token = "quan36091355";
 // let secret = '71ef6ea6470f58dcd741c05f1493b11d';
 // let appid = 'wxab206bb4cbe7857a';
 // &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d
-router.post("/wx", async (req, res, next) => {
-  await getAccessToken().then(function (data) {
-    var url = util.format(config.diyApi.createMenu, config.prefix, data);
-    // requestPost(url,JSON.stringify(menu)).then(function(data){
-    //     //将结果打印
-    //     // console.log(data);
-    // });
-  });
-  var buffer = [],
-    that = this;
-  req.on("data", function (data) {
-    buffer.push(data);
-  });
-  req.on("end", function () {
-    var msgXml = Buffer.concat(buffer).toString("utf-8");
-    parseString(msgXml, { explicitArray: false }, function (err, result) {
-      // 如果有错误直接抛出
-      if (err) throw err;
-      result = result.xml;
 
-      var toUser = result.ToUserName;
-      var fromUser = result.FromUserName;
-      var resultXml = "";
-      // console.log(result)
-      console.log(result.MsgType);
-      // 判断消息类型
-      if (result.MsgType === "event") {
-        console.log(result.Event);
-        // 关注微信公众号
-        if (result.Event === "subscribe") {
-          resultXml = msg.textMsg(fromUser, toUser, "欢迎关注，哈哈哈哈！");
-          res.send(resultXml);
-        } else if (result.Event === "CLICK") {
-          console.log(result.EventKey);
-          resultXml = msg.EventReply(fromUser, toUser, result.EventKey);
-          // console.log(resultXml);
-          res.send(resultXml);
-        } else if (result.Event === "view") {
-          // resultXml = msg.textMsg(fromUser, toUser, "欢迎关注，哈哈哈哈！");
-          // res.send(resultXml);
-        }
-      } else {
-        if (result.MsgType === "text") {
-          console.log(result.Content);
-          if (result.Content == "1") {
-            resultXml = msg.textMsg(fromUser, toUser, "你好呀，我们又见面了！");
-            res.send(resultXml);
-            return;
-          } else {
-            resultXml = msg.textMsg(fromUser, toUser, "你是不是猪别");
-            res.send(resultXml);
-            return;
-          }
-        }
-      }
-    });
-  });
-  // res.status(200).send({
-  //   data: response,
-  //   info:buffer
-  // });
-});
-// 微信
-router.get("/wx", multipartMiddleware, async (req, res, next) => {
-  let signature = req.query.signature;
-  let timestamp = req.query.timestamp;
-  let nonce = req.query.nonce;
-  let echostr = req.query.echostr;
-  console.log("ddddddddddddddddd");
-  let array = new Array(token, timestamp, nonce);
-  array.sort();
-  let str = array.toString().replace(/,/g, "");
-  //2. 将三个参数字符串拼接成一个字符串进行sha1加密
-  var sha1Code = crypto.createHash("sha1");
-  var code = sha1Code.update(str, "utf-8").digest("hex");
+// 公众号接受用户发送的消息
+router.post("/wx", wxaccessToken_Controller);
+// 验证微信公众号 服务器
+router.get("/wx", multipartMiddleware, wxIndex_Controller);
 
-  //3. 开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
-  if (code === signature) {
-    res.send(echostr);
-  } else {
-    res.send("error");
-  }
-});
 
-/**
- * 封装请求get
- */
-let requestGet = function (url) {
-  return new Promise(function (resolve, reject) {
-    request(url, (error, response, body) => {
-      resolve(body);
-    });
-  });
-};
 // 格式化错误信息
 function formatErrorMessage(res, message) {
   res.status(500).send({
@@ -256,55 +159,5 @@ function formatErrorMessage(res, message) {
   });
 }
 
-//获取全局access_token
-let getAccessToken = function () {
-  let that = this;
-  return new Promise(function (resolve, reject) {
-    var currentTime = new Date().getTime();
-    //格式化请求地址，把刚才的%s按顺序替换
-    var url = util.format(
-      config.diyApi.getAccessToken,
-      config.prefix,
-      config.appID,
-      config.appScrect
-    );
-    if (
-      accessTokenJson.access_token === "" ||
-      accessTokenJson.expires_time < currentTime
-    ) {
-      requestGet(url).then(function (data) {
-        var result = JSON.parse(data);
-        if (data.indexOf("errcode") < 0) {
-          accessTokenJson.access_token = result.access_token;
-          accessTokenJson.expires_time =
-            new Date().getTime() + (parseInt(result.expires_in) - 200) * 1000;
-          console.log("更新本地存储的" + result);
-          //更新本地存储的
-          let PUBLIC_PATH = path.resolve(
-            __dirname,
-            "../js/wcAccess_token.json"
-          );
-          console.log(PUBLIC_PATH, "2222222222", accessTokenJson);
-          fs.writeFile(
-            PUBLIC_PATH,
-            JSON.stringify(accessTokenJson),
-            function (err) {
-              if (err) {
-                console.log(err);
-              }
-            }
-          );
-          resolve(accessTokenJson.access_token);
-        } else {
-          console.log("本地存储的");
-          // resolve(result);
-        }
-      });
-    } else {
-      //将本地存储的 access_token 返回
-      resolve(accessTokenJson.access_token);
-    }
-  });
-};
 
 module.exports = router;

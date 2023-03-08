@@ -14,9 +14,17 @@ const adminSchema = new Schema({
   },
   create_time: String,
   admin: { type: String, default: '管理员' },
-  status: Number,  //1:普通管理、 2:超级管理员
+  status: Number,  //1:普通管理、 2:超级管理员 3：小程序会员
   avatar: { type: String, default: 'default.jpg' },
   city: String,
+  session_key:{
+    type:String,
+    default:''
+  },
+  openid:{
+    type:String,
+    default:''
+  }
 },{
   timestamps:true
 })
