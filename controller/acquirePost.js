@@ -40,15 +40,19 @@ const acquirePost = async (req, res, next) => {
           body: ""
         }, async (err, response, body) => {
           resultArr = JSON.stringify(body[0]);
-          res.send({
-            result: 1,
-            data: {
-              page,
-              per_page,
-              list: body,
-            },
-            msg: '',
+          console.log(response)
+          res.json({
+            data:body
           })
+          // res.send({
+          //   result: 1,
+          //   data: {
+          //     page,
+          //     per_page,
+          //     list: body,
+          //   },
+          //   msg: '',
+          // })
         })
         return
       }

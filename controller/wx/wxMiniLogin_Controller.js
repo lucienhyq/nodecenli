@@ -34,26 +34,40 @@ const wxlogin = async (req, res, next) => {
     let userList;
     if (bodyData.openid) {
       let checkOpenid = await AdminModel.findOne({ openid: bodyData.openid });
+      // 如果用户表里面有openid 就返回已注册的用户信息给前端
       if (checkOpenid) {
         userList = checkOpenid;
         req.session.user = {
           userName: fields.user_name,
           uid: admin_id,
         };
+        res.status(200).send({
+          msg: "登录成功",
+          data: userList,
+          session: req.session.user,
+        });
       } else {
+        if (!req.query.info) {
+          //有openid而且没有用户信息就返回result :0,或者msg请登录 ，让用户跳转取授权登录页面
+          res.status(200).send({
+            msg: "请登录",
+            data: {},
+            result: 0,
+          });
+        }
+        // 有openid且有用户信息就在用户表新建一个并且返回给前端
         userList = await AdminModel.create(newAdmin);
         req.session.user = {
           userName: fields.user_name,
           uid: admin_id,
         };
+        res.status(200).send({
+          msg: "登录成功",
+          data: userList,
+          session: req.session.user,
+        });
       }
     }
-
-    res.status(200).send({
-      msg: "登录成功",
-      data: userList,
-      session: req.session.user,
-    });
   });
 };
 module.exports = wxlogin;
