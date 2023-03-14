@@ -4,14 +4,18 @@ const express = require('express');
 const path = require('path');
 //cookie处理模块
 const cookieParser = require("cookie-parser");
+//引入session模块
+const session = require("express-session");
+// jwt插件
+const { expressjwt } = require("express-jwt");
+const secretKey = require('./js/jwt');
 //引入路由
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
 const orderRouter = require("./routes/order");
 const viadanteRouter = require("./routes/viadante");
 const testRouter = require("./routes/apitest");
-//引入session模块
-const session = require("express-session");
+
 // var blog = require("./routes/blog");
 // var blogConten = require("./routes/blogConten");
 // const errHandler = require("./middleware/error-handler");
@@ -20,6 +24,7 @@ const session = require("express-session");
 var app = express();
 //引入解析post参数的模块
 var bodypaeser = require("body-parser");
+
 app.use(bodypaeser.urlencoded({ extended: false }));
 app.use(bodypaeser.json());
 app.use(
@@ -35,12 +40,15 @@ app.use(
   })
 );
 
-
 app.use(cookieParser());
 //匹配静态资源路径
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, './uploads')))
-
+app.use(
+  expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
+    path: ['/login','/register','/checkLoginUser','/uploads'],
+  })
+);
 
 //引用路由
 app.use('/', indexRouter);

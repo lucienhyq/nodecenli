@@ -33,24 +33,20 @@ router.get("/", function (req, res, next) {
   res.redirect("index.html");
 });
 // 检查是否有登录
-router.post("/checkLoginUser", async (req, res) => {
-  if (!req.session.user) {
-    res.redirect("login.html");
-    res.send({ msg: "未登录", result: 0 });
-  } else {
-    try {
-      let user = await AdminModel.findOne({
-        user_name: req.session.user.userName,
-      });
-      res.send({
-        result: 1,
-        msg: "成功",
-        data: user,
-      });
-    } catch (err) {
-      formatErrorMessage(res, err.error);
-    }
+router.post("/checkLoginUser", checkLogin, async (req, res) => {
+  console.log(req.user,'212121checkLoginUser')
+  let userInfo = await AdminModel.findOne({
+    id: req.user.id,
+  });
+  console.log(userInfo)
+  if(req.user){
+    res.send({
+      result: 1,
+      msg: "成功",
+      data: userInfo,
+    });
   }
+  
 });
 router.get("/checkLoginUser", async (req, res) => {
   if (!req.session.user) {

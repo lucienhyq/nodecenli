@@ -2,6 +2,7 @@ const AdminModel = require('../../models/admin/admin');
 const dtime = require('time-formater');
 const getIdmethod = require('../../prototype/ids');
 const formidable = require('formidable');
+const secretKey = require('../../js/jwt');
 var register = async (req, res, next) => {
   try {
     if (req.session.user) {
