@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, './uploads')))
 app.use(
   expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
-    path: ['/login','/register','/checkLoginUser','/uploads'],
+    path: ['/login','/register','/checkLoginUser','/uploads','/posts'],
   })
 );
 
