@@ -17,7 +17,7 @@ function upload(req, res) {
                 // `req.file.filename`  请求文件名称后缀 
                 // `updateBaseUrl + imgPath + req.file.filename` 完整的服务器虚拟目录
                 console.log(updateBaseUrl , imgPath , req.file.filename,req.file)
-                resolve(updateBaseUrl +'/uploads/'+ req.file.filename)
+                resolve('https://lucien.freehk.svipss.top/uploads/'+ req.file.filename)
             }
         });
     })

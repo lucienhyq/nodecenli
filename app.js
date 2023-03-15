@@ -15,7 +15,7 @@ const usersRouter = require("./routes/users");
 const orderRouter = require("./routes/order");
 const viadanteRouter = require("./routes/viadante");
 const testRouter = require("./routes/apitest");
-
+const cors = require("cors");
 // var blog = require("./routes/blog");
 // var blogConten = require("./routes/blogConten");
 // const errHandler = require("./middleware/error-handler");
@@ -24,7 +24,7 @@ const testRouter = require("./routes/apitest");
 var app = express();
 //引入解析post参数的模块
 var bodypaeser = require("body-parser");
-
+app.use(cors());
 app.use(bodypaeser.urlencoded({ extended: false }));
 app.use(bodypaeser.json());
 app.use(
