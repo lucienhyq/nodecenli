@@ -48,9 +48,9 @@ router.post("/checkLoginUser", checkLogin, async (req, res) => {
   }
   
 });
-router.get("/checkLoginUser", async (req, res) => {
+router.get("/checkLoginUser",checkLogin, async (req, res) => {
   if (!req.session.user) {
-    res.redirect("login.html");
+    // res.redirect("login.html");
     res.send({ msg: "未登录", result: 0 });
   } else {
     try {

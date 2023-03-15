@@ -12,7 +12,7 @@ module.exports = async (req, res, next) => {
   var token = req.headers['authorization'];
   if (token == undefined) {
     logger.info(req.query, req.route.path, req.method, 'token=undefined')
-    res.status(404).json(jsonArr);
+    res.status(200).json(jsonArr);
     return next();
   } else {
     if (token.indexOf('Bearer' > 0)) {
@@ -30,7 +30,7 @@ module.exports = async (req, res, next) => {
           data: "token已过期请重新登录"
         });
       } else {
-        res.status(404).json(jsonArr);
+        res.status(200).json(jsonArr);
       }
 
     })
