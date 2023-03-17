@@ -11,6 +11,6 @@ const checkLogin = require("../middleware/checkLogin");
 router.post("/wxtoken", wxtoken_Controller);
 
 // 微信小程序登录
-router.get("/wxMiniLogin", wxMiniLogin_Controller);
+router.get("/wxMiniLogin",checkLogin, wxMiniLogin_Controller);
 
 module.exports = router;

@@ -12,8 +12,14 @@ module.exports = async (req, res, next) => {
   var token = req.headers['authorization'];
   if (token == undefined) {
     logger.info(req.query, req.route.path, req.method, 'token=undefined')
-    res.status(200).json(jsonArr);
-    return next();
+    // 没有token还要判断一下是否是小程序那边
+    if(req.query.min){
+      // 如果是小程序就走 wxMiniLogin_Controller
+      next();
+    }else{
+      res.status(200).json(jsonArr);
+      return next();
+    }
   } else {
     if (token.indexOf('Bearer' > 0)) {
       token = token.replace('Bearer ', '')
