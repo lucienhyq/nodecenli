@@ -28,9 +28,17 @@ const searchReferee = async (req, res, next) => {
     let PageSize = req.body.per_total || 15; //一次返回15条数据默认
     let pageInd = req.body.page || 1; //当前第几页
     refereeListModel.count({}, async (err, count) => {
+      console.log(pageInd,PageSize,count)
       if (((pageInd - 1) * PageSize + 1) >= count) {
+        let findArr = await refereeListModel.find().sort({ referee_ids: '-1' });
         res.send({
-          status: "extend",
+          result:1,
+          data:{
+            list:findArr,
+            last_page:1,
+            total:1
+          },
+          msg:'成功'
         })
       } else {
         let findArr = await refereeListModel.find(json).skip(pageInd == 1 ? 0 : (pageInd - 1) * PageSize + 1).limit(PageSize).sort({ referee_ids: '-1' });
