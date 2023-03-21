@@ -4,7 +4,7 @@ var router = express.Router();
 const path = require("path");
 const wxtoken_Controller = require("../controller/wx/wxtoken_Controller")
 const wxMiniLogin_Controller = require("../controller/wx/wxMiniLogin_Controller")
-const firstHome_Controller = require("")
+const firstHome_Controller = require("../controller/wx/firstHome_Controller")
 
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller);
