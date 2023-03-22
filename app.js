@@ -45,9 +45,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, './uploads')))
 app.use(
-  expressjwt({ secret: secretKey, algorithms: ["HS256"],credentialsRequired:false }).unless({
-    path: ['/login','/register','/checkLoginUser','/uploads',
-    '/outLogin','/posts','/wxtoken','/wxMiniLogin',"/firstHome"],
+  expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
+    path: ['/login', '/register', '/checkLoginUser', '/uploads','/outLogin', '/posts', '/wxtoken', '/wxMiniLogin', "/firstHome", { url: /^\/apitest\/.*/, methods: ['GET', 'POST'] }],
   })
 );
 

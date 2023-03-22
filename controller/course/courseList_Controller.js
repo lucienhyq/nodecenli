@@ -2,7 +2,12 @@ const courseModel = require('../../models/course/course');
 const logger = require('../../logs/logs').logger;
 const courseList = async (req, res, next) => {
   try {
-    let list = await courseModel.find({});
+    let list;
+    if(req.query.id){
+      list = await courseModel.find({id:req.query.id});
+    }else{
+      list = await courseModel.find({});
+    }
     res.send({
       result: 1,
       msg: '已经登录',

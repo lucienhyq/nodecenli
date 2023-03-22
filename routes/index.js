@@ -23,10 +23,9 @@ const wxIndex_Controller = require("../controller/wx/index");
 const wxaccessToken_Controller = require("../controller/wx/index");
 // 中间件
 const upload = require("../js/upload");
-const logger = require("../logs/logs").logger;
 const checkLogin = require("../middleware/checkLogin");
 const multipartMiddleware = multipart();
-const request = require("request"); //http请求模块
+// const request = require("request"); //http请求模块
 
 /* GET home page. */
 router.get("/", function (req, res, next) {
