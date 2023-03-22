@@ -35,7 +35,7 @@ const wxlogin = async (req, res, next) => {
         userList = checkOpenid;
         req.session.user = {
           userName: userList.user_name,
-          uid: admin_id,
+          uid: userList.id,
         };
         res.status(200).send({
           msg: "登录成功",
