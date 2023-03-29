@@ -35,19 +35,16 @@ router.get("/getArticle", async (req, res, next) => {
       const $ = cheerio.load(body);
       $(".thread-content-detail").each((iten, i) => {
         if (iten == 0) {
-          // resultArr.imgsrc = $(i).find("img").attr("src");
-          // resultArr.conten = $(i).find('p').text();
           $(i).find('p,p img').each((ind, item) => {
             if ($(item).text()) {
-              resultArr.conten[ind] = $(item).text();
+              resultArr.conten.push($(item).text());
             }
             if ($(item).attr("src")) {
-              resultArr.conten[ind] = $(item).attr("src");
+              resultArr.conten.push($(item).attr("src"));
             }
           })
         }
       })
-      console.log(resultArr.conten)
       if (JSON.stringify(resultArr) == '{}') {
         res.status(400).json({
           msg: "帖子不存在",
@@ -59,7 +56,7 @@ router.get("/getArticle", async (req, res, next) => {
       res.status(200).json({
         msg: "",
         data: {
-          bodyHtml: resultArr
+          bodyHtml: resultArr.conten
         },
         result: 1,
       })
