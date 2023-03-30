@@ -1,10 +1,11 @@
 const courseModel = require('../../models/course/course');
 const logger = require('../../logs/logs').logger;
 const courseList = async (req, res, next) => {
+  logger.info(req.query, req.route.path, req.method)
   try {
     let list;
     if(req.query.id){
-      list = await courseModel.find({id:req.query.id});
+      list = await courseModel.find({id:req.query.id}).sort({_id:1});
     }else{
       list = await courseModel.find({});
     }

@@ -64,5 +64,5 @@ router.get("/getArticle", async (req, res, next) => {
   })
 });
 // 根据课程id获取课程详情
-router.get("/getCourse", courseList_Controller)
+router.get("/getCourse", courseList_Controller);
 module.exports = router;
