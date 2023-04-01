@@ -24,7 +24,7 @@ const addCourse = async (req, res, next) => {
     res.send({
       result: 1,
       data: list,
-      msg: '',
+      msg: '发布成功',
     })
   } catch (error) {
     formatErrorMessage(res, error);
