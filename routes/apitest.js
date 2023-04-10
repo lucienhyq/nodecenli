@@ -9,6 +9,7 @@ const request = require('request')       //网络请求
 const cheerio = require("cheerio");  //爬虫 扩展模块
 const wxCheckLogin = require("../middleware/wxCheckLogin")
 const courseList_Controller = require('../controller/course/courseList_Controller');
+const userAccess_Controller = require('../controller/admin/userAccess_Controller');
 
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller);
@@ -65,4 +66,6 @@ router.get("/getArticle", async (req, res, next) => {
 });
 // 根据课程id获取课程详情
 router.get("/getCourse", courseList_Controller);
+router.get("/userAccess", userAccess_Controller);
+
 module.exports = router;
