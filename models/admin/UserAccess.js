@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
-
-const userAccessSchema = new mongoose.Schema({
+const db = require('../../db')
+const Schema = mongoose.Schema;
+const userAccessSchema = new Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Admin',
+    type: Number,
     required: true
   },
   ipAddress: {
@@ -17,9 +17,13 @@ const userAccessSchema = new mongoose.Schema({
   timestamp: {
     type: Date,
     default: Date.now
+  },
+  total:{
+    type:Number,
+    default:0
   }
 });
 
-const UserAccess = mongoose.model('UserAccess', userAccessSchema);
+const UserAccess = db.model('UserAccess', userAccessSchema);
 
 module.exports = UserAccess;
