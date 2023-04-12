@@ -15,12 +15,16 @@ const userAccessSchema = new Schema({
     required: true
   },
   timestamp: {
-    type: Date,
+    type: String,
     default: Date.now
   },
   total:{
     type:Number,
     default:0
+  },
+  memberUser:{
+    type:Object,
+    default:{}
   }
 });
 
