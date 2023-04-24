@@ -21,7 +21,8 @@ router.get("/wxMiniLogin", wxMiniLogin_Controller);
 router.get("/firstHome", firstHome_Controller);
 // 虎扑文章详情
 router.get("/getArticle", async (req, res, next) => {
-  let url = "https://bbs.hupu.com/58837271.html";
+  console.log(req.query.urls)
+  let url = req.query.urls;
   let resultArr = {
     conten: []
   };
