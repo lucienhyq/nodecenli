@@ -6,12 +6,27 @@ const cheerio = require("cheerio");  //爬虫 扩展模块
 
 
 
-const logger = require('../../logs/logs').logger;
 
+const logger = require('../../logs/logs').logger;
 const firstHome = async (req, res, next) => {
   let courseList = await courseModel.find({}).limit(20);
   let referee = await refereeListModel.find({}).limit(20);
-  let json,bodyHtml;
+  let news = await getNbaNews();
+  
+  news = JSON.parse(news).data;
+  let arr = [];
+  if (news) {
+    news.forEach((element, ind) => {
+      let farr = filterObj(element, ["news_id", "title", "thumbnail_2x","vid"])
+      // https://china.nba.cn/cms/v1/video/playurl?vid=5s6FfuEs6nm&quality=shd 有vid的视频请求地址
+      if (!arr.length) {
+        arr[0] = farr;
+      } else {
+        arr = arr.concat(farr)
+      }
+    });
+  }
+  let json, bodyHtml;
   try {
     await hupuNba();
     json = await hupu();
@@ -19,13 +34,13 @@ const firstHome = async (req, res, next) => {
   } catch (error) {
     logger.info(error);
   }
-  res.status(200).json({
+  res.status(200).send({
     msg: "",
     data: {
       course: courseList,
       referee,
-      json,
-      bodyHtml:bodyHtml
+      json: arr,
+      bodyHtml: bodyHtml
     },
     result: 1,
   })
@@ -76,7 +91,7 @@ var hupu = function () {
   })
 }
 
-cheerioBody = function(){
+cheerioBody = function () {
   let url = "https://bbs.hupu.com/58835780.html";
   let resultArr = {};
   return new Promise((resolve, reject) => {
@@ -86,7 +101,7 @@ cheerioBody = function(){
       } else {
         const $ = cheerio.load(body);
         $(".thread-content-detail").each((iten, i) => {
-          if(iten == 0){
+          if (iten == 0) {
             resultArr.imgsrc = $(i).find("img").attr("src");
             resultArr.conten = $(i).find('p').text();
           }
@@ -95,4 +110,27 @@ cheerioBody = function(){
       }
     })
   })
+}
+var getNbaNews = function () {
+  let url = "https://china.nba.cn/cms/v1/news/list?page_size=5&page_no=1";
+  return new Promise((resolve, reject) => {
+    request(url, async (err, response, body) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(body)
+      }
+    })
+  })
+}
+
+var filterObj = function (obj, arr) {
+  if (typeof (obj) !== "object" || !Array.isArray(arr)) {
+    throw new Error("参数格式不正确")
+  }
+  const result = {}
+  Object.keys(obj).filter((key) => arr.includes(key)).forEach((key) => {
+    result[key] = obj[key]
+  })
+  return result
 }
