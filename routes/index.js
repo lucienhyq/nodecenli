@@ -33,26 +33,26 @@ router.get("/", function (req, res, next) {
 });
 // 检查是否有登录
 router.post("/checkLoginUser", checkLogin, async (req, res) => {
-  console.log(req.user,'212121checkLoginUser')
+  console.log(req.user, '212121checkLoginUser')
   let userInfo = await AdminModel.findOne({
     id: req.user.id,
   });
   console.log(userInfo)
-  if(req.user){
+  if (req.user) {
     res.send({
       result: 1,
       msg: "成功",
       data: userInfo,
     });
   }
-  
+
 });
-router.get("/checkLoginUser", checkLogin,async (req, res) => {
+router.get("/checkLoginUser", checkLogin, async (req, res) => {
   let userInfo = await AdminModel.findOne({
     id: req.user.id,
   });
   console.log(userInfo)
-  if(req.user){
+  if (req.user) {
     res.send({
       result: 1,
       msg: "成功",
