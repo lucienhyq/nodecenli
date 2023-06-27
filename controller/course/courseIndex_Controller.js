@@ -12,12 +12,12 @@ const addCourse = async (req, res, next) => {
       id: gid,
       title: req.body.title,
       course_price: Number(req.body.course_price),
-      create_time:dtime().format('YYYY-MM-DD HH:mm:ss'),
+      create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
       conten: req.body.conten,
-      shelfStatus: req.body.shelfStatus == 'true' ? true : false,
+      shelfStatus: req.body.shelfStatus == 'true' || req.body.shelfStatus ? true : false,
       goodimg: req.body.goodimg,
       inventory: Number(req.body.inventory),
-      goodStatus:req.body.goodStatus
+      goodStatus: req.body.goodStatus
     }
     await courseModel.create(json)
     let list = await courseModel.find({}).sort({ goods_id: -1 });

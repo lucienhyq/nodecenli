@@ -16,6 +16,7 @@ const outLogin_Controller = require("../controller/outLogin");
 const multipart = require("connect-multiparty");
 const courseIndex_Controller = require("../controller/course/courseIndex_Controller");
 const courseList_Controller = require("../controller/course/courseList_Controller");
+const courseList_update_Controller = require("../controller/course/courseList_update_Controller");
 const coursePay_Controller = require("../controller/course/coursePay_Controller");
 const orderPay_Controller = require("../controller/orderPay_Controller");
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
@@ -120,6 +121,9 @@ router.get(
   checkLogin,
   coursePay_Controller
 );
+// 商品 更新 
+router.post("/courseList_updateOne", multipartMiddleware, courseList_update_Controller);
+
 // 支付订单
 router.post("/orderPay", multipartMiddleware, orderPay_Controller);
 //签到
