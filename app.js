@@ -44,6 +44,7 @@ app.use(cookieParser());
 //匹配静态资源路径
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, './uploads')))
+// token验证
 app.use(
   expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
     path: ['/login', '/register', '/checkLoginUser', '/uploads','/outLogin', '/posts', '/wxtoken', '/wxMiniLogin', "/firstHome", { url: /^\/apitest\/.*/, methods: ['GET', 'POST'] }],

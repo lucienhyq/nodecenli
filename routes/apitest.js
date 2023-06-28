@@ -33,6 +33,7 @@ router.get("/getArticle", async (req, res, next) => {
 });
 // 根据课程id获取课程详情
 router.get("/getCourse", courseList_Controller);
+// 记录
 router.get("/userAccess", userAccess_Controller);
 router.get("/get_userAccess", get_userAccess_Controller);
 
