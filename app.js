@@ -47,7 +47,7 @@ app.use('/uploads', express.static(path.join(__dirname, './uploads')))
 // token验证
 app.use(
   expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
-    path: ['/login', '/register', '/checkLoginUser', '/uploads','/outLogin', '/posts', '/wxtoken', '/wxMiniLogin', "/firstHome", { url: /^\/apitest\/.*/, methods: ['GET', 'POST'] }],
+    path: ['/login','/qrCode', '/register', '/checkLoginUser', '/uploads','/outLogin', '/posts', '/wxtoken', '/wxMiniLogin', "/firstHome", { url: /^\/apitest\/.*/, methods: ['GET', 'POST'] }],
   })
 );
 

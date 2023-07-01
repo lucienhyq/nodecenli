@@ -38,19 +38,13 @@ const courseLisUpdate = async (req, res, next) => {
     if (req.body.inventory) {
       json.inventory = Number(req.body.inventory);
     }
-    console.log(json)
-    let updateinfo = await courseModel.updateOne({ 'id': req.body.id }, json);
-    if (!updateinfo) {
-      logger.info('编辑失败,uid:' + req.session.user.uid)
-      next("编辑失败")
-      return
-    }
-    res.send({
-      result: 1,
-      msg: '修改成功',
-      data: {
-        list,
-      }
+    await courseModel.updateOne({ 'id': req.body.id }, json).then((data) => {
+      res.send({
+        result: 1,
+        msg: '修改成功',
+      })
+    }).catch((err) => {
+      res.send({ err: -1, msg: err._message, data: null })
     })
   } catch (error) {
     formatErrorMessage(res, error);

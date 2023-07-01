@@ -20,6 +20,7 @@ const courseList_update_Controller = require("../controller/course/courseList_up
 const coursePay_Controller = require("../controller/course/coursePay_Controller");
 const orderPay_Controller = require("../controller/orderPay_Controller");
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
+const appointmentRecord_Controller = require("../controller/course/appointmentRecord_Controller");
 const wxIndex_Controller = require("../controller/wx/index");
 const wxaccessToken_Controller = require("../controller/wx/index");
 // 中间件
@@ -109,7 +110,7 @@ router.post("/searchReferee", checkLogin, referee_search_Controller);
 router.post("/acquirePost", multipartMiddleware, acquirePost_Controller);
 router.get("/acquirePost", multipartMiddleware, acquirePost_Controller);
 router.get("/outLogin", outLogin_Controller);
-router.post("/qrCode", checkLogin, qrCode_Controller);
+router.post("/qrCode", multipartMiddleware, qrCode_Controller);
 // 添加课程文章
 router.post("/courseIndex", multipartMiddleware, courseIndex_Controller);
 // 获取课程文章列表
@@ -132,7 +133,19 @@ router.post(
   multipartMiddleware,
   appointmentIndex_Controller
 );
-
+// 签到记录
+router.post("/appointmentRecordAll", multipartMiddleware, appointmentRecord_Controller)
+// 获取签到二维码
+const courseModel = require('../models/course/course');
+router.post("/appiontmentSignCode", qrCode_Controller, async (req, res, next) => {
+  console.log(req.body)
+  let arr = await courseModel.findOne({id:req.body.course_id});
+  console.log(arr)
+  res.send({
+    result: 0,
+    msg: null,
+  })
+})
 // let secret = '71ef6ea6470f58dcd741c05f1493b11d';
 // let appid = 'wxab206bb4cbe7857a';
 // &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d

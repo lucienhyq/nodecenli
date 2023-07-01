@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>会员签到</title>
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.bootcdn.net/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css"
+      integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu"
+      crossorigin="anonymous"
+    />
+  </head>
+
+  <body>
+    <header>
+      <div class="title">会员签到</div>
+    </header>
+  </body>
+  <script>
+    var urlParams = new URLSearchParams(window.location.search);
+    var uid = urlParams.get("uid");
+  </script>
+  <style>
+    /* 清除浏览器默认边距，
+使边框和内边距的值包含在元素的width和height内 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    header {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 100px;
+      z-index: 10;
+      background: #5b639c;
+    }
+    .title {
+      width: 100%;
+      color: #fff;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    /*屏幕宽度小于991px,改变布局和样式*/
+    @media screen and (max-width: 991px) {
+      header {
+        padding: 10px 20px;
+        flex-direction: column;
+      }
+      .banner {
+        padding: 150px 20px 50px;
+        flex-direction: column-reverse;
+      }
+      .banner .image {
+        max-width: 80%;
+        margin-left: 0;
+      }
+      .banner .content h2 {
+        font-size: 2em;
+      }
+    }
+    /*屏幕宽度小于600px,改变布局和样式*/
+    @media screen and (max-width: 600px) {
+      header {
+        width: 100%;
+      }
+    }
+  </style>
+</html>

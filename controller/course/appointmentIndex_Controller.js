@@ -1,9 +1,13 @@
 const dtime = require('time-formater');
 const appointmentModel = require('../../models/course/appointment');
 const courseModel = require('../../models/course/course');
+const logger = require('../../logs/logs').logger;
+const qrCode_Controller = require("../qrCode");
+
 
 const appointment = async (req, res, next) => {
   try {
+    let list;
     let good = await courseModel.find({ id: req.body.courseId });
     if (good.length <= 0) throw new Error('签到课程不存在');
     if (good[0].goodStatus != 2) throw new Error('不是签到商品');
@@ -15,11 +19,13 @@ const appointment = async (req, res, next) => {
       userName: req.body.userName,
       mobile: req.body.mobile,
       courseId: req.body.courseId,
+      memberId: req.body.memberId || req.session.user.uid
     }
     // 验证当前是否签到
-    let arr = await appointmentModel.find({ userName: req.body.userName, appointmentDay: json.appointmentDay })
-    if (arr.length > 0) throw new Error('已经签到')
-    let list = await appointmentModel.create(json);
+    // let arr = await appointmentModel.find({ userName: req.body.userName, appointmentDay: json.appointmentDay })
+    let arr = await appointmentModel.findOne({ memberId: req.body.memberId, appointmentDay: json.appointmentDay })
+    if (arr) throw new Error('已经签到')
+    list = await appointmentModel.create(json);
     res.send({
       result: 1,
       data: list,
