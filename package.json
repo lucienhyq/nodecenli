@@ -27,6 +27,7 @@
     "morgan": "~1.9.0",
     "multer": "^1.4.5-lts.1",
     "multiparty": "^4.2.3",
+    "nodemon": "^2.0.22",
     "qrcode": "^1.5.1",
     "request": "^2.88.2",
     "time-formater": "1.0.1",

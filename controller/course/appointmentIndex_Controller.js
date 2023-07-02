@@ -19,7 +19,7 @@ const appointment = async (req, res, next) => {
       userName: req.body.userName,
       mobile: req.body.mobile,
       courseId: req.body.courseId,
-      memberId: req.body.memberId || req.session.user.uid
+      memberId: req.session.user?req.session.user.uid:req.body.memberId
     }
     // 验证当前是否签到
     // let arr = await appointmentModel.find({ userName: req.body.userName, appointmentDay: json.appointmentDay })

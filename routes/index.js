@@ -35,11 +35,11 @@ router.get("/", function (req, res, next) {
 });
 // 检查是否有登录
 router.post("/checkLoginUser", checkLogin, async (req, res) => {
-  console.log(req.user, '212121checkLoginUser')
+  console.log(req.user, "212121checkLoginUser");
   let userInfo = await AdminModel.findOne({
     id: req.user.id,
   });
-  console.log(userInfo)
+  console.log(userInfo);
   if (req.user) {
     res.send({
       result: 1,
@@ -47,13 +47,12 @@ router.post("/checkLoginUser", checkLogin, async (req, res) => {
       data: userInfo,
     });
   }
-
 });
 router.get("/checkLoginUser", checkLogin, async (req, res) => {
   let userInfo = await AdminModel.findOne({
     id: req.user.id,
   });
-  console.log(userInfo)
+  console.log(userInfo);
   if (req.user) {
     res.send({
       result: 1,
@@ -116,14 +115,18 @@ router.post("/courseIndex", multipartMiddleware, courseIndex_Controller);
 // 获取课程文章列表
 router.post("/courseList", multipartMiddleware, courseList_Controller);
 // 课程文章创建订单
-router.get(
-  "/courseCreate",
+// router.get(
+//   "/courseCreate",
+//   multipartMiddleware,
+//   checkLogin,
+//   coursePay_Controller
+// );
+// 商品 更新
+router.post(
+  "/courseList_updateOne",
   multipartMiddleware,
-  checkLogin,
-  coursePay_Controller
+  courseList_update_Controller
 );
-// 商品 更新 
-router.post("/courseList_updateOne", multipartMiddleware, courseList_update_Controller);
 
 // 支付订单
 router.post("/orderPay", multipartMiddleware, orderPay_Controller);
@@ -134,18 +137,29 @@ router.post(
   appointmentIndex_Controller
 );
 // 签到记录
-router.post("/appointmentRecordAll", multipartMiddleware, appointmentRecord_Controller)
+router.post(
+  "/appointmentRecordAll",
+  multipartMiddleware,
+  appointmentRecord_Controller
+);
 // 获取签到二维码
-const courseModel = require('../models/course/course');
-router.post("/appiontmentSignCode", qrCode_Controller, async (req, res, next) => {
-  console.log(req.body)
-  let arr = await courseModel.findOne({id:req.body.course_id});
-  console.log(arr)
-  res.send({
-    result: 0,
-    msg: null,
-  })
-})
+const courseModel = require("../models/course/course");
+const appointmentModel = require("../models/course/appointment");
+router.post(
+  "/appiontmentSignCode",
+  qrCode_Controller,
+  async (req, res, next) => {
+    console.log(req.body);
+    let appointmentArr_ID = await appointmentModel.findOne({ id: req.body.id });
+    console.log(appointmentArr_ID)
+    let arr = await courseModel.findOne({id:Number(appointmentArr_ID.courseId)});
+    console.log(arr)
+    res.send({
+      result: 0,
+      msg: null,
+    });
+  }
+);
 // let secret = '71ef6ea6470f58dcd741c05f1493b11d';
 // let appid = 'wxab206bb4cbe7857a';
 // &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d
@@ -155,7 +169,6 @@ router.post("/wx", wxaccessToken_Controller);
 // 验证微信公众号 服务器
 router.get("/wx", multipartMiddleware, wxIndex_Controller);
 
-
 // 格式化错误信息
 function formatErrorMessage(res, message) {
   res.status(500).send({
@@ -164,6 +177,5 @@ function formatErrorMessage(res, message) {
     msg: message || "",
   });
 }
-
 
 module.exports = router;

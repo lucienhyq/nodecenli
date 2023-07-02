@@ -15,7 +15,7 @@ var login = async (req, res, next) => {
       return
     } else {
       const tokenStr = jwt.sign({ username: fields.user_name,id:user.id }, secretKey, { expiresIn: '8h' })
-      console.log(tokenStr,'sdasdas')
+      // console.log(tokenStr,'sdasdas')
       if ((fields.password == user.password) && (fields.user_name == user.user_name)) {
         // 密码一样，添加session
         req.session.user = {
