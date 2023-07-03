@@ -12,15 +12,98 @@
       crossorigin="anonymous"
     />
   </head>
-
+  <script src="javascripts/jquery.js" type="text/javascript" charset="utf-8"></script>
+  <script src="javascripts/vue.js"></script>
   <body>
-    <header>
-      <div class="title">会员签到</div>
-    </header>
+    <div id="app">
+      <header>
+        <div class="title">会员签到</div>
+        <div class="container-fluid clist">
+          <span>预约人：{{ appointment.userName }}</span>
+          <span>预约时间：{{ appointment.appointmentDay }}</span>
+          <span>预留电话：{{ appointment.mobile }}</span>
+          <span>预约课程：{{ course.title }}</span>
+          <span>课程费用：{{ course.course_price }}</span>
+          <div class="btn" @click="signInMethods" >确认签到</div>
+        </div>
+      </header>
+    </div>
   </body>
   <script>
-    var urlParams = new URLSearchParams(window.location.search);
-    var uid = urlParams.get("uid");
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          uid: "",
+          apid: "",
+          course_id: "",
+          appointment: [],
+          course: [],
+        };
+      },
+      mounted() {
+        this.checkLogin();
+        var urlParams = new URLSearchParams(window.location.search);
+        this.uid = urlParams.get("uid");
+        this.apid = urlParams.get("apid");
+        this.course_id = urlParams.get("course_id");
+      },
+      methods: {
+        checkLogin() {
+          $.ajax({
+            type: "post",
+            url: "/checkLoginUser",
+            async: true,
+            dataType: "json",
+          }).done((res) => {
+            console.log(res, "dddddddddd");
+            if (res.result) {
+              this.getData();
+            } else {
+              window.location.href = `./login.html?uid=${this.uid}&apid=${this.apid}`;
+            }
+          });
+        },
+        getData() {
+          $.ajax({
+            type: "post",
+            url: "/get_appointment",
+            async: true,
+            dataType: "json",
+            data: {
+              id: this.apid,
+            },
+          }).done((res) => {
+            console.log(res.data, "dddddddddd");
+            if (res.result) {
+              this.course = res.data.course;
+              this.appointment = res.data.appointment;
+            } else {
+              alert(res.msg);
+            }
+          });
+        },
+        signInMethods(){
+          $.ajax({
+            type: "post",
+            url: "/appointmentStatus",
+            async: true,
+            dataType: "json",
+            data: {
+              id: this.apid,
+            },
+          }).done((res) => {
+            console.log(res.data, "dddddddddd");
+            if (res.result) {
+              this.course = res.data.course;
+              this.appointment = res.data.appointment;
+            } else {
+              alert(res.msg);
+            }
+          });
+        }
+      },
+    });
   </script>
   <style>
     /* 清除浏览器默认边距，
@@ -36,11 +119,10 @@
       top: 0;
       width: 100%;
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
       align-items: center;
-      padding: 15px 100px;
       z-index: 10;
-      background: #5b639c;
     }
     .title {
       width: 100%;
@@ -48,12 +130,25 @@
       font-size: 20px;
       font-weight: bold;
       text-align: center;
+      background: #5b639c;
+      padding: 20px 0;
+    }
+    .clist{
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: black;
+      font-size: 16px;
+    }
+    .clist span{
+      padding: 10px 0;
     }
 
     /*屏幕宽度小于991px,改变布局和样式*/
     @media screen and (max-width: 991px) {
       header {
-        padding: 10px 20px;
+        width: 100%;
+        /* padding: 20px 0px; */
         flex-direction: column;
       }
       .banner {

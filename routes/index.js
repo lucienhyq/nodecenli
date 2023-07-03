@@ -21,6 +21,8 @@ const coursePay_Controller = require("../controller/course/coursePay_Controller"
 const orderPay_Controller = require("../controller/orderPay_Controller");
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
 const appointmentRecord_Controller = require("../controller/course/appointmentRecord_Controller");
+// 获取预约签到二维码
+const appiontmentSignCode_Controller = require("../controller/course/appiontmentSignCode_Controller");
 const wxIndex_Controller = require("../controller/wx/index");
 const wxaccessToken_Controller = require("../controller/wx/index");
 // 中间件
@@ -35,17 +37,29 @@ router.get("/", function (req, res, next) {
 });
 // 检查是否有登录
 router.post("/checkLoginUser", checkLogin, async (req, res) => {
-  console.log(req.user, "212121checkLoginUser");
+  if (!req.session.user) {
+    res.send({
+      result: 0,
+      data: null,
+      msg: '请登录'
+    })
+    return
+  }
   let userInfo = await AdminModel.findOne({
-    id: req.user.id,
+    id: req.session.user.uid,
   });
-  console.log(userInfo);
-  if (req.user) {
+  if (userInfo) {
     res.send({
       result: 1,
       msg: "成功",
       data: userInfo,
     });
+  } else {
+    res.send({
+      result: 0,
+      data: null,
+      msg: '请登录'
+    })
   }
 });
 router.get("/checkLoginUser", checkLogin, async (req, res) => {
@@ -136,6 +150,7 @@ router.post(
   multipartMiddleware,
   appointmentIndex_Controller
 );
+
 // 签到记录
 router.post(
   "/appointmentRecordAll",
@@ -143,23 +158,29 @@ router.post(
   appointmentRecord_Controller
 );
 // 获取签到二维码
-const courseModel = require("../models/course/course");
-const appointmentModel = require("../models/course/appointment");
 router.post(
   "/appiontmentSignCode",
-  qrCode_Controller,
   async (req, res, next) => {
-    console.log(req.body);
-    let appointmentArr_ID = await appointmentModel.findOne({ id: req.body.id });
-    console.log(appointmentArr_ID)
-    let arr = await courseModel.findOne({id:Number(appointmentArr_ID.courseId)});
-    console.log(arr)
-    res.send({
-      result: 0,
-      msg: null,
-    });
-  }
+    console.log(req.body)
+    if (!req.body.id) {
+      res.send({
+        result: 0,
+        msg: '请输入活动id',
+      });
+      return
+    }
+    next();
+  },
+  qrCode_Controller,
+  appiontmentSignCode_Controller,
 );
+// 确认预约签到
+router.post("/appointmentStatus",checkLogin, async (req, res, next) => {
+  console.log(req.body)
+  next();
+});
+router.post("/get_appointment",checkLogin, appiontmentSignCode_Controller)
+
 // let secret = '71ef6ea6470f58dcd741c05f1493b11d';
 // let appid = 'wxab206bb4cbe7857a';
 // &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d

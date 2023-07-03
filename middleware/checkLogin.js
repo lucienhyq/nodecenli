@@ -17,8 +17,7 @@ module.exports = async (req, res, next) => {
       // 如果是小程序就走 wxMiniLogin_Controller
       next();
     }else{
-      res.status(200).json(jsonArr);
-      return next();
+      next();
     }
   } else {
     if (token.indexOf('Bearer' > 0)) {

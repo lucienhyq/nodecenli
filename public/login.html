@@ -3,18 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta
-      name="viewport"
-      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,viewport-fit=cover"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"
-    />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0,viewport-fit=cover" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
     <link rel="stylesheet" href="https://unpkg.com/vant@2.12/lib/index.css" />
     <title>登录页</title>
   </head>
@@ -30,16 +21,11 @@
         <!-- <van-nav-bar title="登录页"></van-nav-bar> -->
         <div class="logoTitle">
           <div>
-            <img
-              src="https://dev4.yunzmall.com/attachment/image/172d8de0ca470ef666828e24818de13d.png"
-              alt=""
-            />
+            <img src="https://dev4.yunzmall.com/attachment/image/172d8de0ca470ef666828e24818de13d.png" alt="" />
           </div>
           <div class="title">
             <div>欢迎来到劲步健身房</div>
-            <div style="font-size: 0.875rem; margin-top: 0.15rem">
-              登录尽享各种资讯！
-            </div>
+            <div style="font-size: 0.875rem; margin-top: 0.15rem">登录尽享各种资讯！</div>
           </div>
         </div>
       </div>
@@ -57,21 +43,8 @@
       </ul> -->
       <div class="inputBox">
         <van-form @submit="onSubmit">
-          <van-field
-            v-model="user_name"
-            name="用户名"
-            label="用户名"
-            placeholder="用户名"
-            :rules="[{ required: true, message: '请填写用户名' }]"
-          ></van-field>
-          <van-field
-            v-model="password"
-            type="password"
-            name="密码"
-            label="密码"
-            placeholder="密码"
-            :rules="[{ required: true, message: '请填写密码' }]"
-          ></van-field>
+          <van-field v-model="user_name" name="用户名" label="用户名" placeholder="用户名" :rules="[{ required: true, message: '请填写用户名' }]"></van-field>
+          <van-field v-model="password" type="password" name="密码" label="密码" placeholder="密码" :rules="[{ required: true, message: '请填写密码' }]"></van-field>
         </van-form>
       </div>
       <div class="btn" @click="loginPost">
@@ -86,17 +59,8 @@
           </el-radio-group>
         </template>
         <div v-if="selectState == 1" style="margin-top: 1rem">
-          <el-input
-            v-model="user_name"
-            placeholder="请输入用户名"
-            style="margin-bottom: 10px"
-          ></el-input>
-          <el-input
-            placeholder="请输入密码"
-            v-model="password"
-            show-password
-            style="margin-bottom: 10px"
-          ></el-input>
+          <el-input v-model="user_name" placeholder="请输入用户名" style="margin-bottom: 10px"></el-input>
+          <el-input placeholder="请输入密码" v-model="password" show-password style="margin-bottom: 10px"></el-input>
           <template>
             <el-radio v-model="radio" label="0">管理员</el-radio>
             <el-radio v-model="radio" label="1">超级管理员</el-radio>
@@ -117,17 +81,8 @@
           <el-button @click="registerPost">注册</el-button>
         </div>
         <div v-else style="margin-top: 1rem">
-          <el-input
-            v-model="user_name"
-            placeholder="请输入用户名"
-            style="margin-bottom: 10px"
-          ></el-input>
-          <el-input
-            placeholder="请输入密码"
-            v-model="password"
-            show-password
-            style="margin-bottom: 10px"
-          ></el-input>
+          <el-input v-model="user_name" placeholder="请输入用户名" style="margin-bottom: 10px"></el-input>
+          <el-input placeholder="请输入密码" v-model="password" show-password style="margin-bottom: 10px"></el-input>
           <el-button @click="loginPost">登录</el-button>
         </div>
       </div>
@@ -194,24 +149,19 @@
             .then((response) => {
               let resdata = response.data;
               console.log(resdata);
-              // if (!resdata.status) {
-              //   // this.$message({
-              //   //   type: "info",
-              //   //   message: resdata.success,
-              //   // });
-              //   this.$notify(resdata.msg);
-              // } else {
-                // this.$message({
-                //   type: "info",
-                //   message: resdata.success,
-                // });
-                this.$toast(resdata.msg);
-                setTimeout(() => {
+              this.$toast(resdata.msg);
+              setTimeout(() => {
+                console.log(this.$router);
+                var urlParams = new URLSearchParams(window.location.search);
+                var uid = urlParams.get("uid");
+                var apid = urlParams.get("apid");
+                console.log(apid, uid);
+                if (apid && uid) {
+                  window.location.href = "./signIn.html?apid=" + apid + "&uid=" + uid;
+                } else {
                   window.location.href = "./chakan.html";
-                }, 1000);
-                // Toast.success(resdata.msg);
-                // window.location('./index.html')
-              // }
+                }
+              }, 1000);
             })
             .catch((error) => {
               console.log(error);
