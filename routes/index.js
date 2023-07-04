@@ -37,14 +37,25 @@ router.get("/", function (req, res, next) {
 });
 // 检查是否有登录
 router.post("/checkLoginUser", checkLogin, async (req, res) => {
-  if (!req.session.user) {
+  let userInfo = await AdminModel.findOne({
+    id: req.session.user.uid || req.session.user.id,
+  });
+  if (userInfo) {
+    res.send({
+      result: 1,
+      msg: "成功",
+      data: userInfo,
+    });
+  } else {
     res.send({
       result: 0,
       data: null,
-      msg: '请登录'
+      msg: '请登录1'
     })
-    return
   }
+});
+router.get("/checkLoginUser", checkLogin, async (req, res) => {
+  console.log(req.body,'ddddcheckLoginUser')
   let userInfo = await AdminModel.findOne({
     id: req.session.user.uid,
   });
@@ -60,19 +71,6 @@ router.post("/checkLoginUser", checkLogin, async (req, res) => {
       data: null,
       msg: '请登录'
     })
-  }
-});
-router.get("/checkLoginUser", checkLogin, async (req, res) => {
-  let userInfo = await AdminModel.findOne({
-    id: req.user.id,
-  });
-  console.log(userInfo);
-  if (req.user) {
-    res.send({
-      result: 1,
-      msg: "成功",
-      data: userInfo,
-    });
   }
 });
 // 注册
@@ -127,7 +125,7 @@ router.post("/qrCode", multipartMiddleware, qrCode_Controller);
 // 添加课程文章
 router.post("/courseIndex", multipartMiddleware, courseIndex_Controller);
 // 获取课程文章列表
-router.post("/courseList", multipartMiddleware, courseList_Controller);
+router.post("/courseList",checkLogin, multipartMiddleware, courseList_Controller);
 // 课程文章创建订单
 // router.get(
 //   "/courseCreate",
@@ -175,11 +173,15 @@ router.post(
   appiontmentSignCode_Controller,
 );
 // 确认预约签到
-router.post("/appointmentStatus",checkLogin, async (req, res, next) => {
-  console.log(req.body)
-  next();
+router.post("/appointmentStatus", checkLogin, async (req, res, next) => {
+  // console.log(req.body)
+  console.log(req.session)
+  res.send({
+    result: 0,
+    msg: null,
+  });
 });
-router.post("/get_appointment",checkLogin, appiontmentSignCode_Controller)
+router.post("/get_appointment", appiontmentSignCode_Controller)
 
 // let secret = '71ef6ea6470f58dcd741c05f1493b11d';
 // let appid = 'wxab206bb4cbe7857a';

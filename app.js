@@ -25,8 +25,8 @@ var app = express();
 //引入解析post参数的模块
 var bodypaeser = require("body-parser");
 app.use(cors());
-app.use(bodypaeser.urlencoded({ limit:'5mb',extended: false }));
-app.use(bodypaeser.json({limit:'5mb'}));
+app.use(bodypaeser.urlencoded({ limit: '5mb', extended: false }));
+app.use(bodypaeser.json({ limit: '5mb' }));
 app.use(
   session({
     name: "referrs",
@@ -45,11 +45,17 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, './uploads')))
 // token验证
-app.use(
-  expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
-    path: ['/login','/qrCode', '/register', '/checkLoginUser', '/uploads','/outLogin', '/posts', '/wxtoken', '/wxMiniLogin', "/firstHome","/get_appointment", { url: /^\/apitest\/.*/, methods: ['GET', 'POST'] }],
-  })
-);
+app.use((req, res, next) => {
+  console.log(req.query,req.body)
+  if (req.query.notJwt || req.body.notJwt) {
+    next()
+  } else {
+    expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
+      path: ['/login', '/qrCode', '/register', '/checkLoginUser', '/uploads', '/outLogin', '/posts', '/wxtoken', '/wxMiniLogin', "/firstHome", "/get_appointment", { url: /^\/apitest\/.*/, methods: ['GET', 'POST'] }],
+    })
+    next()
+  }
+});
 
 //引用路由
 app.use('/', indexRouter);

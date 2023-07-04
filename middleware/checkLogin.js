@@ -17,13 +17,20 @@ module.exports = async (req, res, next) => {
       // 如果是小程序就走 wxMiniLogin_Controller
       next();
     }else{
-      next();
+      console.log(req.path)
+      console.log(req.body,'2222222222')
+      if(req.path == '/checkLoginUser'){
+        next()
+      }else{
+        res.status(200).json(jsonArr);
+      }
     }
   } else {
     if (token.indexOf('Bearer' > 0)) {
       token = token.replace('Bearer ', '')
     }
     await verToken(token).then((data) => {
+      req.session.user = data;
       req.user = data;
       next()
     }).catch((error) => {

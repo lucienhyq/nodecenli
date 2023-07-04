@@ -14,9 +14,10 @@ const qrCode = async (req, res, next) => {
     }
     let ispath = req.protocol + "://" + req.get("host");
     let base64;
-    let urlCallBack = "http://localhost:3000/";
+    let urlCallBack = req.protocol + "://" + req.get("host");
     if (nameRoute == "/appiontmentSignCode") {
-      urlCallBack = `${req.protocol}://${req.get("host")}/signIn.html?uid=${uid}&apid=${req.body.id}`;
+      // urlCallBack = `${req.protocol}://${req.get("host")}/signIn.html?uid=${uid}&apid=${req.body.id}`;
+      urlCallBack = `${req.protocol}://${req.get("host")}/#/index`;
     }
     await QRCode.toDataURL(urlCallBack)
       .then((url) => {
