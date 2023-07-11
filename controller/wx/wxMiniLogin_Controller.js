@@ -7,14 +7,15 @@ const dtime = require("time-formater");
 
 const wxlogin = async (req, res, next) => {
   let urlstr = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&grant_type=authorization_code`;
+  console.log('dddddddddd',req.query.code)
   if (!req.query.code) {
     // 测试用
     req.session.user = {
-      userName: '测试',
-      uid: 12,
+      userName: 'swag12',
+      uid: 23,
     };
     res.status(200).send({
-      msg: "测试",
+      msg: "登录成功",
       data: [],
       session: req.session.user,
     });

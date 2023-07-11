@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const secretKey = require('../js/jwt');
 const logger = require('../logs/logs').logger;
+const wxMiniLogin_Controller = require('../controller/wx/wxMiniLogin_Controller')
 const jsonArr = {
   data: [],
   result: 0,
@@ -13,8 +14,9 @@ module.exports = async (req, res, next) => {
   if (token == undefined) {
     logger.info(req.query, req.route.path, req.method, 'token=undefined:',token)
     // 没有token还要判断一下是否是小程序那边
-    if(req.query.min){
+    if(req.query.min == 'wx' || req.body.min == 'wx'){
       // 如果是小程序就走 wxMiniLogin_Controller
+      // wxMiniLogin_Controller(req,res,next)
       next();
     }else{
       console.log(req.path)

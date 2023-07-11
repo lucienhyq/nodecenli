@@ -4,7 +4,7 @@ const courseList = async (req, res, next) => {
   logger.info(req.query, req.route.path, req.method, req.user, req.session)
   try {
     let list;
-    if (req.query.min == 'pc') {
+    if (req.query.min == 'pc' || req.query.min == 'wx') {
       if (req.body.id) {
         list = await courseModel.findOne({ id: req.body.id });
       }else{

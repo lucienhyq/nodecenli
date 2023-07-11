@@ -55,7 +55,7 @@ const firstHome = async (req, res, next) => {
   res.status(200).send({
     msg: "",
     data: {
-      json: await article_model.find({}),
+      json: await article_model.find({}).sort({id:-1}),
       course: courseList,
       referee,
       bodyHtml: bodyHtml
