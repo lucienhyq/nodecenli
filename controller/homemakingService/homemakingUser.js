@@ -23,7 +23,7 @@ var addHomemaking = async (req, res, next) => {
     }
     const homemaking_id = Number(await getIdmethod.getId('homemaking_id'));
     let newAdmin = {
-      realname: realnames,
+      realname: realname,
       uid: homemaking_id,
       create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
       avatar: avatar ? avatar : "photo-mr.jpg",
