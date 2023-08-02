@@ -92,5 +92,16 @@ router.get("/getMember", wx_GetUser_controller);
 //     })
 //   })
 // })
-router.post("/homeMakingAddUser", homeMakingAddUser_controller)
+router.post("/homeMaking_list", async(req, res, next) => {
+  console.log('dssadasdsd')
+  next()
+}, async (req, res, next) => {
+  res.status(200).json({
+    msg: "",
+    data: '',
+    result: 1,
+  })
+})
+router.post("/homeMakingAddUser", homeMakingAddUser_controller);
+
 module.exports = router;
