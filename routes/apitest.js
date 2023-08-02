@@ -11,6 +11,9 @@ const wxCheckLogin = require("../middleware/wxCheckLogin")
 const courseList_Controller = require('../controller/course/courseList_Controller');
 const userAccess_Controller = require('../controller/admin/userAccess_Controller');
 const get_userAccess_Controller = require('../controller/admin/get_userAccess_Controller');
+const wx_GetUser_controller = require('../controller/admin/wx_GetUser_controller');
+const homeMakingAddUser_controller = require('../controller/homemakingService/homemakingUser');
+
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller);
 
@@ -36,7 +39,7 @@ router.get("/getCourse", courseList_Controller);
 // 记录
 router.get("/userAccess", userAccess_Controller);
 router.get("/get_userAccess", get_userAccess_Controller);
-
+router.get("/getMember", wx_GetUser_controller);
 
 // const courseLikeMethod_model = require('../models/course/Article/like.js');
 // const article_model = require('../models/course/Article/Article.js');
@@ -89,5 +92,5 @@ router.get("/get_userAccess", get_userAccess_Controller);
 //     })
 //   })
 // })
-
+router.post("/homeMakingAddUser", homeMakingAddUser_controller)
 module.exports = router;

@@ -14,9 +14,10 @@ const firstHome = async (req, res, next) => {
   let referee = await refereeListModel.find({}).limit(20);
   let news = await getNbaNews();
 
-  news = JSON.parse(news).data;
+  // news = JSON.parse(news).data;
   let arr = [];
   if (news) {
+    console.log(news)
     for (let index = 0; index < news.length; index++) {
       const element = news[index];
       let farr = filterObj(element, ["news_id", "title", "thumbnail_2x", "vid"])
@@ -26,6 +27,7 @@ const firstHome = async (req, res, next) => {
         arr = arr.concat(farr)
       }
       let len = await article_model.find({ news_id: farr.news_id });
+      console.log(len,'len')
       if (len.length <= 0) {
         let jsonsa = {
           id: await getArticleId(),
@@ -40,6 +42,7 @@ const firstHome = async (req, res, next) => {
         let articleDetail = await getArticleConten(farr);
         jsonsa.conten = articleDetail.cnt_html;
         jsonsa.videoSrc = articleDetail.videoSrc;
+        console.log(jsonsa)
         article_model.create(jsonsa)
       }
     }
@@ -55,7 +58,7 @@ const firstHome = async (req, res, next) => {
   res.status(200).send({
     msg: "",
     data: {
-      json: await article_model.find({}).sort({id:-1}),
+      json: await article_model.find({}).sort({id:-1}).limit(15),
       course: courseList,
       referee,
       bodyHtml: bodyHtml
@@ -130,13 +133,13 @@ cheerioBody = function () {
   })
 }
 var getNbaNews = function () {
-  let url = "https://china.nba.cn/cms/v1/news/list?page_size=30&page_no=1";
+  let url = "https://china.nba.cn/cms/v1/news/list?page_size=10&page_no=1";
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {
         reject(err)
       } else {
-        resolve(body)
+        resolve(JSON.parse(body).data)
       }
     })
   })

@@ -1,5 +1,5 @@
 const Ids = require('../models/utils/ids')
-const idList = ['article_id','goods_id', 'restaurant_id', 'food_id', 'order_id', 'user_id', 'address_id', 'cart_id', 'img_id', 'category_id', 'item_id', 'sku_id', 'admin_id', 'statis_id'];
+const idList = ['homemaking_id','article_id','goods_id', 'restaurant_id', 'food_id', 'order_id', 'user_id', 'address_id', 'cart_id', 'img_id', 'category_id', 'item_id', 'sku_id', 'admin_id', 'statis_id'];
 var getId = async function (type) {
   if (!idList.includes(type)) {
     console.log('id类型错误');
