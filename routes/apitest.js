@@ -14,13 +14,14 @@ const get_userAccess_Controller = require('../controller/admin/get_userAccess_Co
 const wx_GetUser_controller = require('../controller/admin/wx_GetUser_controller');
 const homeMakingAddUser_controller = require('../controller/homemakingService/homemakingUser');
 
+// const logger = require('../logs/logs').logger;
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller);
 
 // 微信小程序登录
-router.get("/wxMiniLogin", wxMiniLogin_Controller);
+router.get("/wxMiniLogin", wxtoken_Controller, wxMiniLogin_Controller);
 // 微信小程序首页
-router.get("/firstHome", firstHome_Controller);
+router.get("/firstHome",wxCheckLogin, firstHome_Controller);
 
 // NBA文章详情
 const article_model = require('../models/course/Article/Article')
@@ -39,7 +40,7 @@ router.get("/getCourse", courseList_Controller);
 // 记录
 router.get("/userAccess", userAccess_Controller);
 router.get("/get_userAccess", get_userAccess_Controller);
-router.get("/getMember", wx_GetUser_controller);
+router.get("/getMember",wxCheckLogin, wx_GetUser_controller);
 
 // const courseLikeMethod_model = require('../models/course/Article/like.js');
 // const article_model = require('../models/course/Article/Article.js');
@@ -92,7 +93,7 @@ router.get("/getMember", wx_GetUser_controller);
 //     })
 //   })
 // })
-router.post("/homeMaking_list", async(req, res, next) => {
+router.post("/homeMaking_list", async (req, res, next) => {
   console.log('dssadasdsd')
   next()
 }, async (req, res, next) => {

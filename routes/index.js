@@ -37,6 +37,7 @@ router.get("/", function (req, res, next) {
 });
 // 检查是否有登录
 router.post("/checkLoginUser", checkLogin, async (req, res) => {
+  console.log(req.session)
   let userInfo = await AdminModel.findOne({
     id: req.session.user.uid || req.session.user.id,
   });
