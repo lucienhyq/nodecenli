@@ -13,13 +13,13 @@ const userAccess_Controller = require('../controller/admin/userAccess_Controller
 const get_userAccess_Controller = require('../controller/admin/get_userAccess_Controller');
 const wx_GetUser_controller = require('../controller/admin/wx_GetUser_controller');
 const homeMakingAddUser_controller = require('../controller/homemakingService/homemakingUser');
-
+const wapLogin = require("../controller/admin/login");
 // const logger = require('../logs/logs').logger;
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller);
 
 // 微信小程序登录
-router.get("/wxMiniLogin", wxtoken_Controller, wxMiniLogin_Controller);
+router.get("/wxMiniLogin", wxtoken_Controller, wxMiniLogin_Controller,wapLogin);
 // 微信小程序首页
 router.get("/firstHome",wxCheckLogin, firstHome_Controller);
 

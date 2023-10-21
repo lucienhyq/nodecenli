@@ -75,32 +75,3 @@ function formatErrorMessage(res, message) {
   });
 }
 module.exports = qrCode;
-
-
-
-
-// await fs.readdir("./uploads/code", (err, data) => {
-    //   let truePath = `card_id_${uid}.png`;
-    //   console.log(data, "dddddddd");
-    //   if (data.length <= 0) {
-    //     req.body.img = `${ispath}/uploads/code/card_id_${uid}.png`;
-    //     next();
-    //     return;
-    //   }
-    //   data.forEach((element) => {
-    //     if (truePath == element) {
-    //       if (nameRoute == "/appiontmentSignCode") {
-    //         req.body.img = `${ispath}/uploads/code/${element}`;
-    //         next();
-    //       } else {
-    //         res.send({
-    //           result: 1,
-    //           data: {
-    //             img: `${ispath}/uploads/code/${element}`,
-    //           },
-    //           msg: "",
-    //         });
-    //       }
-    //     }
-    //   });
-    // });

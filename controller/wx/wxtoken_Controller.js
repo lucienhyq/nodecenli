@@ -3,6 +3,11 @@ const path = require("path");
 const fs = require("fs");
 
 const miniToken = async (req, res, next) => {
+  if(req.query.i != 1){
+    // i=1是微信小程序
+    next()
+    return
+  }
   let dayTime = Date.parse(new Date()) / 1000;
   let PUBLIC_PATH = path.resolve(__dirname, "../../js/miniToken.json");
   // console.log(dayTime,Date.parse(new Date())/1000);

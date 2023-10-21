@@ -4,7 +4,7 @@ const secretKey = require('../../js/jwt');
 const jwt = require("jsonwebtoken");
 var login = async (req, res, next) => {
   let fields = req.body;
-  
+  // console.log('ddddddddf',fields)
   try {
     var user = await AdminModel.findOne({ user_name: fields.user_name })
     if (!user || !fields) {
