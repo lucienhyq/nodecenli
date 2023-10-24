@@ -25,7 +25,8 @@ module.exports = async (req, res, next) => {
       if(req.path == '/checkLoginUser'){
         next()
       }else{
-        res.status(200).json(jsonArr);
+        // res.status(200).json(jsonArr);
+        next();
       }
     }
   } else {
@@ -45,7 +46,8 @@ module.exports = async (req, res, next) => {
           data: "token已过期请重新登录"
         });
       } else {
-        res.status(200).json(jsonArr);
+        // res.status(200).json(jsonArr);
+        next();
       }
 
     })

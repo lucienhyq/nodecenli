@@ -40,11 +40,11 @@ const UserAccess = async (req, res, next) => {
     } else {
       list = await UserAccessModel.create(json)
     }
-    res.send({
-      result: 1,
-      msg: '成功',
-      // data: list
-    })
+    next()
+    // res.send({
+    //   result: 1,
+    //   msg: '成功',
+    // })
   } catch (error) {
     formatErrorMessage(res, error);
     logger.error('error' + error);

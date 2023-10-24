@@ -7,17 +7,19 @@ const logger = require('../../logs/logs').logger;
 
 const addCourse = async (req, res, next) => {
   try {
-    let gid = await getIdmethod.getId('goods_id')
+    let gid = await getIdmethod.getId('goods_id');
+    let info = req.body.form;
+    logger.info(req.body, 'addCourse')
     let json = {
       id: gid,
-      title: req.body.title,
-      course_price: Number(req.body.course_price),
+      title: info.title,
+      course_price: Number(info.course_price),
       create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
-      conten: req.body.conten,
-      shelfStatus: req.body.shelfStatus == 'true' || req.body.shelfStatus ? true : false,
-      goodimg: req.body.goodimg,
-      inventory: Number(req.body.inventory),
-      goodStatus: req.body.goodStatus
+      conten: info.conten,
+      shelfStatus: info.shelfStatus == 'true' || info.shelfStatus ? true : false,
+      goodimg: info.goodimg,
+      inventory: Number(info.inventory),
+      goodStatus: info.goodStatus
     }
     await courseModel.create(json)
     let list = await courseModel.find({}).sort({ goods_id: -1 });

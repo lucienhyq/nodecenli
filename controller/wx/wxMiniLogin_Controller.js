@@ -6,6 +6,8 @@ const wapLogin = require("../admin/login");
 const getIdmethod = require("../../prototype/ids");
 const dtime = require("time-formater");
 const logger = require("../../logs/logs").logger;
+const secretKey = require('../../js/jwt');
+const jwt = require("jsonwebtoken");
 
 const wxlogin = async (req, res, next) => {
   let urlstr = `https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&grant_type=authorization_code`;
@@ -28,17 +30,19 @@ const wxlogin = async (req, res, next) => {
         result: 0,
       });
     } else {
-      // console.log(json, "ddddddddd2121121112wxMiniLogin_Controller");
       req.session.user = {
         userName: json.userList.user_name,
         password: json.userList.password,
         uid: json.userList.id,
       };
+      const tokenStr = jwt.sign({ username: fields.user_name, id: user.id }, secretKey, { expiresIn: '8h' })
+      // token 到时候小程序调用index路由的接口用到的校验
       res.send({
         msg: "登录成功",
         data: json.userList,
         sessionID: req.sessionID,
         result: 1,
+        tokenStr: tokenStr
       });
     }
   }

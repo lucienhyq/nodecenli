@@ -17,6 +17,7 @@ const multipart = require("connect-multiparty");
 const courseIndex_Controller = require("../controller/course/courseIndex_Controller");
 const courseList_Controller = require("../controller/course/courseList_Controller");
 const courseList_update_Controller = require("../controller/course/courseList_update_Controller");
+const course_Delete = require("../controller/course/course_Delete");
 const coursePay_Controller = require("../controller/course/coursePay_Controller");
 const orderPay_Controller = require("../controller/orderPay_Controller");
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
@@ -56,7 +57,7 @@ router.post("/checkLoginUser", checkLogin, async (req, res) => {
   }
 });
 router.get("/checkLoginUser", checkLogin, async (req, res) => {
-  console.log(req.body,'ddddcheckLoginUser')
+  console.log(req.body, 'ddddcheckLoginUser')
   let userInfo = await AdminModel.findOne({
     id: req.session.user.uid,
   });
@@ -123,23 +124,26 @@ router.post("/acquirePost", multipartMiddleware, acquirePost_Controller);
 router.get("/acquirePost", multipartMiddleware, acquirePost_Controller);
 router.get("/outLogin", outLogin_Controller);
 router.post("/qrCode", multipartMiddleware, qrCode_Controller);
-// 添加课程文章
+// 添加商品文章
 router.post("/courseIndex", multipartMiddleware, courseIndex_Controller);
-// 获取课程文章列表
-router.post("/courseList",checkLogin, multipartMiddleware, courseList_Controller);
-// 课程文章创建订单
-// router.get(
-//   "/courseCreate",
-//   multipartMiddleware,
-//   checkLogin,
-//   coursePay_Controller
-// );
+// 获取商品列表
+router.post("/courseList", checkLogin, multipartMiddleware, courseList_Controller);
+
 // 商品 更新
 router.post(
   "/courseList_updateOne",
   multipartMiddleware,
   courseList_update_Controller
 );
+router.get("/courseDelete", checkLogin, course_Delete)
+// 商品文章创建订单
+router.get(
+  "/courseCreate",
+  multipartMiddleware,
+  checkLogin,
+  coursePay_Controller
+);
+// 查看订单
 
 // 支付订单
 router.post("/orderPay", multipartMiddleware, orderPay_Controller);

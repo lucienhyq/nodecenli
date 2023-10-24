@@ -19,9 +19,9 @@ const wapLogin = require("../controller/admin/login");
 router.post("/wxtoken", wxtoken_Controller);
 
 // 微信小程序登录
-router.get("/wxMiniLogin", wxtoken_Controller, wxMiniLogin_Controller,wapLogin);
+router.get("/wxMiniLogin", wxtoken_Controller, userAccess_Controller, wxMiniLogin_Controller, wapLogin);
 // 微信小程序首页
-router.get("/firstHome",wxCheckLogin, firstHome_Controller);
+router.get("/firstHome", wxCheckLogin, firstHome_Controller);
 
 // NBA文章详情
 const article_model = require('../models/course/Article/Article')
@@ -38,61 +38,10 @@ router.get("/getArticle", async (req, res, next) => {
 // 根据课程id获取课程详情
 router.get("/getCourse", courseList_Controller);
 // 记录
-router.get("/userAccess", userAccess_Controller);
-router.get("/get_userAccess", get_userAccess_Controller);
-router.get("/getMember",wxCheckLogin, wx_GetUser_controller);
+// router.get("/userAccess", userAccess_Controller);
+// router.get("/get_userAccess", get_userAccess_Controller);
+router.get("/getMember", wxCheckLogin, wx_GetUser_controller);
 
-// const courseLikeMethod_model = require('../models/course/Article/like.js');
-// const article_model = require('../models/course/Article/Article.js');
-// const admin_model = require('../models/admin/admin');
-// const { json } = require("body-parser");
-// router.get("/courseLikeMethod", async (req, res, next) => {
-//   let articleId = '64473128f5c4dd920fb9322f';
-//   let userId = '23';
-//   let user = await admin_model.find({ id: userId })
-//   console.log(user[0]._id)
-//   await courseLikeMethod_model.create({
-//     article: articleId,
-//     user: user[0]._id
-//   })
-//   res.status(200).send({
-//     result: 1,
-//     msg: '',
-//     data: ''
-//   })
-// })
-// router.get("/article", async (req, res, next) => {
-//   let json = {
-//     title: '文章1',
-//     conten: '文章测试'
-//   }
-//   let list = await article_model.create(json)
-//   res.status(200).send({
-//     result: 1,
-//     msg: '',
-//     data: list
-//   })
-// })
-// // 获取文章点赞
-// router.get("/getArticleLike", async (req, res, next) => {
-//   let userId = '23';
-//   let user = await admin_model.find({ id: userId })
-//   let list = []
-//   article_model.find({}, async (err) => {
-//     if (err) {
-//       throw new Error('查询错误')
-//     }
-//     courseLikeMethod_model.find({ user: user }, (error, lik) => {
-//       console.log(lik, '文章得点赞查找')
-//       list = lik
-//       res.status(200).send({
-//         result: 1,
-//         msg: '',
-//         data: lik
-//       })
-//     })
-//   })
-// })
 router.post("/homeMaking_list", async (req, res, next) => {
   console.log('dssadasdsd')
   next()
