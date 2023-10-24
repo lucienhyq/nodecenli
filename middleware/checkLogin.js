@@ -33,6 +33,7 @@ module.exports = async (req, res, next) => {
       token = token.replace('Bearer ', '')
     }
     await verToken(token).then((data) => {
+      logger.info(":::::::::::::::登录token解析信息", data)
       req.session.user = data;
       req.user = data;
       next()

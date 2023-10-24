@@ -3,6 +3,7 @@ const appointmentModel = require('../../models/course/appointment');
 const courseModel = require('../../models/course/course');
 const logger = require('../../logs/logs').logger;
 const qrCode_Controller = require("../qrCode");
+// appointment  中间件middleware
 
 
 const appointment = async (req, res, next) => {
@@ -23,8 +24,8 @@ const appointment = async (req, res, next) => {
     }
     // 验证当前是否签到
     // let arr = await appointmentModel.find({ userName: req.body.userName, appointmentDay: json.appointmentDay })
-    let arr = await appointmentModel.findOne({ memberId: req.body.memberId, appointmentDay: json.appointmentDay })
-    if (arr) throw new Error('已经签到')
+    // let arr = await appointmentModel.findOne({ memberId: req.body.memberId, appointmentDay: json.appointmentDay })
+    // if (arr) throw new Error('已经签到')
     list = await appointmentModel.create(json);
     res.send({
       result: 1,
