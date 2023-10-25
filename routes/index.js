@@ -147,10 +147,14 @@ router.get(
 
 // 支付订单
 router.post("/orderPay", multipartMiddleware, orderPay_Controller);
+const appiontment = require('../middleware/appointment/appointmentMid');
+
 //签到
 router.post(
   "/appointmentIndex",
   multipartMiddleware,
+  checkLogin,
+  appiontment.appiontment_record,
   appointmentIndex_Controller
 );
 
