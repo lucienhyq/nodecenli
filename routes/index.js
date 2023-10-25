@@ -14,10 +14,7 @@ const acquirePost_Controller = require("../controller/acquirePost");
 const qrCode_Controller = require("../controller/qrCode");
 const outLogin_Controller = require("../controller/outLogin");
 const multipart = require("connect-multiparty");
-const courseIndex_Controller = require("../controller/course/courseIndex_Controller");
-const courseList_Controller = require("../controller/course/courseList_Controller");
-const courseList_update_Controller = require("../controller/course/courseList_update_Controller");
-const course_Delete = require("../controller/course/course_Delete");
+const course = require("../middleware/course/index");
 const coursePay_Controller = require("../controller/course/coursePay_Controller");
 const orderPay_Controller = require("../controller/orderPay_Controller");
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
@@ -125,28 +122,28 @@ router.get("/acquirePost", multipartMiddleware, acquirePost_Controller);
 router.get("/outLogin", outLogin_Controller);
 router.post("/qrCode", multipartMiddleware, qrCode_Controller);
 // 添加商品文章
-router.post("/courseIndex", multipartMiddleware, courseIndex_Controller);
+router.post("/courseIndex", multipartMiddleware, course.addCourse);
 // 获取商品列表
-router.post("/courseList", checkLogin, multipartMiddleware, courseList_Controller);
+router.post("/courseList", checkLogin, multipartMiddleware, course.courseList);
 
 // 商品 更新
 router.post(
   "/courseList_updateOne",
   multipartMiddleware,
-  courseList_update_Controller
+  course.courseLisUpdate
 );
-router.get("/courseDelete", checkLogin, course_Delete)
+router.get("/courseDelete", checkLogin, course.course_Delete)
 // 商品文章创建订单
-router.get(
-  "/courseCreate",
-  multipartMiddleware,
-  checkLogin,
-  coursePay_Controller
-);
+// router.get(
+//   "/courseCreate",
+//   multipartMiddleware,
+//   checkLogin,
+//   coursePay_Controller
+// );
 // 查看订单
 
 // 支付订单
-router.post("/orderPay", multipartMiddleware, orderPay_Controller);
+// router.post("/orderPay", multipartMiddleware, orderPay_Controller);
 const appiontment = require('../middleware/appointment/appointmentMid');
 
 //签到

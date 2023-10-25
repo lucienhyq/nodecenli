@@ -1,20 +1,15 @@
 var express = require("express");
-const fs = require("fs");
 var router = express.Router();
-const path = require("path");
 const wxtoken_Controller = require("../controller/wx/wxtoken_Controller")
 const wxMiniLogin_Controller = require("../controller/wx/wxMiniLogin_Controller")
 const firstHome_Controller = require("../controller/wx/firstHome_Controller")
-const request = require('request')       //网络请求
-const cheerio = require("cheerio");  //爬虫 扩展模块
-const wxCheckLogin = require("../middleware/wxCheckLogin")
-const courseList_Controller = require('../controller/course/courseList_Controller');
+const wxCheckLogin = require("../middleware/wxCheckLogin");
+const course = require("../middleware/course/index");
 const userAccess_Controller = require('../controller/admin/userAccess_Controller');
 const get_userAccess_Controller = require('../controller/admin/get_userAccess_Controller');
 const wx_GetUser_controller = require('../controller/admin/wx_GetUser_controller');
 const homeMakingAddUser_controller = require('../controller/homemakingService/homemakingUser');
 const wapLogin = require("../controller/admin/login");
-// const logger = require('../logs/logs').logger;
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller);
 
@@ -36,7 +31,7 @@ router.get("/getArticle", async (req, res, next) => {
   })
 });
 // 根据课程id获取课程详情
-router.get("/getCourse", courseList_Controller);
+router.get("/getCourse", wxCheckLogin, course.courseList);
 // 记录
 // router.get("/userAccess", userAccess_Controller);
 // router.get("/get_userAccess", get_userAccess_Controller);

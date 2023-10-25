@@ -16,7 +16,7 @@ const wxlogin = async (req, res, next) => {
     console.log(req.query, "是wap端登录传的query,去下一个中间件");
     logger.info("wxlogin---------是wap端登录传的query", req.query);
     next()
-  } else if (req.query.i == 1) {
+  } else if (req.query.min == "wx") {
     urlstr += `&js_code=${req.query.code}`;
     // 先通过小程序会员查AdminModel 是否有小程序 openids
     // if (req.query.uid || req.body.uid) {
