@@ -1,8 +1,8 @@
 const courseModel = require("../../models/course/course");
 const appointmentModel = require("../../models/course/appointment");
 const appiontmentSignCode = async (req, res, next) => {
-  let appointmentArr_ID = await appointmentModel.findOne({ id: req.body.id });
-  let arr = await courseModel.findOne({ id: Number(appointmentArr_ID.courseId) });
+  let appointmentArr_ID = await appointmentModel.findOne({ id: req.body.course_id });
+  let arr = await courseModel.findOne({ id: Number(appointmentArr_ID.course_id) });
   let json = {};
   console.log(req.body,req.body.img)
   if (req.body.img) {

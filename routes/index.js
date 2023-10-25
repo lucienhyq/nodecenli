@@ -15,8 +15,9 @@ const qrCode_Controller = require("../controller/qrCode");
 const outLogin_Controller = require("../controller/outLogin");
 const multipart = require("connect-multiparty");
 const course = require("../middleware/course/index");
-const coursePay_Controller = require("../controller/course/coursePay_Controller");
-const orderPay_Controller = require("../controller/orderPay_Controller");
+const appiontment = require('../middleware/appointment/appointmentMid');
+// const coursePay_Controller = require("../controller/course/coursePay_Controller");
+// const orderPay_Controller = require("../controller/orderPay_Controller");
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
 const appointmentRecord_Controller = require("../controller/course/appointmentRecord_Controller");
 // 获取预约签到二维码
@@ -144,7 +145,6 @@ router.get("/courseDelete", checkLogin, course.course_Delete)
 
 // 支付订单
 // router.post("/orderPay", multipartMiddleware, orderPay_Controller);
-const appiontment = require('../middleware/appointment/appointmentMid');
 
 //签到
 router.post(
@@ -152,21 +152,22 @@ router.post(
   multipartMiddleware,
   checkLogin,
   appiontment.appiontment_record,
-  appointmentIndex_Controller
+  appiontment.appiontment_add
 );
 
 // 签到记录
 router.post(
   "/appointmentRecordAll",
   multipartMiddleware,
+  checkLogin,
   appointmentRecord_Controller
 );
 // 获取签到二维码
 router.post(
   "/appiontmentSignCode",
+  checkLogin,
   async (req, res, next) => {
-    console.log(req.body)
-    if (!req.body.id) {
+    if (!req.body.course_id) {
       res.send({
         result: 0,
         msg: '请输入活动id',
@@ -176,17 +177,10 @@ router.post(
     next();
   },
   qrCode_Controller,
-  appiontmentSignCode_Controller,
+  appiontment.appiontmentSignCode,
 );
 // 确认预约签到
-router.post("/appointmentStatus", checkLogin, async (req, res, next) => {
-  // console.log(req.body)
-  console.log(req.session)
-  res.send({
-    result: 0,
-    msg: null,
-  });
-});
+router.post("/appointmentSingIn", checkLogin, appiontment.appointmentSingIn);
 router.post("/get_appointment", appiontmentSignCode_Controller)
 
 // let secret = '71ef6ea6470f58dcd741c05f1493b11d';

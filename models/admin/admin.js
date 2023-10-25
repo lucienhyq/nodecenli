@@ -9,24 +9,28 @@ const adminSchema = new Schema({
   user_name: String,
   password: String,
   id: {
-    type:Number,
-    unique:true,
+    type: Number,
+    unique: true,
   },
   create_time: String,
   admin: { type: String, default: '管理员' },
   status: Number,  //1:普通管理、 2:超级管理员 3：小程序会员
   avatar: { type: String, default: 'default.jpg' },
   city: String,
-  session_key:{
-    type:String,
-    default:''
+  session_key: {
+    type: String,
+    default: ''
   },
-  openid:{
-    type:String,
-    default:''
+  openid: {
+    type: String,
+    default: ''
+  },
+  mobile: {
+    type: String,
+    default: ''
   }
-},{
-  timestamps:true
+}, {
+  timestamps: true
 })
 
 adminSchema.index({ id: 1 });

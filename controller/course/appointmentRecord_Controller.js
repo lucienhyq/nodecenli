@@ -10,6 +10,9 @@ const appointmentRecord = async (req, res, next) => {
     // 每页显示15条数据
     let pageSize = 15;
     let page = req.body.page;
+    if(!req.body.page){
+      page = 1
+    }
     let nowPageNum = ((page - 1) * pageSize);
     let total = 0;
     let currentData;

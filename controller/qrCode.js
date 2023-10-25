@@ -5,19 +5,17 @@ const logger = require("../logs/logs").logger;
 const qrCode = async (req, res, next) => {
   // logger.info(req.body, req.route);
   let nameRoute = req.route.path;
-  console.log(nameRoute);
+  // console.log(nameRoute,req.body);
   try {
-    let uid = req.body.uid || req.session.user.uid;
+    let uid = req.session?.user?.id || req?.user?.id;
     let imgpath = `./uploads/code/card_id_${uid}.png`;
-    if (nameRoute == "/appiontmentSignCode") {
-      imgpath = `./uploads/appointment/card_id_${uid}.png`;
-    }
     let ispath = req.protocol + "://" + req.get("host");
     let base64;
     let urlCallBack = req.protocol + "://" + req.get("host");
     if (nameRoute == "/appiontmentSignCode") {
-      // urlCallBack = `${req.protocol}://${req.get("host")}/signIn.html?uid=${uid}&apid=${req.body.id}`;
-      urlCallBack = `${req.protocol}://${req.get("host")}/#/index`;
+      imgpath = `./uploads/appointment/card_id_${uid}_${req.body.course_id}.png`;
+      // urlCallBack = `${req.protocol}://${req.get("host")}/#/decode?courseId=${req.body.course_id}`;
+      urlCallBack = `${req.protocol}://${req.get("host")}/#/signIn.html?uid=${uid}&apid=${req.body.course_id}`;
     }
     await QRCode.toDataURL(urlCallBack)
       .then((url) => {
@@ -25,7 +23,6 @@ const qrCode = async (req, res, next) => {
         base64 = base64_URL.replace(/^data:image\/\w+;base64,/, "");
       })
       .catch((err) => {
-        console.log(err, "wwwwwwwwwwwwww");
         res.send({
           result: 0,
           data: "",
@@ -49,7 +46,7 @@ const qrCode = async (req, res, next) => {
       } else {
         console.log("写入成功", imgpath);
         if (nameRoute == '/appiontmentSignCode') {
-          req.body.img = `${ispath}/uploads/appointment/card_id_${uid}.png`;
+          req.body.img = `${ispath}${imgpath}`;
           next();
         } else {
           res.send({

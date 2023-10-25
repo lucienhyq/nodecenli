@@ -10,8 +10,8 @@ const appointment = async (req, res, next) => {
   try {
     let list;
     let good = await courseModel.find({ id: req.body.courseId });
-    if (good.length <= 0) throw new Error('签到课程不存在');
-    if (good[0].goodStatus != 2) throw new Error('不是签到商品');
+    if (good.length <= 0) throw new Error('预约商品不存在');
+    if (good[0].goodStatus != 2) throw new Error('不是预约商品');
     let len = await appointmentModel.find({}).sort({ id: -1 });
     let json = {
       id: len.length == 0 ? 1 : Number(len[0].id) + 1,
@@ -20,12 +20,9 @@ const appointment = async (req, res, next) => {
       userName: req.body.userName,
       mobile: req.body.mobile,
       courseId: req.body.courseId,
-      memberId: req.session.user?req.session.user.uid:req.body.memberId
+      memberId: req.session.user ? req.session.user.uid : req.body.memberId
     }
     // 验证当前是否签到
-    // let arr = await appointmentModel.find({ userName: req.body.userName, appointmentDay: json.appointmentDay })
-    // let arr = await appointmentModel.findOne({ memberId: req.body.memberId, appointmentDay: json.appointmentDay })
-    // if (arr) throw new Error('已经签到')
     list = await appointmentModel.create(json);
     res.send({
       result: 1,
