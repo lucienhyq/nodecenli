@@ -5,6 +5,7 @@ const courseModel = require("../../models/course/course");
 const adminModel = require("../../models/admin/admin");
 
 class appiontment {
+  // 预约
   async appiontment_add(req, res, next) {
     try {
       let list;
@@ -48,29 +49,37 @@ class appiontment {
       logger.error('error' + error);
     }
   };
+  // 查看是否预约此商品
   async appiontment_record(req, res, next) {
     // console.log(req,res)
-    // logger.info(":::::::::::::::appiontment_record", req.body);
     let good = await courseModel.findOne({ id: req.body.courseId });
     let record = await appointmentModel.findOne({
-      memberId: req.body.memberId,
+      memberId: req.session.user.id,
       appointmentDay: dtime().format("YYYY-MM-DD"),
     });
-    logger.info(":::::::::::::::appiontment_record是否有记录", record);
+    logger.info(":::::::::::::::appiontment_record是否有记录", record, dtime().format("YYYY-MM-DD"), req.session.user.id);
     logger.info(":::::::::::::::good是否有课程商品", good);
-    if (record) {
+    if (good.goodStatus != "2") {
       res.send({
-        msg: "已经报名",
+        msg: "该商品不能预约",
         result: 0,
-      });
-    } else if (!good) {
-      res.send({
-        msg: "没有该商品",
-        result: 0,
-      });
-    } else if (good && !record) {
-      next();
+      })
+    } else {
+      if (record) {
+        res.send({
+          msg: "已经报名",
+          result: 0,
+        });
+      } else if (!good) {
+        res.send({
+          msg: "没有该商品",
+          result: 0,
+        });
+      } else if (good && !record) {
+        next();
+      }
     }
+
   };
   async appiontmentSignCode(req, res, next) {
     let appointmentArr_ID = await appointmentModel.findOne({ id: req.body.course_id });
@@ -146,6 +155,35 @@ class appiontment {
         result: 0,
         msg: null,
       });
+    } catch (error) {
+      formatErrorMessage(res, error);
+      logger.error('appointmentSingIn——error' + error);
+    }
+  }
+  async get_appointment(req, res, next) {
+    try {
+      let appointmentArr = await appointmentModel.findOne({ id: req.body.appointment_id });
+      let courseArr = await courseModel.findOne({ id: appointmentArr.courseId });
+      let admin = await adminModel.findOne({ id: appointmentArr.memberId })
+      logger.info(":::::::::::::::appointmentArr+courseArr", appointmentArr, courseArr, admin);
+      let { appointmentTime, mobile, status } = appointmentArr;
+      let { title, id, goodStatus } = courseArr;
+      let { user_name, avatar } = admin
+      res.send({
+        data: {
+          appointmentTime, mobile, status,
+          course_goodId: id,
+          title,
+          goodStatus,
+          member: {
+            uid: admin.id,
+            user_name,
+            avatar
+          }
+        },
+        msg: '成功',
+        result: 1
+      })
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('appointmentSingIn——error' + error);

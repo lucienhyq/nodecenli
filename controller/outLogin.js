@@ -1,7 +1,7 @@
 const logger = require('../logs/logs').logger;
 const outLogin = async (req, res, next) => {
-  // 推出登录
-  console.log(req.session)
+  // 退出登录，服务端清空session，前端清空head的token
+  // console.log(req.session)
   req.session.destroy(function (err) {
     console.log(err);
   })

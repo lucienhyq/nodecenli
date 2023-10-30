@@ -26,8 +26,9 @@ const wxIndex_Controller = require("../controller/wx/index");
 const wxaccessToken_Controller = require("../controller/wx/index");
 // 中间件
 const upload = require("../js/upload");
-const checkLogin = require("../middleware/checkLogin");
+const Login = require("../middleware/checkLogin");
 const multipartMiddleware = multipart();
+const referee = require("../controller/refereeController/referee");
 // const request = require("request"); //http请求模块
 
 /* GET home page. */
@@ -35,44 +36,8 @@ router.get("/", function (req, res, next) {
   res.redirect("index.html");
 });
 // 检查是否有登录
-router.post("/checkLoginUser", checkLogin, async (req, res) => {
-  console.log(req.session)
-  let userInfo = await AdminModel.findOne({
-    id: req.session.user.uid || req.session.user.id,
-  });
-  if (userInfo) {
-    res.send({
-      result: 1,
-      msg: "成功",
-      data: userInfo,
-    });
-  } else {
-    res.send({
-      result: 0,
-      data: null,
-      msg: '请登录1'
-    })
-  }
-});
-router.get("/checkLoginUser", checkLogin, async (req, res) => {
-  console.log(req.body, 'ddddcheckLoginUser')
-  let userInfo = await AdminModel.findOne({
-    id: req.session.user.uid,
-  });
-  if (userInfo) {
-    res.send({
-      result: 1,
-      msg: "成功",
-      data: userInfo,
-    });
-  } else {
-    res.send({
-      result: 0,
-      data: null,
-      msg: '请登录'
-    })
-  }
-});
+router.post("/checkLoginUser", Login.checkLogin, Login.checkLoginUser);
+router.get("/checkLoginUser", Login.checkLogin, Login.checkLoginUser);
 // 注册
 router.post("/register", register_Controller);
 
@@ -80,7 +45,7 @@ router.post("/register", register_Controller);
 router.post("/login", login_Controller);
 
 // 编辑会员信息
-router.post("/usetEdit", checkLogin, usetEdit_Controller);
+router.post("/usetEdit", Login.checkLogin, usetEdit_Controller);
 
 // 上传图片
 router.post("/posts", (req, res) => {
@@ -95,7 +60,7 @@ router.post("/posts", (req, res) => {
 });
 
 // 获取会员信息
-router.get("/getUserIndex", checkLogin, async (req, res) => {
+router.get("/getUserIndex", Login.checkLogin, async (req, res) => {
   try {
     var user = await AdminModel.findOne({
       user_name: req.session.user.userName,
@@ -113,19 +78,23 @@ router.get("/getUserIndex", checkLogin, async (req, res) => {
   }
 });
 
-router.post("/allReferee", checkLogin, referee_all_Controller);
-router.post("/addReferee", checkLogin, referee_add_Controller);
-router.post("/updateReferee", checkLogin, referee_update_Controller);
-router.post("/searchReferee", checkLogin, referee_search_Controller);
-
+router.post("/allReferee", Login.checkLogin, referee_all_Controller);
+router.post("/addReferee", Login.checkLogin, referee_add_Controller);
+router.post("/updateReferee", Login.checkLogin, referee_update_Controller);
+router.post("/searchReferee", Login.checkLogin, referee_search_Controller);
+router.post('/testClass', async (req, res, next) => {
+  console.log(referee.addReferee)
+})
+// 爬虫demo
 router.post("/acquirePost", multipartMiddleware, acquirePost_Controller);
 router.get("/acquirePost", multipartMiddleware, acquirePost_Controller);
+// 退出登录
 router.get("/outLogin", outLogin_Controller);
 router.post("/qrCode", multipartMiddleware, qrCode_Controller);
 // 添加商品文章
 router.post("/courseIndex", multipartMiddleware, course.addCourse);
 // 获取商品列表
-router.post("/courseList", checkLogin, multipartMiddleware, course.courseList);
+router.post("/courseList", Login.checkLogin, multipartMiddleware, course.courseList);
 
 // 商品 更新
 router.post(
@@ -133,7 +102,7 @@ router.post(
   multipartMiddleware,
   course.courseLisUpdate
 );
-router.get("/courseDelete", checkLogin, course.course_Delete)
+router.get("/courseDelete", Login.checkLogin, course.course_Delete)
 // 商品文章创建订单
 // router.get(
 //   "/courseCreate",
@@ -150,7 +119,7 @@ router.get("/courseDelete", checkLogin, course.course_Delete)
 router.post(
   "/appointmentIndex",
   multipartMiddleware,
-  checkLogin,
+  Login.checkLogin,
   appiontment.appiontment_record,
   appiontment.appiontment_add
 );
@@ -159,13 +128,13 @@ router.post(
 router.post(
   "/appointmentRecordAll",
   multipartMiddleware,
-  checkLogin,
+  Login.checkLogin,
   appointmentRecord_Controller
 );
 // 获取签到二维码
 router.post(
   "/appiontmentSignCode",
-  checkLogin,
+  Login.checkLogin,
   async (req, res, next) => {
     if (!req.body.course_id) {
       res.send({
@@ -180,8 +149,9 @@ router.post(
   appiontment.appiontmentSignCode,
 );
 // 确认预约签到
-router.post("/appointmentSingIn", checkLogin, appiontment.appointmentSingIn);
-router.post("/get_appointment", appiontmentSignCode_Controller)
+router.post("/appointmentSingIn", Login.checkLogin, appiontment.appointmentSingIn);
+// 获取预约明细
+router.post("/get_appointment", appiontment.get_appointment);
 
 // let secret = '71ef6ea6470f58dcd741c05f1493b11d';
 // let appid = 'wxab206bb4cbe7857a';
