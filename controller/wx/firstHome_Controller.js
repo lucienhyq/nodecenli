@@ -170,7 +170,11 @@ var getArticleConten = function (farr) {
         if (farr.vid) {
           videoSrc = await getNBAvideo(farr);
         }
-        let cnt_html = JSON.parse(body).data.cnt_html;
+        logger.info(body);
+        let cnt_html;
+        if(body){
+          cnt_html = JSON.parse(body).data.cnt_html;
+        }
         if (cnt_html == "<P><!--VIDEO_0--></P>") {
           cnt_html = "";
         }

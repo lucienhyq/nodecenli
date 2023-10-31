@@ -15,23 +15,28 @@ const homeMakingUser = new Schema({
     type: Number,
     unique: true,
   },
+  creatUid: {
+    type: Number,
+    ref: "Admin",
+    field: "id"
+  },
   // 创建时间
   create_time: String,
-  avatar:{
-    type:String,
-    default:"photo-mr.jpg"
+  avatar: {
+    type: String,
+    default: "photo-mr.jpg"
   },
-  mobile:{
-    type:String,
-    default:''
+  mobile: {
+    type: String,
+    default: ''
   },
-  workTime:{
-    type:Object,
-    default:{}
+  workTime: {
+    type: Object,
+    default: {}
   },
-  clientShow:{
-    type:Boolean,
-    default:false
+  clientShow: {
+    type: Boolean,
+    default: false
   }
 })
 

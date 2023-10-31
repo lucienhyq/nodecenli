@@ -57,31 +57,20 @@ class course {
   };
   courseList = async (req, res, next) => {
     try {
-      let list;
-      if (req.query.min == 'pc' || req.query.min == 'wx') {
-        if (req.body.id) {
-          list = await courseModel.findOne({ id: req.body.id });
-          res.send({
-            result: 1,
-            msg: '成功',
-            data: {
-              list,
-            }
-          })
-        } else {
-          list = await courseModel.find({});
-          res.send({
-            result: 1,
-            msg: '已经登录',
-            data: {
-              list,
-              total: await courseModel.find({}).count(),
-            }
-          })
-        }
-        return
+      let list, json;
+      json = { shelfStatus: true };
+      if (req.body.id) {
+        json.id = req.body.id;
       }
-
+      list = await courseModel.find(json);
+      res.send({
+        result: 1,
+        msg: '已经登录',
+        data: {
+          list,
+          total: await courseModel.find({}).count(),
+        }
+      })
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('error' + error);

@@ -8,13 +8,14 @@ const course = require("../middleware/course/index");
 const userAccess_Controller = require('../controller/admin/userAccess_Controller');
 const get_userAccess_Controller = require('../controller/admin/get_userAccess_Controller');
 const wx_GetUser_controller = require('../controller/admin/wx_GetUser_controller');
-const homeMakingAddUser_controller = require('../controller/homemakingService/homemakingUser');
+const homemaking = require('../controller/homemakingService/homemakingUser');
 const wapLogin = require("../controller/admin/login");
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller);
 
 // 微信小程序登录
-router.get("/wxMiniLogin", wxtoken_Controller, userAccess_Controller, wxMiniLogin_Controller, wapLogin);
+// userAccess_Controller
+router.get("/wxMiniLogin", wxtoken_Controller, wxMiniLogin_Controller, wapLogin);
 // 微信小程序首页
 router.get("/firstHome", wxCheckLogin, firstHome_Controller);
 
@@ -37,16 +38,7 @@ router.get("/getCourse", wxCheckLogin, course.courseList);
 // router.get("/get_userAccess", get_userAccess_Controller);
 router.get("/getMember", wxCheckLogin, wx_GetUser_controller);
 
-router.post("/homeMaking_list", async (req, res, next) => {
-  console.log('dssadasdsd')
-  next()
-}, async (req, res, next) => {
-  res.status(200).json({
-    msg: "",
-    data: '',
-    result: 1,
-  })
-})
-router.post("/homeMakingAddUser", homeMakingAddUser_controller);
+router.post("/homeMaking_list", homemaking.homemakingList)
+router.post("/homeMakingAddUser", homemaking.addHomemaking);
 
 module.exports = router;

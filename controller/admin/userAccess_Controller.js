@@ -47,7 +47,7 @@ const UserAccess = async (req, res, next) => {
     // })
   } catch (error) {
     formatErrorMessage(res, error);
-    logger.error('error' + error);
+    logger.error('errorUserAccess' + error);
   }
 }
 

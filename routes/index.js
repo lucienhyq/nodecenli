@@ -29,6 +29,7 @@ const upload = require("../js/upload");
 const Login = require("../middleware/checkLogin");
 const multipartMiddleware = multipart();
 const referee = require("../controller/refereeController/referee");
+const wxCheckLogin = require("../middleware/wxCheckLogin");
 // const request = require("request"); //http请求模块
 
 /* GET home page. */
@@ -94,7 +95,7 @@ router.post("/qrCode", multipartMiddleware, qrCode_Controller);
 // 添加商品文章
 router.post("/courseIndex", multipartMiddleware, course.addCourse);
 // 获取商品列表
-router.post("/courseList", Login.checkLogin, multipartMiddleware, course.courseList);
+router.post("/courseList", multipartMiddleware, Login.checkLogin,wxCheckLogin, course.courseList);
 
 // 商品 更新
 router.post(

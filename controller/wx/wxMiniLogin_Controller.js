@@ -35,7 +35,7 @@ const wxlogin = async (req, res, next) => {
         password: json.userList.password,
         uid: json.userList.id,
       };
-      const tokenStr = jwt.sign({ username: fields.user_name, id: user.id }, secretKey, { expiresIn: '8h' })
+      const tokenStr = jwt.sign({ username: json.userList.user_name, id: json.userList.id }, secretKey, { expiresIn: '8h' })
       // token 到时候小程序调用index路由的接口用到的校验
       res.send({
         msg: "登录成功",
