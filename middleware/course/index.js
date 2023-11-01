@@ -64,31 +64,18 @@ class Course {
       if (req.body.id) {
         json.id = req.body.id;
       }
-      // if (req.query.min == 'pc' || req.query.min == 'wx') {
-        // if (req.body.id) {
-          // list = await courseModel.findOne({ id: req.body.id });
-          // res.send({
-          //   result: 1,
-          //   msg: '成功',
-          //   data: {
-          //     list,
-          //   }
-          // });
-        // } else {
 
-          list = await courseModel.find(json);
-          const total = await courseModel.countDocuments({});
-          res.send({
-            result: 1,
-            msg: '已经登录',
-            data: {
-              list,
-              total,
-            }
-          });
-        // }
-        // return;
-      // }
+      list = await courseModel.find(json);
+      const total = await courseModel.countDocuments({});
+      res.send({
+        result: 1,
+        msg: '已经登录',
+        data: {
+          list,
+          total,
+        }
+      });
+
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('error' + error);
