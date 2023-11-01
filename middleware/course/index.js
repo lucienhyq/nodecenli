@@ -3,12 +3,12 @@ const getIdmethod = require('../../prototype/ids');
 const courseModel = require('../../models/course/course');
 const logger = require('../../logs/logs').logger;
 
-class course {
-  addCourse = async (req, res, next) => {
+class Course {
+  async addCourse(req, res, next) {
     try {
       let gid = await getIdmethod.getId('goods_id');
       let info = req.body.form;
-      logger.info(req.body, 'addCourse')
+      logger.info(req.body, 'addCourse');
       let json = {
         id: gid,
         title: info.title,
@@ -19,78 +19,95 @@ class course {
         goodimg: info.goodimg,
         inventory: Number(info.inventory),
         goodStatus: info.goodStatus
-      }
-      await courseModel.create(json)
+      };
+      await courseModel.create(json);
       let list = await courseModel.find({}).sort({ goods_id: -1 });
       res.send({
         result: 1,
         data: list,
         msg: '发布成功',
-      })
+      });
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('error:::::', error);
     }
-  };
-  course_Delete = async (req, res, next) => {
+  }
+
+  async course_Delete(req, res, next) {
     try {
       let good_id = req.query.goods_id;
-      logger.info(good_id, 'good_id')
-      courseModel.deleteOne({ id: good_id }).then((result) => {
-        logger.info(result, '删除成功')
+      logger.info(good_id, 'good_id');
+      const result = await courseModel.deleteOne({ id: good_id });
+      if (result.deletedCount > 0) {
+        logger.info(result, '删除成功');
         res.send({
           result: 1,
           msg: '删除成功'
-        })
-      }).catch((error) => {
-        logger.info(error, '删除失败')
+        });
+      } else {
+        logger.info(result, '删除失败');
         res.send({
           result: 0,
           msg: '删除失败'
-        })
-      })
-
+        });
+      }
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('error' + error);
     }
-  };
-  courseList = async (req, res, next) => {
+  }
+
+  async courseList(req, res, next) {
     try {
       let list, json;
-      json = { shelfStatus: true };
+      son = { shelfStatus: true };
       if (req.body.id) {
         json.id = req.body.id;
       }
-      list = await courseModel.find(json);
-      res.send({
-        result: 1,
-        msg: '已经登录',
-        data: {
-          list,
-          total: await courseModel.find({}).count(),
-        }
-      })
+      // if (req.query.min == 'pc' || req.query.min == 'wx') {
+        // if (req.body.id) {
+          // list = await courseModel.findOne({ id: req.body.id });
+          // res.send({
+          //   result: 1,
+          //   msg: '成功',
+          //   data: {
+          //     list,
+          //   }
+          // });
+        // } else {
+
+          list = await courseModel.find(json);
+          const total = await courseModel.countDocuments({});
+          res.send({
+            result: 1,
+            msg: '已经登录',
+            data: {
+              list,
+              total,
+            }
+          });
+        // }
+        // return;
+      // }
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('error' + error);
     }
-  };
-  courseLisUpdate = async (req, res, next) => {
+  }
+
+  async courseLisUpdate(req, res, next) {
     try {
-      let list;
       let good_id = req.body.id;
       let json = {};
       let form = req.body.form;
-      if (good_id) {
-        list = await courseModel.find({ id: good_id });
-        if (list.length == 0) {
-          formatErrorMessage(res, '没有该商品')
-          return
-        }
-      } else {
-        formatErrorMessage(res, '没有该商品')
-        return
+      if (!good_id) {
+        formatErrorMessage(res, '没有该商品');
+        return;
+      }
+      let list = await courseModel.find({ id: good_id });
+      if (list.length == 0) {
+        formatErrorMessage(res, '没有该商品');
+        return;
       }
       if (form) {
         // 修改上架状态
@@ -100,7 +117,7 @@ class course {
           json.shelfStatus = false;
         }
         if (form.goodStatus) {
-          json.goodStatus = form.goodStatus
+          json.goodStatus = form.goodStatus;
         }
         // 修改价格
         if (form.course_price) {
@@ -119,18 +136,15 @@ class course {
           json.inventory = Number(form.inventory);
         }
         if (form.title) {
-          json.title = String(form.title)
+          json.title = String(form.title);
         }
       }
-      logger.info(form, 'dwwwwwww', json)
-      await courseModel.updateOne({ 'id': good_id }, json).then((data) => {
-        res.send({
-          result: 1,
-          msg: '修改成功',
-        })
-      }).catch((err) => {
-        res.send({ err: -1, msg: err._message, data: null })
-      })
+      logger.info(form, 'dwwwwwww', json);
+      await courseModel.updateOne({ 'id': good_id }, json);
+      res.send({
+        result: 1,
+        msg: '修改成功',
+      });
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('error' + error);
@@ -138,14 +152,11 @@ class course {
   }
 }
 
-// 格式化错误信息
-function formatErrorMessage(res, message,) {
+function formatErrorMessage(res, message) {
   res.status(500).send({
-    "data": "error",
-    "result": 0,
-    "msg": message || '',
+    "error": true,
+    "message": message || '',
   });
 }
 
-
-module.exports = new course();
+module.exports = new Course();
