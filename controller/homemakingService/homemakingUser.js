@@ -1,21 +1,44 @@
 const dtime = require('time-formater');
 const getIdmethod = require('../../prototype/ids');
 const homemakingUser = require('../../models/homemaking/homemakingUser');
+const admin = require('../../models/admin/admin');
 const logger = require('../../logs/logs').logger;
 
 class homemaking {
-  async homemakingList(req,res,next){
+  async homemakingList(req, res, next) {
     try {
-      homemakingUser.findById('6540cf79fdb5ec88c04e6e25')
-        .populate('creatUid')
-        .exec((err,list)=>{
-          console.log(list,err)
-        })
-      res.send({
-        data:'1111'
-      })
+      if (req.body.hmuid) {
+        homemakingUser.findOne({ hmuid: req.body.hmuid })
+          .select('-_id -__v')
+          .populate('creatUid', '-_id user_name avatar mobile id')
+          .exec((err, list) => {
+            if (err) {
+              logger.info('homemakingList::::::err', err)
+            }
+            res.send({
+              data: list,
+              result: 1,
+              msg: '成功'
+            });
+          });
+      } else {
+        homemakingUser.find()
+          .select('-_id -__v')
+          .populate('creatUid', '-_id user_name avatar mobile id')
+          .exec((err, list) => {
+            if (err) {
+              logger.info('homemakingList::::::err', err)
+            }
+            res.send({
+              data: list,
+              result: 1,
+              msg: '成功'
+            });
+          });
+      }
+
     } catch (error) {
-      
+      console.log(error)
     }
   }
   async addHomemaking(req, res, next) {
@@ -36,32 +59,62 @@ class homemaking {
         return
       }
       const homemaking_id = Number(await getIdmethod.getId('homemaking_id'));
-      console.log(req.session.user, 'req.session.user')
       let newAdmin = {
         realname: realname,
-        uid: homemaking_id,
+        hmuid: homemaking_id,
         create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
         avatar: avatar ? avatar : "photo-mr.jpg",
         mobile: mobile,
         workTime: workTime,
-        creatUid: req.session.user.uid
       }
-      let userList = await homemakingUser.create(newAdmin);
-      res.send({
-        result: 1,
-        data: userList,
-        msg: '添加家政人员成功',
-      })
+      try {
+        const adminResult = await admin.findOne({ id: req.session.user.id });
+        if (adminResult) {
+          newAdmin.creatUid = adminResult._id;
+        }
+        let userList = await homemakingUser.create(newAdmin);
+        res.send({
+          result: 1,
+          data: userList,
+          msg: '添加家政人员成功',
+        })
+      } catch (error) {
+        console.log(error, '其他错误');
+        logger.info('MongoServerError', error)
+        // 处理其他错误
+      }
+
+
     } catch (error) {
-      console.log(error, 'dddddddddddddddddd')
       formatErrorMessage(res, error);
-      logger.error('error' + error);
+    }
+  }
+  // 更新在职状态
+  async updateWorkStatus(req, res, next) {
+    try {
+      console.log()
+      if (!req.body.hmuid) {
+        formatErrorMessage(res, '输入正确的家政职工id')
+      }
+      try {
+        await homemakingUser.updateOne({ 'hmuid': req.body.hmuid }, { 'clientShow': req.body.clientShow });
+        res.send({
+          result: 1,
+          msg: '修改成功',
+        });
+      } catch (error) {
+        formatErrorMessage(res, error);
+      }
+
+    } catch (error) {
+      formatErrorMessage(res, error);
     }
   }
 }
 
 // 格式化错误信息
 function formatErrorMessage(res, message) {
+  logger.error('error:', message);
   res.status(500).send({
     data: "error",
     result: 0,

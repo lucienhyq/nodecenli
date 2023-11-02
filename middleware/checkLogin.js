@@ -9,16 +9,19 @@ class Login {
     logger.info(req.query, req.route.path, req.method)
     var token = req.headers['authorization'];
     if (token == undefined) {
-      logger.info(req.query, req.route.path, req.method, 'token=undefined:', token)
+      logger.info(req.query, req.route.path, req.method, 'token=undefined:', token,req.query.min,req.body.min)
       // 没有token还要判断一下是否是小程序那边
       if (req.query.min == 'wx' || req.body.min == 'wx') {
-        console.log(req.session)
         next()
       } else {
         if (req.path == '/checkLoginUser') {
           next()
         } else {
-          next();
+          res.send({
+            result: 0,
+            data: null,
+            msg: '请登录'
+          })
         }
       }
     } else {

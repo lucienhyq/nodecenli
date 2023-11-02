@@ -2,7 +2,7 @@ const logger = require("../logs/logs").logger;
 const path = require("path");
 const wxCheckLogin = async (req, res, next) => {
   if (req.body.min || req.query.min) {
-    logger.info('wxCheckLogin', req.body.min, req.query.min)
+    logger.info('wxCheckLogin', req.body.min, req.query.min,req.session.user)
     if (req.session.user) {
       logger.info("直接带session.user进来的", req.session.user);
       next();

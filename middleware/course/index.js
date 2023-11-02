@@ -60,7 +60,7 @@ class Course {
   async courseList(req, res, next) {
     try {
       let list, json;
-      son = { shelfStatus: true };
+      json = { shelfStatus: true };
       if (req.body.id) {
         json.id = req.body.id;
       }

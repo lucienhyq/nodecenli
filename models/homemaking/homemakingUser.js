@@ -11,20 +11,15 @@ const homeMakingUser = new Schema({
     default: ''
   },
   // 家政人员id
-  uid: {
+  hmuid: {
     type: Number,
     unique: true,
-  },
-  creatUid: {
-    type: Number,
-    ref: "Admin",
-    field: "id"
   },
   // 创建时间
   create_time: String,
   avatar: {
     type: String,
-    default: "photo-mr.jpg"
+    default: ""
   },
   mobile: {
     type: String,
@@ -34,10 +29,16 @@ const homeMakingUser = new Schema({
     type: Object,
     default: {}
   },
+  // 平台是否显示
   clientShow: {
     type: Boolean,
-    default: false
-  }
+    default: true
+  },
+  creatUid: {
+    type: Schema.Types.ObjectId,
+    ref: "Admin",
+    field: "_id"
+  },
 })
 
 homeMakingUser.index({ id: 1 });
