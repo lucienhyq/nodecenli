@@ -105,7 +105,24 @@ class homemaking {
       } catch (error) {
         formatErrorMessage(res, error);
       }
-
+    } catch (error) {
+      formatErrorMessage(res, error);
+    }
+  }
+  async updateHomeWork(req, res, next){
+    try {
+      if (!req.body.hmuid) {
+        formatErrorMessage(res, '输入正确的家政职工id')
+      }
+      try {
+        await homemakingUser.updateOne({ 'hmuid': req.body.hmuid }, { 'clientShow': req.body.clientShow });
+        res.send({
+          result: 1,
+          msg: '修改成功',
+        });
+      } catch (error) {
+        formatErrorMessage(res, error);
+      }
     } catch (error) {
       formatErrorMessage(res, error);
     }
