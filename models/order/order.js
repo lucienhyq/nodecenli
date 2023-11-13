@@ -24,11 +24,17 @@ const orderSchema = new Schema({
   },
   // 购买人id
   numberId: {
-    type: Number
+    type: Schema.Types.ObjectId,
+    ref: "Admin",
+    field: "_id"
   },
   goodStatus: {
     type: String,
     default: 1
+  },
+  orderType: {
+    type: String,
+    default: ''
   }
 })
 orderSchema.index({ orderId: 1 });

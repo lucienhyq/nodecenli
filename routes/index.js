@@ -16,7 +16,7 @@ const outLogin_Controller = require("../controller/outLogin");
 const multipart = require("connect-multiparty");
 const course = require("../middleware/course/index");
 const appiontment = require('../middleware/appointment/appointmentMid');
-// const coursePay_Controller = require("../controller/course/coursePay_Controller");
+const coursePay_Controller = require("../controller/course/coursePay_Controller");
 // const orderPay_Controller = require("../controller/orderPay_Controller");
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
 const appointmentRecord_Controller = require("../controller/course/appointmentRecord_Controller");
@@ -95,7 +95,7 @@ router.post("/qrCode", multipartMiddleware, qrCode_Controller);
 // 添加商品文章
 router.post("/courseIndex", multipartMiddleware, course.addCourse);
 // 获取商品列表
-router.post("/courseList", multipartMiddleware, Login.checkLogin,wxCheckLogin, course.courseList);
+router.post("/courseList", multipartMiddleware, Login.checkLogin, wxCheckLogin, course.courseList);
 
 // 商品 更新
 router.post(
@@ -105,12 +105,12 @@ router.post(
 );
 router.get("/courseDelete", Login.checkLogin, course.course_Delete)
 // 商品文章创建订单
-// router.get(
-//   "/courseCreate",
-//   multipartMiddleware,
-//   checkLogin,
-//   coursePay_Controller
-// );
+router.post(
+  "/courseCreate",
+  multipartMiddleware,
+  Login.checkLogin,
+  coursePay_Controller
+);
 // 查看订单
 
 // 支付订单

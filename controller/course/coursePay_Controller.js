@@ -3,11 +3,13 @@ const orderModel = require('../../models/order/order');
 const logger = require('../../logs/logs').logger;
 const getIdmethod = require('../../prototype/ids');
 const dtime = require('time-formater');
+const admin = require('../../models/admin/admin');
+
 const coursePay = async (req, res, next) => {
   try {
-    let curseId = req.query.id;
+    let curseId = req.body.id;
     let orderList;
-    let uid = req.session.user.uid ? req.session.user.uid : 0;
+    let uid = req.session.user.id;
     let list = await courseModel.find({ id: curseId });
     // 时间戳生成得订单流水号
     let randomSn = createordernum();
@@ -24,8 +26,13 @@ const coursePay = async (req, res, next) => {
       create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
       course_price: list[0].course_price,
       orderSn: randomSn,
-      numberId: uid
+      orderType: 'course'
     }
+    const adminResult = await admin.findOne({ id: uid });
+    if (adminResult) {
+      json.numberId = adminResult._id;
+    }
+
     orderList = await orderModel.create(json);
     res.send({
       result: 1,
@@ -54,7 +61,7 @@ function createordernum() {
   hour = setTimeDateFmt(hour)
   minutes = setTimeDateFmt(minutes)
   seconds = setTimeDateFmt(seconds)
-  let orderCode = now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 1000000)).toString();
+  let orderCode = 'ce' + now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 1000000)).toString();
   return orderCode;
   //基于年月日时分秒+随机数生成订单编号
 }

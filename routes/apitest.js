@@ -40,7 +40,11 @@ router.get("/getCourse", wxCheckLogin, course.courseList);
 // router.get("/get_userAccess", get_userAccess_Controller);
 router.get("/getMember", wxCheckLogin, wx_GetUser_controller);
 
-router.post("/homeMaking_list", Login.checkLogin, wxCheckLogin, homemaking.homemakingList)
+// 家政服务
+router.post("/homeMaking_list", Login.checkLogin, wxCheckLogin, homemaking.homemakingList);
 router.post("/homeMakingAddUser", Login.checkLogin, wxCheckLogin, homemaking.addHomemaking);
-router.post("/updateWorkStatus", Login.checkLogin, wxCheckLogin, homemaking.updateWorkStatus)
+router.post("/updateWorkStatus", Login.checkLogin, wxCheckLogin, homemaking.updateWorkStatus);
+router.post("/updateHomeWork", Login.checkLogin, wxCheckLogin, homemaking.updateWorkStatus);
+router.post("/homeMakingDeleteUser", Login.checkLogin, wxCheckLogin, homemaking.homework_delete);
+
 module.exports = router;

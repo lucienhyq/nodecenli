@@ -83,8 +83,6 @@ class homemaking {
         logger.info('MongoServerError', error)
         // 处理其他错误
       }
-
-
     } catch (error) {
       formatErrorMessage(res, error);
     }
@@ -92,12 +90,30 @@ class homemaking {
   // 更新在职状态
   async updateWorkStatus(req, res, next) {
     try {
-      console.log()
       if (!req.body.hmuid) {
         formatErrorMessage(res, '输入正确的家政职工id')
       }
+      let json = {
+        hmuid: req.body.hmuid,
+      }
+      if (req.body.realname) {
+        json.realname = req.body.realname
+      }
+      if (req.body.avatar) {
+        json.avatar = req.body.avatar
+      }
+      if (req.body.mobile) {
+        json.mobile = req.body.mobile
+      }
+      if (req.body.workTime) {
+        json.workTime = req.body.workTime
+      }
+      if (req.body.clientShow) {
+        json.clientShow = req.body.clientShow
+      }
+
       try {
-        await homemakingUser.updateOne({ 'hmuid': req.body.hmuid }, { 'clientShow': req.body.clientShow });
+        await homemakingUser.updateOne({ 'hmuid': req.body.hmuid }, json);
         res.send({
           result: 1,
           msg: '修改成功',
@@ -109,22 +125,26 @@ class homemaking {
       formatErrorMessage(res, error);
     }
   }
-  async updateHomeWork(req, res, next){
+  async homework_delete(req, res, next) {
     try {
-      if (!req.body.hmuid) {
-        formatErrorMessage(res, '输入正确的家政职工id')
-      }
-      try {
-        await homemakingUser.updateOne({ 'hmuid': req.body.hmuid }, { 'clientShow': req.body.clientShow });
+      let humid = req.query.hmuid;
+      const result = await homemakingUser.deleteOne({ id: humid });
+      if (result.deletedCount > 0) {
+        logger.info(result, '删除成功');
         res.send({
           result: 1,
-          msg: '修改成功',
+          msg: '删除成功'
         });
-      } catch (error) {
-        formatErrorMessage(res, error);
+      } else {
+        logger.info(result, '删除失败');
+        res.send({
+          result: 0,
+          msg: '删除失败'
+        });
       }
     } catch (error) {
       formatErrorMessage(res, error);
+      logger.error('error' + error);
     }
   }
 }
