@@ -2,7 +2,8 @@ const logger = require("../logs/logs").logger;
 const path = require("path");
 const wxCheckLogin = async (req, res, next) => {
   if (req.body.min || req.query.min) {
-    logger.info('wxCheckLogin', req.body.min, req.query.min,req.session.user)
+    logger.info('wxCheckLogin', req.body.min, req.query.min, req.session.user)
+    logger.info("req.query.sessionId || req.body.sessionId", req.query.sessionId , req.body.sessionId)
     if (req.session.user) {
       logger.info("直接带session.user进来的", req.session.user);
       next();
@@ -19,7 +20,11 @@ const wxCheckLogin = async (req, res, next) => {
       } else {
         const userInfo = JSON.parse(sessionData)?.user;
         const currentDirectory = path.relative(process.cwd(), __dirname);
-        logger.info(`${currentDirectory}检查微信小程序登录session状态`, userInfo);
+        req.session.user = {
+          userName: userInfo.userName,
+          id: userInfo.uid
+        };
+        logger.info(`${currentDirectory}检查微信小程序登录session状态`, userInfo, req.session);
         req.userInfo = userInfo;
         next();
       }

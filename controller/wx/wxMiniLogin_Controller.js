@@ -52,6 +52,7 @@ const postMethods = function (urlstr, req, res) {
     let fields = {};
     request(urlstr, async (error, response, body) => {
       if (error) {
+        logger.error('postMethods',error)
         reject;
       }
       let bodyData = JSON.parse(body);

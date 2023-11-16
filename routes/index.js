@@ -16,7 +16,7 @@ const outLogin_Controller = require("../controller/outLogin");
 const multipart = require("connect-multiparty");
 const course = require("../middleware/course/index");
 const appiontment = require('../middleware/appointment/appointmentMid');
-const coursePay_Controller = require("../controller/course/coursePay_Controller");
+// const coursePay_Controller = require("../controller/course/coursePay_Controller");
 // const orderPay_Controller = require("../controller/orderPay_Controller");
 const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
 const appointmentRecord_Controller = require("../controller/course/appointmentRecord_Controller");
@@ -30,6 +30,8 @@ const Login = require("../middleware/checkLogin");
 const multipartMiddleware = multipart();
 const referee = require("../controller/refereeController/referee");
 const wxCheckLogin = require("../middleware/wxCheckLogin");
+// 创建订单
+const orderController = require("../controller/orderPay/index");
 // const request = require("request"); //http请求模块
 
 /* GET home page. */
@@ -104,15 +106,20 @@ router.post(
   course.courseLisUpdate
 );
 router.get("/courseDelete", Login.checkLogin, course.course_Delete)
-// 商品文章创建订单
+
 router.post(
   "/courseCreate",
   multipartMiddleware,
   Login.checkLogin,
-  coursePay_Controller
+  wxCheckLogin,
+  orderController.coursePay
 );
 // 查看订单
-
+router.post('/orderCountList',
+  Login.checkLogin,
+  wxCheckLogin,
+  orderController.orderCountList
+)
 // 支付订单
 // router.post("/orderPay", multipartMiddleware, orderPay_Controller);
 

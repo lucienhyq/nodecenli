@@ -28,6 +28,16 @@ const orderSchema = new Schema({
     ref: "Admin",
     field: "_id"
   },
+  // 如果是course类型就传课程商品id关联查询
+  crouse_id: {
+    type: Schema.Types.ObjectId,
+    ref: "course",
+    field: "_id"
+  },
+  goodTitle: {
+    type: String,
+    default: ''
+  },
   goodStatus: {
     type: String,
     default: 1
@@ -35,6 +45,10 @@ const orderSchema = new Schema({
   orderType: {
     type: String,
     default: ''
+  },
+  goodImg: {
+    type: String,
+    default: ""
   }
 })
 orderSchema.index({ orderId: 1 });
