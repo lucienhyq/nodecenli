@@ -34,18 +34,22 @@ const orderSchema = new Schema({
     ref: "course",
     field: "_id"
   },
+  // 订单商品标题
   goodTitle: {
     type: String,
     default: ''
   },
+  // 订单状态
   goodStatus: {
     type: String,
     default: 1
   },
+  // 订单对应的商品类型
   orderType: {
     type: String,
     default: ''
   },
+  // 订单商品图片
   goodImg: {
     type: String,
     default: ""

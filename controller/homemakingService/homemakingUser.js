@@ -147,9 +147,27 @@ class homemaking {
       logger.error('error' + error);
     }
   }
+  /**
+   * 确认下单家政服务
+   * @param {
+   *  hmuid 家政人员id
+   *  
+   * } req 
+   * @param {*} res 
+   * @param {*} next 
+   */
+  async homework_creatOrder(req, res, next) {
+    try {
+      
+    } catch (error) {
+      formatErrorMessage(res, error);
+      logger.error('error' + error);
+    }
+  }
 }
 
 // 格式化错误信息
+
 function formatErrorMessage(res, message) {
   logger.error('error:', message);
   res.status(500).send({
