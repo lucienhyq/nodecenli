@@ -11,6 +11,7 @@ const wx_GetUser_controller = require('../controller/admin/wx_GetUser_controller
 const homemaking = require('../controller/homemakingService/homemakingUser');
 const wapLogin = require("../controller/admin/login");
 const Login = require("../middleware/checkLogin");
+const orderPay = require("../controller/orderPay/index")
 
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller);
@@ -37,7 +38,7 @@ router.get("/getArticle", async (req, res, next) => {
 router.get("/getCourse", wxCheckLogin, course.courseList);
 // 记录
 // router.get("/userAccess", userAccess_Controller);
-// router.get("/get_userAccess", get_userAccess_Controller);
+router.get("/get_userAccess", get_userAccess_Controller);
 router.get("/getMember", wxCheckLogin, wx_GetUser_controller);
 
 // 家政服务
@@ -46,5 +47,6 @@ router.post("/homeMakingAddUser", Login.checkLogin, wxCheckLogin, homemaking.add
 router.post("/updateWorkStatus", Login.checkLogin, wxCheckLogin, homemaking.updateWorkStatus);
 router.post("/updateHomeWork", Login.checkLogin, wxCheckLogin, homemaking.updateWorkStatus);
 router.post("/homeMakingDeleteUser", Login.checkLogin, wxCheckLogin, homemaking.homework_delete);
+router.post("/homework_creatOrder", Login.checkLogin, wxCheckLogin, orderPay.homeMakingOrder);
 
 module.exports = router;

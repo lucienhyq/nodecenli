@@ -15,6 +15,10 @@ class homemaking {
             if (err) {
               logger.info('homemakingList::::::err', err)
             }
+            if (!list) {
+              formatErrorMessage(res,'error')
+              return
+            }
             res.send({
               data: list,
               result: 1,
@@ -148,11 +152,11 @@ class homemaking {
     }
   }
   /**
-   * 确认下单家政服务
+   * 确认预约家政服务
    * @param {
    *  hmuid 家政人员id
    *  
-   * } req 
+   * }  
    * @param {*} res 
    * @param {*} next 
    */

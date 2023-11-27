@@ -1,5 +1,6 @@
 const courseModel = require('../../models/course/course');
 const orderModel = require('../../models/order/order');
+const homemakingUser = require('../../models/homemaking/homemakingUser');
 const logger = require('../../logs/logs').logger;
 const getIdmethod = require('../../prototype/ids');
 const dtime = require('time-formater');
@@ -48,6 +49,46 @@ class orderController {
       formatErrorMessage(res, error);
       logger.error(error);
     }
+  }
+  // 家政服务下单，免费下单，私下付款
+  async homeMakingOrder(req, res, next) {
+    let hmuid = req.body.hmuid;
+    let orderList;
+    let uid = req.session.user.id;
+    let list = await homemakingUser.findOne({ hmuid: hmuid })
+    // // 时间戳生成得订单流水号
+    let randomSn = createordernum();
+    if (list.hmuid != hmuid) {
+      throw new Error('购买失败，请检查商品是否存在')
+    }
+    let checkSn = await orderModel.find({ orderSn: randomSn });
+    if (checkSn.length > 0) {
+      throw new Error('购买失败，请重新下单')
+    }
+    let json = {
+      orderId: await getIdmethod.getId('order_id'),
+      goodsId: list.hmuid,
+      create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
+      course_price: list.workTime.price,
+      orderSn: randomSn,
+      orderType: 'homeaking',
+      goodTitle: list.realname,
+      goodImg: list.avatar,
+    }
+
+    const adminResult = await admin.findOne({ id: uid });
+    if (adminResult) {
+      json.numberId = adminResult._id;
+    }
+    orderList = await orderModel.create(json);
+    res.send({
+      result: 1,
+      msg: '成功',
+      data: orderList
+    })
+  } catch(error) {
+    formatErrorMessage(res, error);
+    logger.error(error);
   }
   async orderCountList(req, res, next) {
     try {
