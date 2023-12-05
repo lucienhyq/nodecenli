@@ -14,7 +14,13 @@ const Login = require("../middleware/checkLogin");
 const orderPay = require("../controller/orderPay/index")
 
 // 获取微信小程序 
-router.post("/wxtoken", wxtoken_Controller);
+router.post("/wxtoken", wxtoken_Controller, (req, res, next) => {
+  res.json({
+    data: req.query?.jsonTokenTime?.access_token || '0',
+    result: 1,
+    msg: ''
+  })
+});
 
 // 微信小程序登录
 // userAccess_Controller
@@ -47,6 +53,7 @@ router.post("/homeMakingAddUser", Login.checkLogin, wxCheckLogin, homemaking.add
 router.post("/updateWorkStatus", Login.checkLogin, wxCheckLogin, homemaking.updateWorkStatus);
 router.post("/updateHomeWork", Login.checkLogin, wxCheckLogin, homemaking.updateWorkStatus);
 router.post("/homeMakingDeleteUser", Login.checkLogin, wxCheckLogin, homemaking.homework_delete);
+router.post("/homeMakingCode", Login.checkLogin, wxCheckLogin, homemaking.homeMakingCode);
 router.post("/homework_creatOrder", Login.checkLogin, wxCheckLogin, orderPay.homeMakingOrder);
 
 module.exports = router;

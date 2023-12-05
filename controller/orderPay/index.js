@@ -94,7 +94,7 @@ class orderController {
     try {
       let user = await admin.findOne({ id: req.session.user.id })
       console.log(req.session.user, user)
-      let order = await orderModel.find({ numberId: user._id }).select('-_id -__v').populate('numberId crouse_id', '-_id user_name avatar mobile id');
+      let order = await orderModel.find().select('-_id -__v').populate('numberId crouse_id', '-_id user_name avatar mobile id');
       res.send({
         data: order,
         msg: 'successs',

@@ -3,18 +3,18 @@ const path = require("path");
 const fs = require("fs");
 
 const miniToken = async (req, res, next) => {
-  if(req.query.i != 1){
+  console.log("dasdsdasdas", req.body.i)
+  if (req.body.i != 1) {
     // i=1是微信小程序
     next()
     return
   }
   let dayTime = Date.parse(new Date()) / 1000;
   let PUBLIC_PATH = path.resolve(__dirname, "../../js/miniToken.json");
-  // console.log(dayTime,Date.parse(new Date())/1000);
   await fs.readFile(PUBLIC_PATH, (err, data) => {
     if (err) throw err
-    // console.log(JSON.parse(data.toString()).expires_in)
     let jsonTokenTime = JSON.parse(data.toString()).expires_in;
+    console.log(jsonTokenTime, dayTime, jsonTokenTime)
     if (!jsonTokenTime || dayTime > jsonTokenTime) {
       // 凭证过期
       requestGet(
@@ -37,6 +37,7 @@ const miniToken = async (req, res, next) => {
       // res.json({
       //   data: JSON.parse(data.toString())
       // })
+      req.query.jsonTokenTime = JSON.parse(data.toString())
       next();
     }
   })

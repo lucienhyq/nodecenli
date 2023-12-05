@@ -2,8 +2,10 @@ const dtime = require('time-formater');
 const getIdmethod = require('../../prototype/ids');
 const homemakingUser = require('../../models/homemaking/homemakingUser');
 const admin = require('../../models/admin/admin');
+const request = require("request"); //网络请求
 const logger = require('../../logs/logs').logger;
-
+const accessTokenJson = require("../../js/miniToken.json");
+const fs = require("fs");
 class homemaking {
   async homemakingList(req, res, next) {
     try {
@@ -16,7 +18,7 @@ class homemaking {
               logger.info('homemakingList::::::err', err)
             }
             if (!list) {
-              formatErrorMessage(res,'error')
+              formatErrorMessage(res, 'error')
               return
             }
             res.send({
@@ -162,7 +164,60 @@ class homemaking {
    */
   async homework_creatOrder(req, res, next) {
     try {
-      
+
+    } catch (error) {
+      formatErrorMessage(res, error);
+      logger.error('error' + error);
+    }
+  }
+  /**
+   * 根据下单用户生成微信小程序码
+   * 家政人员到场扫码确认到达
+   * @param {*} req 
+   * @param {*} res 
+   * @param {*} next 
+   */
+  async homeMakingCode(req, res, next) {
+    try {
+      let urlstr = `https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=${accessTokenJson.access_token}`;
+      let option = {
+        url: urlstr,
+        method: 'POST',
+        json: true,
+        encoding: null,
+        body: {
+          "page": "pages/index/index",
+          "scene": "orderId=" + req.body.orderId,
+          "check_path": true,
+          "env_version": "develop",
+        }
+      }
+      console.log(option, 'option')
+      let codePath = `uploads/wxMinPCode/card_id${req.body.orderId}.png`;
+      let ispath = req.protocol + "://" + req.get("host");
+      await fs.mkdir("uploads/wxMinPCode", (err) => {
+        if (err) {
+          console.log('文件夹已创建', err);
+          return
+        }
+
+      })
+
+      request(option, async (error, response, body) => {
+        // console.log(body)
+        await fs.writeFile(codePath, body, (err) => {
+          if (err) {
+            logger.error('error' + err);
+            return
+          };
+          console.log("写入成功", codePath);
+          res.send({
+            result: 1,
+            data: `${ispath}/uploads/code/card_id_${req.body.orderId}.png`,
+            msg: 'success',
+          })
+        })
+      });
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('error' + error);
