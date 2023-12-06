@@ -15,6 +15,12 @@ const homeMakingUser = new Schema({
     type: Number,
     unique: true,
   },
+  // 家政下属的会员，可以用来到客户家里扫码到达状态
+  bindUid: {
+    type: Schema.Types.ObjectId,
+    ref: "Admin",
+    field: "_id"
+  },
   // 创建时间
   create_time: String,
   avatar: {

@@ -92,9 +92,18 @@ class orderController {
   }
   async orderCountList(req, res, next) {
     try {
-      let user = await admin.findOne({ id: req.session.user.id })
-      console.log(req.session.user, user)
-      let order = await orderModel.find().select('-_id -__v').populate('numberId crouse_id', '-_id user_name avatar mobile id');
+      // let user = await admin.findOne({ id: req.session.user.id })
+      let page = 0;
+      let total = 4;
+      if (req.body.page) {
+        page = req.body.page - 1;
+      }
+      let order = await orderModel.find()
+        .select('-_id -__v')
+        .populate('numberId crouse_id', '-_id user_name avatar mobile id')
+        .limit(total)
+        .sort({ 'orderId': -1 })
+        .skip(page * total)
       res.send({
         data: order,
         msg: 'successs',

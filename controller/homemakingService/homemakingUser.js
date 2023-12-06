@@ -6,13 +6,50 @@ const request = require("request"); //网络请求
 const logger = require('../../logs/logs').logger;
 const accessTokenJson = require("../../js/miniToken.json");
 const fs = require("fs");
+const orderModel = require('../../models/order/order');
+
 class homemaking {
+  /**
+   * 
+   * @param {uid,user_name} req 
+   * @param {*} res 
+   * @param {*} next 
+   */
+  async findAdmin(req, res, next) {
+    try {
+      let json;
+      let keyword = Number(req.body.keyword);
+      if (!keyword) {
+        json = {
+          user_name: new RegExp(req.body.keyword, "i")
+        }
+      } else {
+        json = {
+          id: keyword
+        }
+      }
+      admin.find(json)
+        .select("-__v -createdAt -openid -session_key -updatedAt -password")
+        .exec((err, list) => {
+          if (err) {
+            logger.info('homemakingList::::::err', err)
+          }
+          res.send({
+            data: list,
+            result: 1,
+            msg: '成功'
+          });
+        });
+    } catch (error) {
+      formatErrorMessage(res, error);
+    }
+  }
   async homemakingList(req, res, next) {
     try {
       if (req.body.hmuid) {
         homemakingUser.findOne({ hmuid: req.body.hmuid })
           .select('-_id -__v')
-          .populate('creatUid', '-_id user_name avatar mobile id')
+          .populate('creatUid bindUid', '-_id user_name avatar mobile id')
           .exec((err, list) => {
             if (err) {
               logger.info('homemakingList::::::err', err)
@@ -50,7 +87,7 @@ class homemaking {
   async addHomemaking(req, res, next) {
     try {
       let cBody = req.body;
-      let { realname, avatar, mobile, workTime } = cBody;
+      let { realname, avatar, mobile, workTime, bindUid } = cBody;
       if (!realname || !mobile) {
         formatErrorMessage(res, '员工名称或电话不能为空')
         return
@@ -72,6 +109,7 @@ class homemaking {
         avatar: avatar ? avatar : "photo-mr.jpg",
         mobile: mobile,
         workTime: workTime,
+        bindUid: bindUid
       }
       try {
         const adminResult = await admin.findOne({ id: req.session.user.id });
@@ -117,7 +155,10 @@ class homemaking {
       if (req.body.clientShow) {
         json.clientShow = req.body.clientShow
       }
-
+      if (req.body.bindUid) {
+        json.bindUid = req.body.bindUid
+      }
+      console.log(json)
       try {
         await homemakingUser.updateOne({ 'hmuid': req.body.hmuid }, json);
         res.send({
@@ -192,7 +233,6 @@ class homemaking {
           "env_version": "develop",
         }
       }
-      console.log(option, 'option')
       let codePath = `uploads/wxMinPCode/card_id${req.body.orderId}.png`;
       let ispath = req.protocol + "://" + req.get("host");
       await fs.mkdir("uploads/wxMinPCode", (err) => {
@@ -203,21 +243,51 @@ class homemaking {
 
       })
 
-      request(option, async (error, response, body) => {
-        // console.log(body)
+      await request(option, async (error, response, body) => {
+        console.log(body)
         await fs.writeFile(codePath, body, (err) => {
           if (err) {
             logger.error('error' + err);
             return
           };
-          console.log("写入成功", codePath);
+          logger.info(`生成成功${ispath}${codePath}`);
           res.send({
             result: 1,
-            data: `${ispath}/uploads/code/card_id_${req.body.orderId}.png`,
+            data: `${ispath}${codePath}`,
             msg: 'success',
           })
         })
       });
+    } catch (error) {
+      formatErrorMessage(res, error);
+      logger.error('error' + error);
+    }
+  }
+  /**
+   * 
+   * @param {orderId} req 
+   * @param {*} res 
+   * @param {*} next 
+   */
+  async homeMakingReachSign(req, res, next) {
+    try {
+      console.log(req.session.user)
+      let user = req.session.user;
+      if (!req.body.orderId) {
+        formatErrorMessage(res, "请输入正确的订单id");
+        return
+      }
+      await orderModel.updateOne({ 'orderId': req.body.orderId }, { status: 1 }).exec((err, list) => {
+        if (err) {
+          formatErrorMessage(res, '失败');
+          return
+        }
+      });
+      res.send({
+        data: [],
+        msg: '修改成功',
+        result: 1
+      })
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('error' + error);

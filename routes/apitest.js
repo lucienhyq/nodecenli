@@ -15,6 +15,7 @@ const orderPay = require("../controller/orderPay/index")
 
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller, (req, res, next) => {
+  // console.log(req.query.jsonTokenTime.access_token,'dsasdasdasd获取微信小程序')
   res.json({
     data: req.query?.jsonTokenTime?.access_token || '0',
     result: 1,
@@ -53,7 +54,9 @@ router.post("/homeMakingAddUser", Login.checkLogin, wxCheckLogin, homemaking.add
 router.post("/updateWorkStatus", Login.checkLogin, wxCheckLogin, homemaking.updateWorkStatus);
 router.post("/updateHomeWork", Login.checkLogin, wxCheckLogin, homemaking.updateWorkStatus);
 router.post("/homeMakingDeleteUser", Login.checkLogin, wxCheckLogin, homemaking.homework_delete);
-router.post("/homeMakingCode", Login.checkLogin, wxCheckLogin, homemaking.homeMakingCode);
 router.post("/homework_creatOrder", Login.checkLogin, wxCheckLogin, orderPay.homeMakingOrder);
+router.post("/FindAdmin", Login.checkLogin, wxCheckLogin, homemaking.findAdmin);
+router.post("/homeMakingCode", wxtoken_Controller, Login.checkLogin, wxCheckLogin, homemaking.homeMakingCode);
+router.post("/homeMakingReachSign", wxtoken_Controller, Login.checkLogin, homemaking.homeMakingReachSign);
 
 module.exports = router;
