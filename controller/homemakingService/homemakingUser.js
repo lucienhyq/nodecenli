@@ -172,6 +172,7 @@ class homemaking {
       formatErrorMessage(res, error);
     }
   }
+  // 家政服务删除
   async homework_delete(req, res, next) {
     try {
       let humid = req.query.hmuid;
@@ -205,7 +206,10 @@ class homemaking {
    */
   async homework_creatOrder(req, res, next) {
     try {
-
+      // 订单id
+      const order_Id = req.body.orderId;
+      let order = orderModel.findOne({orderId:order_Id});
+      console.log(order)
     } catch (error) {
       formatErrorMessage(res, error);
       logger.error('error' + error);

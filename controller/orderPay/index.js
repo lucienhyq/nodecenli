@@ -55,6 +55,10 @@ class orderController {
     let hmuid = req.body.hmuid;
     let orderList;
     let uid = req.session.user.id;
+    if(!hmuid){
+      formatErrorMessage(res, '请输入正确的家政人员id');
+      return
+    }
     let list = await homemakingUser.findOne({ hmuid: hmuid })
     // // 时间戳生成得订单流水号
     let randomSn = createordernum();
