@@ -11,13 +11,14 @@ const wx_GetUser_controller = require('../controller/admin/wx_GetUser_controller
 const homemaking = require('../controller/homemakingService/homemakingUser');
 const wapLogin = require("../controller/admin/login");
 const Login = require("../middleware/checkLogin");
-const orderPay = require("../controller/orderPay/index")
+const orderPay = require("../controller/orderPay/index");
+const Bills = require("../controller/bills/bills_Controller");
 
 // 获取微信小程序 
 router.post("/wxtoken", wxtoken_Controller, (req, res, next) => {
   // console.log(req.query.jsonTokenTime.access_token,'dsasdasdasd获取微信小程序')
   res.json({
-    data: req.query?.jsonTokenTime?.access_token || '0',
+    data: req.query.jsonTokenTime.access_token || '0',
     result: 1,
     msg: ''
   })
@@ -58,5 +59,7 @@ router.post("/homework_creatOrder", Login.checkLogin, wxCheckLogin, orderPay.hom
 router.post("/FindAdmin", Login.checkLogin, wxCheckLogin, homemaking.findAdmin);
 router.post("/homeMakingCode", wxtoken_Controller, Login.checkLogin, wxCheckLogin, homemaking.homeMakingCode);
 router.post("/homeMakingReachSign", wxtoken_Controller, Login.checkLogin, homemaking.homeMakingReachSign);
-
+// 记账本
+router.get("/Bills_index", wxtoken_Controller, Login.checkLogin, wxCheckLogin, Bills.index)
+router.post("/Bills_add", wxtoken_Controller, Login.checkLogin, wxCheckLogin, Bills.add)
 module.exports = router;

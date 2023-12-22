@@ -84,8 +84,8 @@ const postMethods = function (urlstr, req, res) {
           const admin_id = await getIdmethod.getId("admin_id");
           // 有openid且有用户信息就在用户表新建一个并且返回给前端
           const newAdmin = {
-            user_name: fields?.nickName ? fields.nickName : "小程序用户", //小程序默认名称
-            password: fields?.password ? fields.password : "123456", //默认密码
+            user_name: fields.nickName ? fields.nickName : "小程序用户", //小程序默认名称
+            password: fields.password ? fields.password : "123456", //默认密码
             id: admin_id,
             create_time: dtime().format("YYYY-MM-DD HH:mm:ss"),
             admin: "mini",

@@ -7,7 +7,7 @@ const qrCode = async (req, res, next) => {
   let nameRoute = req.route.path;
   // console.log(nameRoute,req.body);
   try {
-    let uid = req.session?.user?.id || req?.user?.id;
+    let uid = req.session.user.id || req.user.id;
     let imgpath = `./uploads/code/card_id_${uid}.png`;
     let ispath = req.protocol + "://" + req.get("host");
     let base64;
