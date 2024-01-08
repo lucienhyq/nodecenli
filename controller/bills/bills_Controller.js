@@ -18,6 +18,10 @@ class Bills {
     if (req.user) {
       uid = req.user.id
     }
+    if(!reqBody){
+      formatErrorMessage(res,'错误请求')
+      return
+    }
     // 获取登录的会员id
     let adminList = await Admin.findOne({ id: uid });
     // 再去查找这个会员是否有 记账记录
