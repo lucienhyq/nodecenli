@@ -28,6 +28,26 @@ const bilsSchema = new Schema({
   time: {
     type: Date,
   },
+  /*备注类型 
+    交通 1
+    餐饮 2
+    生活用品 3
+    医疗 4
+    话费 5
+    美容 6
+    娱乐 7
+    烟酒 8
+    旅游 9
+    学习 10
+    运动 11
+    住房 12
+    幼儿 13
+    其他 0
+  */
+  noteType: {
+    type: Number,
+    default: 0
+  },
   // 备注
   note: {
     type: String,

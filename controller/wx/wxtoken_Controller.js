@@ -3,7 +3,8 @@ const path = require("path");
 const fs = require("fs");
 
 const miniToken = async (req, res, next) => {
-  console.log("miniToken", req.body.i)
+  let i_type = req.query.i || req.body.i;
+  console.log("miniToken", i_type)
   if (req.body.i != 1) {
     // i=1是微信小程序
     next()

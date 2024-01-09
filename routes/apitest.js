@@ -60,6 +60,7 @@ router.post("/FindAdmin", Login.checkLogin, wxCheckLogin, homemaking.findAdmin);
 router.post("/homeMakingCode", wxtoken_Controller, Login.checkLogin, wxCheckLogin, homemaking.homeMakingCode);
 router.post("/homeMakingReachSign", wxtoken_Controller, Login.checkLogin, homemaking.homeMakingReachSign);
 // 记账本
-router.get("/Bills_index", wxtoken_Controller, Login.checkLogin, wxCheckLogin, Bills.index)
-router.post("/Bills_add", wxtoken_Controller, Login.checkLogin, wxCheckLogin, Bills.add)
+router.get("/Bills_index", wxtoken_Controller, Login.checkLogin, wxCheckLogin, Bills.index);
+router.post("/Bills_index", wxtoken_Controller, Login.checkLogin, wxCheckLogin, Bills.index);
+router.post("/Bills_add", wxtoken_Controller, Login.checkLogin, wxCheckLogin, Bills.add);
 module.exports = router;

@@ -18,8 +18,8 @@ class Bills {
     if (req.user) {
       uid = req.user.id
     }
-    if(!reqBody){
-      formatErrorMessage(res,'错误请求')
+    if (!reqBody) {
+      formatErrorMessage(res, '错误请求')
       return
     }
     // 获取登录的会员id
@@ -76,23 +76,40 @@ class Bills {
       data: []
     })
   }
+  // 账本首页数据
   async index(req, res, next) {
-    console.log(req.user, 'ddddddd');
     let uid;
     if (req.user) {
-      uid = req.user.id
+      uid = req.user.uid
     }
     let adminList = await Admin.findOne({ id: uid });
     let billsList;
-    if (adminList && adminList._id) {
+    billsList = await bildsAccountSchema.findOne({ uid: adminList._id })
+      .select('-_id -__v')
+      .populate('uid', '-_id user_name id')
+    // 新用户没有账号
+    if (!billsList) {
+      await bildsAccountSchema.create({
+        uid: adminList._id,
+      })
       billsList = await bildsAccountSchema.findOne({ uid: adminList._id })
         .select('-_id -__v')
         .populate('uid', '-_id user_name id')
     }
-    res.json({
-      result: 200,
+    let resultData = {};
+    resultData.expensePrice = billsList.expensePrice;
+    resultData.totalMoney = billsList.totalMoney;
+    resultData.incomePrice = billsList.incomePrice;
+    resultData.user = billsList.uid;
+    await bilsSchema.find({ creatUid: adminList._id }).then((res) => {
+      console.log(res, 'bilsSchema.find')
+      resultData.list = res;
+    })
+    // console.log(resultData, 'bills_index -billsList')
+    res.send({
+      result: 1,
       msg: '成功',
-      data: billsList
+      data: resultData
     })
   }
 }
