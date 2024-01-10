@@ -8,7 +8,7 @@ const wxCheckLogin = async (req, res, next) => {
       logger.info("直接带session.user进来的", req.session.user);
       req.user = {
         userName: req.session.user.userName,
-        id: req.session.user.uid
+        uid: req.session.user.uid
       }
       next();
     } else if (req.query.sessionId || req.body.sessionId) {

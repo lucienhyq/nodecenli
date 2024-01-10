@@ -14,11 +14,12 @@ class Bills {
   async add(req, res, next) {
     const item_id = await getIdmethod.getId('item_id');
     let reqBody = req.body;
+    console.log(reqBody, req.query, 'reqqqqqqqqqqq')
     let uid;
     if (req.user) {
-      uid = req.user.id
+      uid = req.user.uid
     }
-    if (!reqBody) {
+    if (!reqBody.amount) {
       formatErrorMessage(res, '错误请求')
       return
     }
@@ -27,7 +28,7 @@ class Bills {
     // 再去查找这个会员是否有 记账记录
     //先查看是否有会员之前的记录 
     let findAccount = await bildsAccountSchema.findOne({ uid: adminList._id })
-    console.log(findAccount, 'bildsAccountSchema.findOne')
+    // console.log(findAccount, 'bildsAccountSchema.findOne')
     // 增加记录表
     await bilsSchema.create({
       id: item_id,
@@ -35,7 +36,8 @@ class Bills {
       creatUid: adminList._id,
       amount: reqBody.amount,
       time: new Date(),
-      note: reqBody.note
+      note: reqBody.note,
+      noteType: reqBody.noteType
     }).then(async (res, err) => {
       console.log(res, 'bilsSchema.create 新增记账记录成功')
       const BilsAccountJson = {
@@ -70,9 +72,9 @@ class Bills {
         await bildsAccountSchema.updateOne({ uid: adminList._id }, oldAccount)
       }
     })
-    res.json({
-      result: 200,
-      msg: '成功',
+    res.status(200).json({
+      result: 1,
+      msg: '记账成功',
       data: []
     })
   }
@@ -82,6 +84,7 @@ class Bills {
     if (req.user) {
       uid = req.user.uid
     }
+    let reqBody = req.body;
     let adminList = await Admin.findOne({ id: uid });
     let billsList;
     billsList = await bildsAccountSchema.findOne({ uid: adminList._id })
@@ -101,11 +104,26 @@ class Bills {
     resultData.totalMoney = billsList.totalMoney;
     resultData.incomePrice = billsList.incomePrice;
     resultData.user = billsList.uid;
-    await bilsSchema.find({ creatUid: adminList._id }).then((res) => {
-      console.log(res, 'bilsSchema.find')
-      resultData.list = res;
-    })
-    // console.log(resultData, 'bills_index -billsList')
+    let page = 1;
+    if (reqBody.page) {
+      page = Number(reqBody.page)
+    }
+    const total = 15;
+    const skipNum = page == 1 ? 0 : (page-1) * total;
+    resultData.list = {};
+    resultData.list.data = [];
+    resultData.list.currentPage = page;
+    resultData.list.lastPage = '';
+    resultData.list.lastPage = await bilsSchema.countDocuments({creatUid:adminList._id});
+    await bilsSchema.find({ creatUid: adminList._id })
+      .select('-_id')
+      .sort({ 'id': -1 })
+      .limit(total)
+      .skip(skipNum)
+      .then((res) => {
+        resultData.list.data = res
+      })
+    console.log(skipNum, 'resultData res')
     res.send({
       result: 1,
       msg: '成功',
