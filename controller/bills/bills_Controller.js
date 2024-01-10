@@ -2,6 +2,22 @@ const bilsSchema = require("../../models/bills/newBils");
 const Admin = require("../../models/admin/admin");
 const getIdmethod = require('../../prototype/ids');
 const bildsAccountSchema = require("../../models/bills/account")
+const billsTag = {
+  0: '其他',
+  1: '交通',
+  2: '餐饮',
+  3: '生活用品',
+  4: '医疗',
+  5: '话费',
+  6: '美容',
+  7: '娱乐',
+  8: '烟酒',
+  9: '旅游',
+  10: '学习',
+  11: '运动',
+  12: '住房',
+  13: '幼儿',
+}
 class Bills {
   /**
    * 
@@ -109,21 +125,27 @@ class Bills {
       page = Number(reqBody.page)
     }
     const total = 15;
-    const skipNum = page == 1 ? 0 : (page-1) * total;
+    const skipNum = page == 1 ? 0 : (page - 1) * total;
     resultData.list = {};
     resultData.list.data = [];
     resultData.list.currentPage = page;
     resultData.list.lastPage = '';
-    resultData.list.lastPage = await bilsSchema.countDocuments({creatUid:adminList._id});
+    await bilsSchema.countDocuments({ creatUid: adminList._id }).then((res) => {
+      resultData.list.lastPage = Math.ceil(res / 15);
+    })
     await bilsSchema.find({ creatUid: adminList._id })
       .select('-_id')
       .sort({ 'id': -1 })
       .limit(total)
       .skip(skipNum)
+      .lean()
       .then((res) => {
-        resultData.list.data = res
+        res.forEach((ele) => {
+          ele.noteType = billsTag[ele.noteType]
+        });
+        resultData.list.data = res;
       })
-    console.log(skipNum, 'resultData res')
+
     res.send({
       result: 1,
       msg: '成功',
