@@ -112,7 +112,8 @@ class orderController {
   }
   async orderCountList(req, res, next) {
     try {
-      // let user = await admin.findOne({ id: req.session.user.id })
+      let user = await admin.findOne({ id: req.session.user.id })
+      console.log(user,'dddddddd')
       let page = 0;
       let total = 4;
       if (req.body.page) {
