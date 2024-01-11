@@ -59,6 +59,7 @@ router.post("/homework_creatOrder", Login.checkLogin, wxCheckLogin, orderPay.hom
 router.post("/FindAdmin", Login.checkLogin, wxCheckLogin, homemaking.findAdmin);
 router.post("/homeMakingCode", wxtoken_Controller, Login.checkLogin, wxCheckLogin, homemaking.homeMakingCode);
 router.post("/homeMakingReachSign", wxtoken_Controller, Login.checkLogin, homemaking.homeMakingReachSign);
+router.post("/test",orderPay.testUpdateHmOrder)
 // 记账本
 router.get("/Bills_index", wxtoken_Controller, Login.checkLogin, wxCheckLogin, Bills.index);
 router.post("/Bills_index", wxtoken_Controller, Login.checkLogin, wxCheckLogin, Bills.index);

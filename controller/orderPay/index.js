@@ -5,6 +5,7 @@ const logger = require('../../logs/logs').logger;
 const getIdmethod = require('../../prototype/ids');
 const dtime = require('time-formater');
 const admin = require('../../models/admin/admin');
+const order = require('../../models/order/order');
 
 class orderController {
   // course 课程商品创建地点
@@ -50,49 +51,64 @@ class orderController {
       logger.error(error);
     }
   }
+  async testUpdateHmOrder(req, res, next) {
+    try {
+      // 更新所有文档，将新字段添加为默认值
+      const updateResult = await orderModel.updateMany({}, { $set: { Hmid: '' } });
+      console.log(`已成功添加默认字段到 ${updateResult.nModified} 个文档`);
+     
+    } catch (error) {
+      console.error('添加默认字段失败', error);
+    }
+  }
   // 家政服务下单，免费下单，私下付款
   async homeMakingOrder(req, res, next) {
-    let hmuid = req.body.hmuid;
-    let orderList;
-    let uid = req.session.user.id;
-    if(!hmuid){
-      formatErrorMessage(res, '请输入正确的家政人员id');
-      return
-    }
-    let list = await homemakingUser.findOne({ hmuid: hmuid })
-    // // 时间戳生成得订单流水号
-    let randomSn = createordernum();
-    if (list.hmuid != hmuid) {
-      throw new Error('购买失败，请检查商品是否存在')
-    }
-    let checkSn = await orderModel.find({ orderSn: randomSn });
-    if (checkSn.length > 0) {
-      throw new Error('购买失败，请重新下单')
-    }
-    let json = {
-      orderId: await getIdmethod.getId('order_id'),
-      goodsId: list.hmuid,
-      create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
-      course_price: list.workTime.price,
-      orderSn: randomSn,
-      orderType: 'homeaking',
-      goodTitle: list.realname,
-      goodImg: list.avatar,
-    }
+    try {
 
-    const adminResult = await admin.findOne({ id: uid });
-    if (adminResult) {
-      json.numberId = adminResult._id;
+      let hmuid = req.body.hmuid;
+      let orderList;
+      let uid = req.session.user.id;
+      if (!hmuid) {
+        formatErrorMessage(res, '请输入正确的家政人员id');
+        return
+      }
+      let list = await homemakingUser.findOne({ hmuid: hmuid })
+      console.log(list)
+      // // 时间戳生成得订单流水号
+      let randomSn = createordernum();
+      if (list.hmuid != hmuid) {
+        throw new Error('购买失败，请检查商品是否存在')
+      }
+      let checkSn = await orderModel.find({ orderSn: randomSn });
+      if (checkSn.length > 0) {
+        throw new Error('购买失败，请重新下单')
+      }
+      let json = {
+        orderId: await getIdmethod.getId('order_id'),
+        create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
+        course_price: list.workTime.price,
+        orderSn: randomSn,
+        orderType: 'homeaking',
+        goodTitle: list.realname,
+        goodImg: list.avatar,
+      }
+
+      const adminResult = await admin.findOne({ id: uid });
+      if (adminResult) {
+        json.numberId = adminResult._id;
+      }
+      orderList = await orderModel.create(json);
+      orderList.Hmid = list._id;
+      await orderList.save();
+      res.send({
+        result: 1,
+        msg: '成功',
+        data: orderList
+      })
+    } catch (error) {
+      formatErrorMessage(res, error);
+      logger.error(error);
     }
-    orderList = await orderModel.create(json);
-    res.send({
-      result: 1,
-      msg: '成功',
-      data: orderList
-    })
-  } catch(error) {
-    formatErrorMessage(res, error);
-    logger.error(error);
   }
   async orderCountList(req, res, next) {
     try {
@@ -104,7 +120,7 @@ class orderController {
       }
       let order = await orderModel.find()
         .select('-_id -__v')
-        .populate('numberId crouse_id', '-_id user_name avatar mobile id')
+        .populate('numberId crouse_id Hmid', '-_id user_name avatar mobile id realname')
         .limit(total)
         .sort({ 'orderId': -1 })
         .skip(page * total)
@@ -138,7 +154,7 @@ const createordernum = function () {
   hour = setTimeDateFmt(hour)
   minutes = setTimeDateFmt(minutes)
   seconds = setTimeDateFmt(seconds)
-  let orderCode = 'ce' + now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 1000000)).toString();
+  let orderCode = 'hm' + now.getFullYear().toString() + month.toString() + day + hour + minutes + seconds + (Math.round(Math.random() * 1000000)).toString();
   return orderCode;
   //基于年月日时分秒+随机数生成订单编号
 }

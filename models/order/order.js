@@ -7,9 +7,10 @@ const orderSchema = new Schema({
     type: String,
     unique: true
   },
-  // 订单商品id
+  // 关联订单商品id
   goodsId: {
     type: Number,
+    default: 0
   },
   // 订单创建时间
   create_time: String,
@@ -56,7 +57,13 @@ const orderSchema = new Schema({
   }
 })
 orderSchema.index({ orderId: 1 });
-
+orderSchema.add({ 
+  Hmid: {
+    type: Schema.Types.ObjectId,
+    ref: "homeMaking",
+    field: "_id"
+  } 
+});
 const order = db.model('order', orderSchema);
 
 
