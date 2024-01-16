@@ -5,7 +5,7 @@ const logger = require('../../logs/logs').logger;
 const getIdmethod = require('../../prototype/ids');
 const dtime = require('time-formater');
 const admin = require('../../models/admin/admin');
-const order = require('../../models/order/order');
+// const order = require('../../models/order/order');
 
 class orderController {
   // course 课程商品创建地点
