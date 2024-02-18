@@ -31,8 +31,11 @@ class Login {
       await verToken(token).then((data) => {
         logger.info(":::::::::::::::登录token解析信息", data)
         req.session.user = data;
-        req.user = data;
-        next()
+         AdminModel.findOne({id:data.id}).then((res)=>{
+          data._id = res._id;
+          req.user = data;
+          next()
+        })
       }).catch((error) => {
         logger.error(req.query, req.route.path, req.method, error)
         if (error.name == 'TokenExpiredError') {
