@@ -5,14 +5,32 @@ const request = require("request"); //网络请求
 const cheerio = require("cheerio"); //爬虫 扩展模块
 const article_model = require("../../models/course/Article/Article");
 const getIdmethod = require("../../prototype/ids");
+const cron = require("node-cron");
 
 const logger = require("../../logs/logs").logger;
+const task = async () => {
+  cron.schedule("59 23 * * *", async () => {
+    console.log("每晚凌晨23点59分运行清理nba爬虫文章");
+    logger.info("每晚凌晨23点59分运行清理nba爬虫文章");
+    article_model.countDocuments(async (err, count) => {
+      if (count > 0) {
+        // 清除全部文章
+        await article_model.deleteMany({});
+        // 重置文章id
+        await setArticleId();
+      }
+    });
+  });
+};
+var record = 0;
 const firstHome = async (req, res, next) => {
   let news = await getNbaNews(req);
   let arr = [];
+  record += 1;
+  if (record === 1) {
+    await task();
+  }
   if (news) {
-    // await article_model.deleteMany({});
-    // await setArticleId();
     for (let index = 0; index < news.length; index++) {
       const element = news[index];
       let farr = filterObj(element, [
@@ -26,6 +44,7 @@ const firstHome = async (req, res, next) => {
       } else {
         arr = arr.concat(farr);
       }
+      // 查找当前文章是否存在数据库中
       let len = await article_model.find({ news_id: farr.news_id });
       if (len.length <= 0) {
         let jsonsa = {
@@ -63,8 +82,10 @@ const firstHome = async (req, res, next) => {
 module.exports = firstHome;
 
 var getNbaNews = function (req) {
-  let url =
-    "https://china.nba.cn/cms/v1/news/list?column_id=57&page_size=24&page_no=1";
+  console.log(req.query.page, "传递的参数");
+  // let page_no = req.query.page ? req.query.page : 1;
+  // &page_size=24&page_no=${page_no}
+  let url = `https://china.nba.cn/cms/v1/news/list?column_id=57&page_size=100`;
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {
