@@ -71,10 +71,11 @@ const firstHome = async (req, res, next) => {
   } catch (error) {
     logger.info(error);
   }
+  let findList = await article_model.find({}).skip(nowPageNum).limit(pageSize).sort({ id: -1 })
   res.status(200).send({
     msg: "",
     data: {
-      json: await article_model.find({}),
+      json: findList,
     },
     result: 1,
   });
@@ -83,8 +84,6 @@ module.exports = firstHome;
 
 var getNbaNews = function (req) {
   console.log(req.query.page, "传递的参数");
-  // let page_no = req.query.page ? req.query.page : 1;
-  // &page_size=24&page_no=${page_no}
   let url = `https://china.nba.cn/cms/v1/news/list?column_id=57&page_size=100`;
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
@@ -135,7 +134,6 @@ var getArticleConten = function (farr) {
         if (farr.vid) {
           videoSrc = await getNBAvideo(farr);
         }
-        logger.info(body);
         let cnt_html;
         if (body) {
           cnt_html = JSON.parse(body).data.cnt_html;
