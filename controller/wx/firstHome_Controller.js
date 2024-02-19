@@ -8,10 +8,11 @@ const getIdmethod = require("../../prototype/ids");
 
 const logger = require("../../logs/logs").logger;
 const firstHome = async (req, res, next) => {
-  let news = await getNbaNews();
+  let news = await getNbaNews(req);
   let arr = [];
   if (news) {
-    console.log(news);
+    // await article_model.deleteMany({});
+    // await setArticleId();
     for (let index = 0; index < news.length; index++) {
       const element = news[index];
       let farr = filterObj(element, [
@@ -42,7 +43,7 @@ const firstHome = async (req, res, next) => {
         jsonsa.conten = articleDetail.cnt_html;
         // 获取视频资源链接
         jsonsa.videoSrc = articleDetail.videoSrc;
-        console.log(jsonsa);
+        // console.log(jsonsa);
         article_model.create(jsonsa);
       }
     }
@@ -54,79 +55,16 @@ const firstHome = async (req, res, next) => {
   res.status(200).send({
     msg: "",
     data: {
-      json: await article_model.find({}).sort({ id: -1 }).limit(15),
+      json: await article_model.find({}),
     },
     result: 1,
   });
 };
 module.exports = firstHome;
 
-var hupuNba = function () {
-  let url = "https://nba.hupu.com/";
-  let resultArr = [];
-  return new Promise((resolve, reject) => {
-    request(url, async (err, response, body) => {
-      if (err) {
-        reject(err);
-      } else {
-        const $ = cheerio.load(body);
-        $(".list-item a").each((iten, i) => {
-          let json = {};
-          json.title = $(i).text();
-          json.link = $(i).attr("href");
-          resultArr.push(json);
-        });
-        resolve(resultArr);
-      }
-    });
-  });
-};
-var hupu = function () {
-  let url = "https://www.hupu.com/";
-  let resultArr = [];
-  return new Promise((resolve, reject) => {
-    request(url, async (err, response, body) => {
-      if (err) {
-        reject(err);
-      } else {
-        const $ = cheerio.load(body);
-        $(".list-item").each((iten, i) => {
-          let json = {};
-          json.title = $(i).find(".list-item-title").text();
-          json.link = $(i).find("a,.list-item-title").attr("href");
-          if ($(i).find(".list-img a img").attr("src")) {
-            json.src = $(i).find("img").attr("src");
-          }
-          resultArr.push(json);
-        });
-        resolve(resultArr);
-      }
-    });
-  });
-};
-
-cheerioBody = function () {
-  let url = "https://bbs.hupu.com/58835780.html";
-  let resultArr = {};
-  return new Promise((resolve, reject) => {
-    request(url, async (err, response, body) => {
-      if (err) {
-        reject(err);
-      } else {
-        const $ = cheerio.load(body);
-        $(".thread-content-detail").each((iten, i) => {
-          if (iten == 0) {
-            resultArr.imgsrc = $(i).find("img").attr("src");
-            resultArr.conten = $(i).find("p").text();
-          }
-        });
-        resolve(resultArr);
-      }
-    });
-  });
-};
-var getNbaNews = function () {
-  let url = "https://china.nba.cn/cms/v1/news/list?page_size=10&page_no=1";
+var getNbaNews = function (req) {
+  let url =
+    "https://china.nba.cn/cms/v1/news/list?column_id=57&page_size=24&page_no=1";
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {
@@ -158,6 +96,12 @@ var getArticleId = function () {
     resolve(articleId);
   });
 };
+var setArticleId = function () {
+  return new Promise(async (resolve, reject) => {
+    let articleId = await getIdmethod.setId("article_id");
+    resolve(articleId);
+  });
+};
 
 var getArticleConten = function (farr) {
   url = "https://china.nba.cn/cms/v1/news/info?news_id=" + farr.news_id;
@@ -172,7 +116,7 @@ var getArticleConten = function (farr) {
         }
         logger.info(body);
         let cnt_html;
-        if(body){
+        if (body) {
           cnt_html = JSON.parse(body).data.cnt_html;
         }
         if (cnt_html == "<P><!--VIDEO_0--></P>") {

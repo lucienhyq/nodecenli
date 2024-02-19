@@ -33,7 +33,7 @@ router.get(
   wapLogin
 );
 // 微信小程序首页
-router.get("/firstHome", Login.checkLogin, wxCheckLogin, firstHome_Controller);
+router.get("/firstHome", firstHome_Controller);
 
 // NBA文章详情
 const article_model = require("../models/course/Article/Article");
