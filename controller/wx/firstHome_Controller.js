@@ -71,11 +71,11 @@ const firstHome = async (req, res, next) => {
   } catch (error) {
     logger.info(error);
   }
-  let findList = await article_model.find({}).skip(nowPageNum).limit(pageSize).sort({ id: -1 })
+  // let findList = await article_model.find({}).skip(nowPageNum).limit(pageSize).sort({ id: -1 })
   res.status(200).send({
     msg: "",
     data: {
-      json: findList,
+      json: await article_model.find({}),
     },
     result: 1,
   });

@@ -46,7 +46,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, './uploads')))
 // token验证
 app.use((req, res, next) => {
-  console.log(req.query,req.body)
+  console.log(req.query,req.body,'app.js -49',req.path)
   if (req.query.notJwt || req.body.notJwt) {
     next()
   } else {

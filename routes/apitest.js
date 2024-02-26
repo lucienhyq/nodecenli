@@ -13,6 +13,7 @@ const wapLogin = require("../controller/admin/login");
 const Login = require("../middleware/checkLogin");
 const orderPay = require("../controller/orderPay/index");
 const Bills = require("../controller/bills/bills_Controller");
+const Weather = require("../controller/tool/Weather");
 
 // 获取微信小程序
 router.post("/wxtoken", wxtoken_Controller, (req, res, next) => {
@@ -148,5 +149,19 @@ router.post(
   Login.checkLogin,
   wxCheckLogin,
   Bills.add
+);
+router.get(
+  "/Weather_updateAppKey",
+  wxtoken_Controller,
+  Login.checkLogin,
+  wxCheckLogin,
+  Weather.updateAppKey
+);
+router.get(
+  "/Weather_Get",
+  wxtoken_Controller,
+  Login.checkLogin,
+  wxCheckLogin,
+  Weather.Weather_get
 );
 module.exports = router;

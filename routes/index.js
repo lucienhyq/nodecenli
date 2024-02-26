@@ -42,7 +42,7 @@ router.get("/", function (req, res, next) {
 router.post("/checkLoginUser", Login.checkLogin, Login.checkLoginUser);
 router.get("/checkLoginUser", Login.checkLogin, Login.checkLoginUser);
 // 注册
-router.post("/register", register_Controller);
+router.get("/register", register_Controller);
 
 // 登录
 router.post("/login", login_Controller);

@@ -14,6 +14,7 @@ class Login {
       if (req.query.min == 'wx' || req.body.min == 'wx') {
         next()
       } else {
+        console.log('222222222222')
         if (req.path == '/checkLoginUser') {
           next()
         } else {
@@ -31,7 +32,16 @@ class Login {
       await verToken(token).then((data) => {
         logger.info(":::::::::::::::登录token解析信息", data)
         req.session.user = data;
-         AdminModel.findOne({id:data.id}).then((res)=>{
+         AdminModel.findOne({id:data.id}).then((data)=>{
+          if(!data){
+            res.send({
+              result: 0,
+              data: null,
+              msg: '请登录'
+            })
+            logger.info(data,'22221')
+            return
+          }
           data._id = res._id;
           req.user = data;
           next()
@@ -54,6 +64,14 @@ class Login {
   };
   async checkLoginUser(req, res, next) {
     try {
+      if(!req.session.user) {
+        res.send({
+          result: 0,
+          data: null,
+          msg: '请登录'
+        })
+        return
+      }
       let userInfo = await AdminModel.findOne({
         id: req.session.user.uid || req.session.user.id,
       });

@@ -1,46 +1,52 @@
-
 // import mongoose from 'mongoose'
-var mongoose = require('mongoose');
-const db = require('../../db')
+var mongoose = require("mongoose");
+const db = require("../../db");
 
 const Schema = mongoose.Schema;
 
-const adminSchema = new Schema({
-  user_name: String,
-  password: String,
-  id: {
-    type: Number,
-    unique: true,
+const adminSchema = new Schema(
+  {
+    user_name: String,
+    password: String,
+    id: {
+      type: Number,
+      unique: true,
+    },
+    create_time: String,
+    // 管理员账号 1
+    // 用户账号 2
+    admin: { type: Number, default: 1 },
+    status: {
+      type: Number,
+      default: 1,
+    }, //1:普通管理、 2:超级管理员 3：小程序会员
+    avatar: { type: String, default: "default.jpg" },
+    city: String,
+    session_key: {
+      type: String,
+      default: "",
+    },
+    openid: {
+      type: String,
+      default: "",
+    },
+    mobile: {
+      type: String,
+      default: "",
+    },
   },
-  create_time: String,
-  // 管理员账号 1 
-  // 用户账号 2
-  admin: { type: Number, default: 1 },
-  status: {
-    type:Number,
-    default:1
-  },  //1:普通管理、 2:超级管理员 3：小程序会员
-  avatar: { type: String, default: 'default.jpg' },
-  city: String,
-  session_key: {
-    type: String,
-    default: ''
-  },
-  openid: {
-    type: String,
-    default: ''
-  },
-  mobile: {
-    type: String,
-    default: ''
+  {
+    timestamps: true,
   }
-}, {
-  timestamps: true
-})
+);
 
 adminSchema.index({ id: 1 });
+adminSchema.add({
+  weatherKey: {
+    type: String,
+    default: "",
+  },
+});
+const Admin = db.model("Admin", adminSchema);
 
-const Admin = db.model('Admin', adminSchema);
-
-
-module.exports = Admin
+module.exports = Admin;

@@ -3,16 +3,18 @@ const dtime = require('time-formater');
 const getIdmethod = require('../../prototype/ids');
 const formidable = require('formidable');
 const secretKey = require('../../js/jwt');
+const logger = require('../../logs/logs').logger;
+
 var register = async (req, res, next) => {
   try {
-    if (req.session.user) {
-      res.send({
-        result: 1,
-        msg: '已经登录',
-        session: req.session
-      })
-      return
-    }
+    // if (req.session.user) {
+    //   res.send({
+    //     result: 1,
+    //     msg: '已经登录',
+    //     session: req.session
+    //   })
+    //   return
+    // }
     // form.parse(req, async (err, fields, files) => {
     let fields = req.body;
     var user = await AdminModel.findOne({ user_name: fields.user_name });
@@ -62,11 +64,15 @@ var register = async (req, res, next) => {
         password: fields.password,
         id: admin_id,
         create_time: dtime().format('YYYY-MM-DD HH:mm:ss'),
-        admin: fields.status == 0 ? '管理员' : '超级管理员',
+        admin: "1",
         // status: fields.status,
         avatar: fields.image ? fields.image : ''
       }
-      let userList = await AdminModel.create(newAdmin)
+      console.log('2222222222222221',newAdmin)
+      console.log(await AdminModel.find())
+      let userList = await AdminModel.create(newAdmin).then((err,res)=>{
+        console.log(res,err)
+      })
       req.session.user = {
         userName: fields.user_name,
         password: fields.password,
