@@ -15,6 +15,7 @@ const usersRouter = require("./routes/users");
 const orderRouter = require("./routes/order");
 const viadanteRouter = require("./routes/viadante");
 const testRouter = require("./routes/apitest");
+const rollRouter = require("./routes/rollRouter");
 const cors = require("cors");
 // var blog = require("./routes/blog");
 // var blogConten = require("./routes/blogConten");
@@ -63,6 +64,7 @@ app.use('/users', usersRouter);
 app.use('/order', orderRouter);
 app.use('/viadante', viadanteRouter);
 app.use('/apitest', testRouter);
+app.use('/rollapi', rollRouter);
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));
