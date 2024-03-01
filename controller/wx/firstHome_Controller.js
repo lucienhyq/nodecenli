@@ -25,6 +25,7 @@ const task = async () => {
 var record = 0;
 const firstHome = async (req, res, next) => {
   let news = await getNbaNews(req);
+  logger.info(news);
   let arr = [];
   record += 1;
   if (record === 1) {
@@ -83,8 +84,7 @@ const firstHome = async (req, res, next) => {
 module.exports = firstHome;
 
 var getNbaNews = function (req) {
-  console.log(req.query.page, "传递的参数");
-  let url = `https://china.nba.cn/cms/v1/news/list?column_id=57&page_size=100`;
+  let url = `https://china.nba.cn/cms/v1/news/list?column_id=57&page_size=10`;
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {

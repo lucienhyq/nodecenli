@@ -1,6 +1,7 @@
 const request = require("request"); //网络请求
 const urlstr = require("./urlAddress");
 const { next } = require("cheerio/lib/api/traversing");
+const logger = require("../../logs/logs").logger;
 
 class roll {
   // 获取图片
@@ -12,10 +13,17 @@ class roll {
       if (err) {
         console.log(err);
       } else {
+        let info = JSON.parse(body).data;
+        let filterArr = [];
+        for (let i = 0; i < info.length; i++) {
+          if (filterArr.indexOf(info[i].imageUrl) == -1) {
+            filterArr.push(info[i].imageUrl);
+          }
+        }
         res.send({
           result: 1,
           msg: "请求成功",
-          data: JSON.parse(body),
+          data: filterArr,
         });
       }
     });
@@ -30,7 +38,7 @@ class roll {
         res.send({
           result: 1,
           msg: "请求成功",
-          data: JSON.parse(body),
+          data: JSON.parse(body).data,
         });
       }
     });
@@ -85,6 +93,19 @@ class roll {
           data: JSON.parse(body),
         });
       }
+    });
+  };
+  // 返回按钮
+  rollSetting = async (req, res, next) => {
+    let option = [
+      { id: 1, name: "美女图片" },
+      { id: 2, name: "新闻" },
+      { id: 3, name: "历史上的今天" },
+    ];
+    res.send({
+      result: 1,
+      msg: "成功",
+      data: option,
     });
   };
 }
