@@ -76,7 +76,7 @@ const firstHome = async (req, res, next) => {
   res.status(200).send({
     msg: "",
     data: {
-      json: await article_model.find({}),
+      json: await article_model.find({}).sort({ id: -1 }).limit(15),
     },
     result: 1,
   });
@@ -84,7 +84,7 @@ const firstHome = async (req, res, next) => {
 module.exports = firstHome;
 
 var getNbaNews = function (req) {
-  let url = `https://china.nba.cn/cms/v1/news/list?column_id=57&page_size=10`;
+  let url = `https://china.nba.cn/cms/v1/news/list?column_id=57&page_size=15`;
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {
