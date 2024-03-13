@@ -32,6 +32,9 @@ const referee = require("../controller/refereeController/referee");
 const wxCheckLogin = require("../middleware/wxCheckLogin");
 // 创建订单
 const orderController = require("../controller/orderPay/index");
+const {
+  homemakingList,
+} = require("../controller/homemakingService/homemakingUser");
 // const request = require("request"); //http请求模块
 
 /* GET home page. */
@@ -53,6 +56,17 @@ router.post("/usetEdit", Login.checkLogin, usetEdit_Controller);
 
 // 上传图片
 router.post("/posts", (req, res) => {
+  upload(req, res)
+    .then((imgsrc) => {
+      // 上传成功 存储文件路径 到数据库中
+      res.send({ data: imgsrc, result: 1 });
+    })
+    .catch((err) => {
+      formatErrorMessage(res, err);
+    });
+});
+// 上传图片
+router.post("/homemaking_posts", (req, res) => {
   upload(req, res)
     .then((imgsrc) => {
       // 上传成功 存储文件路径 到数据库中
