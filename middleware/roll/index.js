@@ -101,6 +101,7 @@ class roll {
       { id: 1, name: "美女图片" },
       { id: 2, name: "新闻" },
       { id: 3, name: "历史上的今天" },
+      { id: 4, name: "家政预约" },
     ];
     res.send({
       result: 1,

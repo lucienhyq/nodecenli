@@ -46,6 +46,7 @@ router.get("/register", register_Controller);
 
 // 登录
 router.post("/login", login_Controller);
+router.get("/login", login_Controller);
 
 // 编辑会员信息
 router.post("/usetEdit", Login.checkLogin, usetEdit_Controller);

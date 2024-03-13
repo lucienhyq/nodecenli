@@ -17,9 +17,6 @@ const viadanteRouter = require("./routes/viadante");
 const testRouter = require("./routes/apitest");
 const rollRouter = require("./routes/rollRouter");
 const cors = require("cors");
-// var blog = require("./routes/blog");
-// var blogConten = require("./routes/blogConten");
-// const errHandler = require("./middleware/error-handler");
 
 
 var app = express();
@@ -47,7 +44,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, './uploads')))
 // token验证
 app.use((req, res, next) => {
-  console.log(req.query,req.body,'app.js -49',req.path)
   if (req.query.notJwt || req.body.notJwt) {
     next()
   } else {
@@ -57,7 +53,13 @@ app.use((req, res, next) => {
     next()
   }
 });
-
+// logger
+app.use(async (req ,res , next) => {
+  const start = new Date()
+  await next()
+  const ms = new Date() - start
+  console.log(`${req.method} ${req.url} - ${ms}ms`)
+})
 //引用路由
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

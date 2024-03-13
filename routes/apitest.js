@@ -159,9 +159,6 @@ router.get(
 );
 router.get(
   "/Weather_Get",
-  wxtoken_Controller,
-  Login.checkLogin,
-  wxCheckLogin,
   Weather.Weather_get
 );
 module.exports = router;

@@ -1,6 +1,5 @@
-
-var mongoose = require('mongoose');
-const db = require('../../db')
+var mongoose = require("mongoose");
+const db = require("../../db");
 
 const Schema = mongoose.Schema;
 
@@ -8,7 +7,7 @@ const homeMakingUser = new Schema({
   // 家政人员名称
   realname: {
     type: String,
-    default: ''
+    default: "",
   },
   // 家政人员id
   hmuid: {
@@ -19,37 +18,40 @@ const homeMakingUser = new Schema({
   bindUid: {
     type: Schema.Types.ObjectId,
     ref: "Admin",
-    field: "_id"
+    field: "_id",
   },
   // 创建时间
   create_time: String,
   avatar: {
     type: String,
-    default: ""
+    default: "",
   },
   mobile: {
     type: String,
-    default: ''
+    default: "",
   },
   workTime: {
     type: Object,
-    default: {}
+    default: {},
   },
   // 平台是否显示
   clientShow: {
     type: Boolean,
-    default: true
+    default: true,
+  },
+  takeOrder: {
+    type: Boolean,
+    default: true,
   },
   creatUid: {
     type: Schema.Types.ObjectId,
     ref: "Admin",
-    field: "_id"
+    field: "_id",
   },
-})
+});
 
 homeMakingUser.index({ id: 1 });
 
-const User = db.model('homeMaking', homeMakingUser);
+const User = db.model("homeMaking", homeMakingUser);
 
-
-module.exports = User
+module.exports = User;
