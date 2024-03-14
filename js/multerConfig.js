@@ -28,10 +28,10 @@ let storage = multer.diskStorage({
   //  3.2 存储名称
   filename: function (req, file, cb) {
     let fileFormat = file.originalname.split(".");
-    if (req.url == "/homemaking_posts") {
-      cb(null, `${req.session.user.id}.jpg`);
-      return;
-    }
+    // if (req.url == "/homemaking_posts") {
+    //     cb(null, md5(+new Date()) + "." + fileFormat[fileFormat.length - 1]);
+    //   return;
+    // }
     cb(null, md5(+new Date()) + "." + fileFormat[fileFormat.length - 1]);
   },
 });

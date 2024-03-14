@@ -15,7 +15,7 @@ const adminSchema = new Schema(
     create_time: String,
     // 管理员账号 1
     // 用户账号 2
-    admin: { type: Number, default: 1 },
+    admin: { type: Number, default: 2 },
     status: {
       type: Number,
       default: 1,

@@ -14,8 +14,8 @@ const homeMakingUser = new Schema({
     type: Number,
     unique: true,
   },
-  // 家政下属的会员，可以用来到客户家里扫码到达状态
-  bindUid: {
+  // 创建人员的会员id，可以是后台管理员创建，可以是用户创建（用户创建需要申请权限后面再做）
+  creatUid: {
     type: Schema.Types.ObjectId,
     ref: "Admin",
     field: "_id",
@@ -39,14 +39,30 @@ const homeMakingUser = new Schema({
     type: Boolean,
     default: true,
   },
+  // 兼职还是全职
   takeOrder: {
     type: Boolean,
     default: true,
   },
-  creatUid: {
-    type: Schema.Types.ObjectId,
-    ref: "Admin",
-    field: "_id",
+  // 工时价钱 每小时价格
+  price: {
+    type: String,
+    default: "0",
+  },
+  // 员工等级 0最低，每完成100单提升一级
+  level: {
+    type: String,
+    default: "0",
+  },
+  // 完成订单数量
+  orderEndNumber: {
+    type: String,
+    default: "0",
+  },
+  // 审核状态 0审核中
+  status: {
+    type: Number,
+    default: 0,
   },
 });
 

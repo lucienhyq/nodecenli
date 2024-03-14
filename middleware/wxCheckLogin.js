@@ -2,14 +2,19 @@ const logger = require("../logs/logs").logger;
 const path = require("path");
 const wxCheckLogin = async (req, res, next) => {
   if (req.body.min || req.query.min) {
-    logger.info('wxCheckLogin', req.body.min, req.query.min, req.session.user)
-    logger.info("req.query.sessionId || req.body.sessionId", req.query.sessionId , req.body.sessionId)
+    logger.info("wxCheckLogin", req.body.min, req.query.min, req.session.user);
+    logger.info(
+      "req.query.sessionId || req.body.sessionId",
+      req.query.sessionId,
+      req.body.sessionId
+    );
     if (req.session.user) {
-      logger.info("直接带session.user进来的", req.session.user);
+      logger.info("直接带session.user进来的", req.session.user, req.user._id);
       req.user = {
-        userName: req.session.user.userName,
-        uid: req.session.user.uid
-      }
+        userName: req.session.user.username,
+        uid: req.session.user.id,
+        _id: req.user._id,
+      };
       next();
     } else if (req.query.sessionId || req.body.sessionId) {
       // 有sessionId是微信小程序的
@@ -26,9 +31,13 @@ const wxCheckLogin = async (req, res, next) => {
         const currentDirectory = path.relative(process.cwd(), __dirname);
         req.session.user = {
           userName: userInfo.userName,
-          id: userInfo.uid
+          id: userInfo.uid,
         };
-        logger.info(`${currentDirectory}检查微信小程序登录session状态`, userInfo, req.session);
+        logger.info(
+          `${currentDirectory}检查微信小程序登录session状态`,
+          userInfo,
+          req.session
+        );
         req.userInfo = userInfo;
         req.user = userInfo;
         next();
@@ -41,8 +50,7 @@ const wxCheckLogin = async (req, res, next) => {
       });
     }
   } else {
-    next()
+    next();
   }
-
 };
 module.exports = wxCheckLogin;
