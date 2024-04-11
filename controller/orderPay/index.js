@@ -89,35 +89,55 @@ class orderController {
         formatErrorMessage(res, "该家政人员未通过审核");
         return;
       }
+
+      let fitt = {
+        Hmid: list.creatUid._id, // 检查特定的Hmid
+        $or: [
+          {
+            $and: [
+              { startTime: { $lt: req.body.startTime } }, // 检查现有startTime是否在新startTime之前
+              { endTime: { $lte: req.body.startTime } } // 检查现有endTime是否在新startTime之前或相等
+            ]
+          },
+          {
+            $and: [
+              { startTime: { $gte: req.body.endTime } }, // 检查现有startTime是否在新endTime之后或相等
+              { endTime: { $gt: req.body.endTime } } // 检查现有endTime是否在新endTime之后
+            ]
+          }
+        ]
+      };
+      let checkSn = await orderModel.find(fitt);
+      console.log(checkSn);
+      if (checkSn.length > 0) {
+        res.send({
+          result: 0,
+          msg: "该时间段已经被预约",
+          data: checkSn,
+        });
+        return;
+      }
       // // 时间戳生成得订单流水号
       let randomSn = createordernum();
-      let checkSn = await orderModel.find({ orderSn: randomSn });
-      if (checkSn.length > 0) {
-        throw new Error("购买失败，请重新下单");
-      }
       let json = {
         orderId: await getIdmethod.getId("order_id"),
         create_time: dtime().format("YYYY-MM-DD HH:mm:ss"),
         price: list.price,
         orderSn: randomSn,
         orderType: "homeaking",
-        Hmid: list.hmuid,
+        Hmid: list.creatUid._id,
+        startTime: req.body.startTime,
+        endTime: req.body.endTime,
       };
-      console.log(list);
-      formatErrorMessage(res, json);
-      return;
-
-      const adminResult = await admin.findOne({ id: uid });
+      const adminResult = await admin.findOne({ id: req.user.uid });
       if (adminResult) {
         json.numberId = adminResult._id;
       }
-      orderList = await orderModel.create(json);
-      orderList.Hmid = list._id;
-      await orderList.save();
+      // orderList = await orderModel.create(json);
       res.send({
         result: 1,
         msg: "成功",
-        data: orderList,
+        // data: orderList,
       });
     } catch (error) {
       formatErrorMessage(res, error);

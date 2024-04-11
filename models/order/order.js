@@ -49,6 +49,14 @@ orderSchema.add({
     ref: "homeMaking",
     field: "_id",
   },
+  startTime: {
+    type: String,
+    default: "",
+  },
+  endTime: {
+    type: String,
+    default: "",
+  },
 });
 const order = db.model("order", orderSchema);
 
