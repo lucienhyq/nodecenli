@@ -14,7 +14,7 @@ const Login = require("../middleware/checkLogin");
 const orderPay = require("../controller/orderPay/index");
 const Bills = require("../controller/bills/bills_Controller");
 const Weather = require("../controller/tool/Weather");
-
+// const Music_score = require("../")
 // 获取微信小程序
 router.post("/wxtoken", wxtoken_Controller, (req, res, next) => {
   // console.log(req.query.jsonTokenTime.access_token,'dsasdasdasd获取微信小程序')
