@@ -1,6 +1,6 @@
-
-var mongoose = require('mongoose')
-const db = require('../../db')
+var mongoose = require("mongoose");
+const db = require("../../db");
+const musicScore_m = require("../music_score_from_models");
 
 const idsSchema = new mongoose.Schema({
   restaurant_id: Number,
@@ -18,9 +18,10 @@ const idsSchema = new mongoose.Schema({
   goods_id: Number,
   article_id: Number,
   homemaking_id: Number,
+  musicScoreForm_id: Number,
 });
 
-const Ids = db.model('Ids', idsSchema);
+const Ids = db.model("Ids", idsSchema);
 
 Ids.findOne((err, data) => {
   if (!data) {
@@ -38,11 +39,12 @@ Ids.findOne((err, data) => {
       admin_id: 0,
       statis_id: 0,
       goods_id: 0,
-      article_id:0,
-      homemaking_id:0
+      article_id: 0,
+      homemaking_id: 0,
+      musicScoreForm_id: 0,
     });
     newIds.save();
   }
-})
+});
 // export default Ids
-module.exports = Ids
+module.exports = Ids;

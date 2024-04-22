@@ -3,20 +3,33 @@ const db = require("../../db");
 const Schema = mongoose.Schema;
 const musicScore = new Schema(
   {
-    conten: {
+    // 表单自定义id
+    id: {
+      type: Number,
+      default: 0,
+    },
+    // 表单内容
+    FormContent: {
       type: Object,
       default: {},
     },
+    // 创建表单人员信息
     creatUid: {
       type: Schema.Types.ObjectId,
       ref: "Admin",
       field: "_id",
+    },
+    // 表单名称
+    formName: {
+      type: String,
+      default: "",
     },
   },
   {
     timestamps: { createdAt: "created", updatedAt: "updated" },
   }
 );
+musicScore.index({ id: 1 });
 
 const musicScore_m = db.model("musicScore", musicScore);
 

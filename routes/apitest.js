@@ -14,6 +14,7 @@ const Login = require("../middleware/checkLogin");
 const orderPay = require("../controller/orderPay/index");
 const Bills = require("../controller/bills/bills_Controller");
 const Weather = require("../controller/tool/Weather");
+const music_score_from = require("../controller/music_score_from/music_score_from")
 // const Music_score = require("../")
 // 获取微信小程序
 router.post("/wxtoken", wxtoken_Controller, (req, res, next) => {
@@ -161,4 +162,7 @@ router.get(
   "/Weather_Get",
   Weather.Weather_get
 );
+// 表单系统
+router.post('/createForm',Login.checkLogin,music_score_from.findUid,music_score_from.createAGradeForm)
+router.post('/getGradeFormList',Login.checkLogin,music_score_from.getGradeFormList)
 module.exports = router;
