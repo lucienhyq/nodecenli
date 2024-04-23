@@ -14,7 +14,7 @@ const Login = require("../middleware/checkLogin");
 const orderPay = require("../controller/orderPay/index");
 const Bills = require("../controller/bills/bills_Controller");
 const Weather = require("../controller/tool/Weather");
-const music_score_from = require("../controller/music_score_from/music_score_from")
+const music_score_from = require("../controller/music_score_from/music_score_from");
 // const Music_score = require("../")
 // 获取微信小程序
 router.post("/wxtoken", wxtoken_Controller, (req, res, next) => {
@@ -59,17 +59,17 @@ router.get(
   Login.checkLogin,
   wxCheckLogin,
   (req, res, next) => {
-    console.log(req.user._id,req.query.article);
+    console.log(req.user._id, req.query.article);
     // like_model.create({})
     let json = {
-      user:req.user._id, //会员id
-      article:req.query.article // 文章id
-    }
-    let likeDoc = like_model.countDocuments((err,count)=>{
-      return count
-    })
-    console.log(likeDoc,'22222222222222222')
-    res.send('ddddddddddd')
+      user: req.user._id, //会员id
+      article: req.query.article, // 文章id
+    };
+    let likeDoc = like_model.countDocuments((err, count) => {
+      return count;
+    });
+    console.log(likeDoc, "22222222222222222");
+    res.send("ddddddddddd");
   }
 );
 
@@ -158,11 +158,34 @@ router.get(
   wxCheckLogin,
   Weather.updateAppKey
 );
-router.get(
-  "/Weather_Get",
-  Weather.Weather_get
+router.get("/Weather_Get", Weather.Weather_get);
+// 创建表单
+router.post(
+  "/createForm",
+  wxtoken_Controller,
+  Login.checkLogin,
+  music_score_from.findUid,
+  music_score_from.createAGradeForm
 );
-// 表单系统
-router.post('/createForm',Login.checkLogin,music_score_from.findUid,music_score_from.createAGradeForm)
-router.post('/getGradeFormList',Login.checkLogin,music_score_from.getGradeFormList)
+// 获取表单数据
+router.post(
+  "/getGradeFormList",
+  wxtoken_Controller,
+  Login.checkLogin,
+  music_score_from.getGradeFormList
+);
+// 查找指定表单数据
+router.get(
+  "/findFormId",
+  wxtoken_Controller,
+  Login.checkLogin,
+  music_score_from.findFormId
+);
+// 更新指定表单
+router.get(
+  "/findFormId",
+  wxtoken_Controller,
+  Login.checkLogin,
+  music_score_from.updateForm
+);
 module.exports = router;

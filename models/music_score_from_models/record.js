@@ -1,37 +1,29 @@
 var mongoose = require("mongoose");
 const db = require("../../db");
 const Schema = mongoose.Schema;
-const musicScore = new Schema(
+const musicScore_record = new Schema(
   {
-    // 表单自定义id
+    // 表单记录自定义id
     id: {
       type: Number,
       default: 0,
     },
     // 表单内容
     FormContent: {
-      type: Array,
-      default: [],
+      type: Object,
+      default: {},
     },
     // 创建表单人员信息
-    creatUid: {
+    member: {
       type: Schema.Types.ObjectId,
       ref: "Admin",
       field: "_id",
     },
-    // 表单名称
-    formName: {
-      type: String,
-      default: "",
-    },
-    formImg: {
-      type: String,
-      default: "",
-    },
-    formDesc: {
-      type: String,
-      default: "",
-    },
+    musicScore:{
+      type: Schema.Types.ObjectId,
+      ref: "musicScore",
+      field: "_id",
+    }
   },
   {
     timestamps: { createdAt: "created", updatedAt: "updated" },
@@ -39,6 +31,6 @@ const musicScore = new Schema(
 );
 musicScore.index({ id: 1 });
 
-const musicScore_m = db.model("musicScore", musicScore);
+const musicScore_record_model = db.model("musicScore_record", musicScore_record);
 
-module.exports = musicScore_m;
+module.exports = musicScore_record_model;

@@ -1,6 +1,5 @@
 var mongoose = require("mongoose");
 const db = require("../../db");
-const musicScore_m = require("../music_score_from_models");
 
 const idsSchema = new mongoose.Schema({
   restaurant_id: Number,
@@ -19,6 +18,7 @@ const idsSchema = new mongoose.Schema({
   article_id: Number,
   homemaking_id: Number,
   musicScoreForm_id: Number,
+  musicScoreForm_record_id : Number
 });
 
 const Ids = db.model("Ids", idsSchema);
@@ -42,6 +42,7 @@ Ids.findOne((err, data) => {
       article_id: 0,
       homemaking_id: 0,
       musicScoreForm_id: 0,
+      musicScoreForm_record_id:0
     });
     newIds.save();
   }

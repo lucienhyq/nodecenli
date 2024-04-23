@@ -5,24 +5,25 @@ const getIdmethod = require("../../prototype/ids");
 class from_controller {
   createAGradeForm = async (req, res, next) => {
     try {
-      console.log(req.body.title);
-      // console.log(body("title").notEmpty());
-      // if (
-      //   !req.body.title ||
-      //   req.body.title == "undefined" ||
-      //   req.body.title == undefined
-      // ) {
-      //   req.status(404).send({
-      //     msg: "请输入表单标题",
-      //   });
-      //   return;
-      // }
+      let conten = req.body;
+      console.log(req.body.contenObj, conten, "dddddddddddd");
+      if (!conten.title) {
+        logger.error("error:::::", req.body);
+        res.send({
+          msg: "请输入表单标题",
+        });
+        return;
+      }
       let musicScoreForm_id = await getIdmethod.getId("musicScoreForm_id");
       let json = {
         creatUid: req.user._id,
-        FormContent: req.body.content,
+        FormContent: conten.contenObj,
         id: musicScoreForm_id,
+        formName: conten.title,
+        formImg: conten.formImg,
+        formDesc: conten.formDesc,
       };
+      console.log(json);
       fromModel.create(json);
       res.send({ body: req.body });
     } catch (error) {
@@ -44,7 +45,8 @@ class from_controller {
         .find({})
         .limit(this.pageNum)
         .skip(page <= 1 ? 0 : this.pageNum * page)
-        .populate('creatUid')
+        .populate("creatUid")
+        .sort({ id: -1 });
       res.status(200).send({
         data: list,
         total: countNumber,
@@ -60,6 +62,25 @@ class from_controller {
       let adminList = await Admin.findOne({ id: uid });
       req.user._id = adminList._id;
       next();
+    } catch (error) {
+      logger.error("error:::::", error);
+    }
+  };
+  findFormId = async (req, res, next) => {
+    try {
+      console.log("req.query.id", req.query.id);
+      let find = await fromModel.findOne({ id: req.query.id });
+      res.status(200).send({
+        data: find,
+        result: 1,
+        msg: "",
+      });
+    } catch (error) {
+      logger.error("error:::::", error);
+    }
+  };
+  updateForm = async (req, res, next) => {
+    try {
     } catch (error) {
       logger.error("error:::::", error);
     }
