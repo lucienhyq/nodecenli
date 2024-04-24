@@ -182,10 +182,19 @@ router.get(
   music_score_from.findFormId
 );
 // 更新指定表单
-router.get(
-  "/findFormId",
+router.post(
+  "/updateForm",
   wxtoken_Controller,
   Login.checkLogin,
+  music_score_from.findUid,
   music_score_from.updateForm
+);
+// 删除表单
+router.post(
+  "/delForm",
+  wxtoken_Controller,
+  Login.checkLogin,
+  music_score_from.findUid,
+  music_score_from.delForm
 );
 module.exports = router;

@@ -4,3 +4,4 @@ exports.createAGradeForm = music_score_from.createAGradeForm;
 exports.getGradeFormList = music_score_from.getGradeFormList;
 exports.findFormId = music_score_from.findFormId;
 exports.updateForm = music_score_from.updateForm;
+exports.delForm = music_score_from.delForm;
