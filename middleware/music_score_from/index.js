@@ -1,16 +1,21 @@
 const logger = require("../../logs/logs").logger;
 const fromModel = require("../../models/music_score_from_models/index");
+const music_score_record = require("../../models/music_score_from_models/record");
 const Admin = require("../../models/admin/admin");
 const getIdmethod = require("../../prototype/ids");
+
+function formatErrorMessage(res, message) {
+  res.status(500).send({
+    error: true,
+    message: message || "",
+    data: [],
+  });
+}
 class from_controller {
-  formatErrorMessage = (res, message) => {
-    res.status(500).send({
-      error: true,
-      message: message || "",
-    });
-  };
-  // 分页显示数量
-  pageNum = 15;
+  constructor() {
+    // 分页显示数量
+    this.pageNum = 15;
+  }
 
   // 更新指定表单
   /**
@@ -27,10 +32,10 @@ class from_controller {
       console.log(conten);
       if (!conten.title) {
         logger.error("error:::::", req.body);
-        res.send({
+        return res.send({
+          result: 0,
           msg: "请输入表单标题",
         });
-        return;
       }
       let json = {
         creatUid: req.user._id,
@@ -39,9 +44,10 @@ class from_controller {
         formName: conten.title,
         formImg: conten.formImg,
         formDesc: conten.formDesc,
+        isMusicForm: conten.checked,
       };
       await fromModel.updateOne({ id: conten.id }, json);
-      res.send({ data: conten.id, msg: "成功", result: 1 });
+      return res.send({ data: conten.id, msg: "成功", result: 1 });
     } catch (error) {
       logger.error("error:::::", error);
     }
@@ -74,6 +80,7 @@ class from_controller {
       if (!conten.title) {
         logger.error("error:::::", req.body);
         res.send({
+          result: 0,
           msg: "请输入表单标题",
         });
         return;
@@ -86,8 +93,8 @@ class from_controller {
         formName: conten.title,
         formImg: conten.formImg,
         formDesc: conten.formDesc,
+        isMusicForm: conten.checked,
       };
-      console.log(json);
       fromModel.create(json);
       res.send({ data: musicScoreForm_id, msg: "创建成功", result: 1 });
     } catch (error) {
@@ -105,7 +112,7 @@ class from_controller {
         .skip(page <= 1 ? 0 : this.pageNum * page)
         .populate("creatUid")
         .sort({ id: -1 });
-      res.status(200).send({
+      return res.status(200).send({
         data: list,
         total: countNumber,
         page: page,
@@ -126,7 +133,7 @@ class from_controller {
     }
   };
   // 通过表单id查指定表单
-  findFormId = async (req, res, next) => {
+  findFormId_list = async (req, res, next) => {
     try {
       console.log("req.query.id", req.query.id);
       let find = await fromModel
@@ -140,6 +147,62 @@ class from_controller {
       });
     } catch (error) {
       logger.error("error:::::", error);
+    }
+  };
+  // 查找表单ObjectId
+  findFormId = async (req, res, next) => {
+    try {
+      if (!req.body.form_id) {
+        formatErrorMessage(res, "请传入表单id");
+        return;
+      }
+      let find = await fromModel.findOne({ id: req.body.form_id });
+      req.form = {};
+      req.form.form_id = find._id;
+      req.form.id = find.id;
+      next();
+    } catch (error) {
+      logger.error("error:::::", error);
+    }
+  };
+  // 表单填写记录提交
+  musicFormRecord = async (req, res, next) => {
+    try {
+      let { form_id, id } = req.form;
+      let { _id } = req.user;
+      if (!req.body.province || !req.body.city) {
+        formatErrorMessage(res, "请选择赛区");
+        return;
+      }
+      let userform = await music_score_record.find({ member: _id }).count();
+      console.log(userform, "是否已经报过名");
+      if (userform >= 1) {
+        res.status(200).send({
+          msg: "已经填写过该表单",
+          data: [],
+          result: 1,
+        });
+        return;
+      }
+      let record_id = await getIdmethod.getId("musicScoreForm_record_id");
+      let json = {
+        id: record_id,
+        DivisionProvince: req.body.province,
+        DivisionCity: req.body.city,
+        FormContent: req.body.FormContent,
+        member: _id,
+        musicScore: form_id,
+        form_id: id,
+      };
+      let record = music_score_record.create(json);
+      res.status(200).send({
+        msg: "成功",
+        data: record,
+        result: 1,
+      });
+    } catch (error) {
+      logger.error("error:::::", error);
+      formatErrorMessage(res, error);
     }
   };
 }

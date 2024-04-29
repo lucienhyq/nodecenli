@@ -38,6 +38,12 @@ const musicScore = new Schema(
   }
 );
 musicScore.index({ id: 1 });
+musicScore.add({
+  isMusicForm: {
+    type: Boolean,
+    default: false,
+  },
+});
 
 const musicScore_m = db.model("musicScore", musicScore);
 

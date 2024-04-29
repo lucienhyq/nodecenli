@@ -8,29 +8,44 @@ const musicScore_record = new Schema(
       type: Number,
       default: 0,
     },
+    DivisionProvince: {
+      type: String,
+      default: "",
+    },
+    DivisionCity: {
+      type: String,
+      default: "",
+    },
     // 表单内容
     FormContent: {
       type: Object,
       default: {},
     },
-    // 创建表单人员信息
+    // 提交表单人员信息
     member: {
       type: Schema.Types.ObjectId,
       ref: "Admin",
       field: "_id",
     },
-    musicScore:{
+    musicScore: {
       type: Schema.Types.ObjectId,
       ref: "musicScore",
       field: "_id",
-    }
+    },
+    form_id: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: { createdAt: "created", updatedAt: "updated" },
   }
 );
-musicScore.index({ id: 1 });
+musicScore_record.index({ id: 1 });
 
-const musicScore_record_model = db.model("musicScore_record", musicScore_record);
+const musicScore_record_model = db.model(
+  "musicScore_record",
+  musicScore_record
+);
 
 module.exports = musicScore_record_model;

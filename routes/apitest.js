@@ -179,7 +179,7 @@ router.get(
   "/findFormId",
   wxtoken_Controller,
   Login.checkLogin,
-  music_score_from.findFormId
+  music_score_from.findFormId_list
 );
 // 更新指定表单
 router.post(
@@ -196,5 +196,14 @@ router.post(
   Login.checkLogin,
   music_score_from.findUid,
   music_score_from.delForm
+);
+// 记录音乐赛区表单
+router.post(
+  "/musicFormRecord",
+  wxtoken_Controller,
+  Login.checkLogin,
+  music_score_from.findUid,
+  music_score_from.findFormId,
+  music_score_from.musicFormRecord
 );
 module.exports = router;
