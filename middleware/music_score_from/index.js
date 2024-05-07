@@ -157,6 +157,9 @@ class from_controller {
         return;
       }
       let find = await fromModel.findOne({ id: req.body.form_id });
+      if (!find) {
+        return formatErrorMessage(res, "表单不存在");
+      }
       req.form = {};
       req.form.form_id = find._id;
       req.form.id = find.id;
@@ -175,16 +178,24 @@ class from_controller {
         return;
       }
       let userform = await music_score_record.find({ member: _id }).count();
-      console.log(userform, "是否已经报过名");
+      let record_id = await getIdmethod.getId("musicScoreForm_record_id");
+      // console.log(userform, "是否已经报过名");
       if (userform >= 1) {
         res.status(200).send({
           msg: "已经填写过该表单",
           data: [],
-          result: 1,
+          result: 0,
         });
         return;
       }
-      let record_id = await getIdmethod.getId("musicScoreForm_record_id");
+      if (!record_id) {
+        res.status(200).send({
+          msg: "不存在表单",
+          data: [],
+          result: 0,
+        });
+        return;
+      }
       let json = {
         id: record_id,
         DivisionProvince: req.body.province,
@@ -199,6 +210,22 @@ class from_controller {
         msg: "成功",
         data: record,
         result: 1,
+      });
+    } catch (error) {
+      logger.error("error:::::", error);
+      formatErrorMessage(res, error);
+    }
+  };
+  musicFormRecord_list = async (req, res, next) => {
+    try {
+      let countNumber = await music_score_record.find({}).count();
+      let list = await music_score_record.find({}).limit(this.pageNum);
+      console.log(list);
+      res.send({
+        data: list,
+        total: countNumber,
+        result: 1,
+        msg: "成功",
       });
     } catch (error) {
       logger.error("error:::::", error);

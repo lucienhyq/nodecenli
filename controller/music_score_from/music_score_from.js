@@ -7,3 +7,4 @@ exports.findFormId = music_score_from.findFormId;
 exports.updateForm = music_score_from.updateForm;
 exports.delForm = music_score_from.delForm;
 exports.musicFormRecord = music_score_from.musicFormRecord;
+exports.musicFormRecord_list = music_score_from.musicFormRecord_list;

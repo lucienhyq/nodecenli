@@ -206,4 +206,13 @@ router.post(
   music_score_from.findFormId,
   music_score_from.musicFormRecord
 );
+// 查看表单的提交列表
+router.get(
+  "/musicFormRecord_list",
+  // wxtoken_Controller,
+  // Login.checkLogin,
+  // music_score_from.findUid,
+  // music_score_from.findFormId,
+  music_score_from.musicFormRecord_list
+);
 module.exports = router;
