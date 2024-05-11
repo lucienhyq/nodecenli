@@ -218,9 +218,14 @@ class from_controller {
   };
   musicFormRecord_list = async (req, res, next) => {
     try {
+      let page = req.body.page ? req.body.page : 1;
       let countNumber = await music_score_record.find({}).count();
-      let list = await music_score_record.find({}).limit(this.pageNum);
-      console.log(list);
+      let list = await music_score_record
+        .find({})
+        .limit(this.pageNum)
+        .skip(page <= 1 ? 0 : this.pageNum * page)
+        .populate("member musicScore", "-_id id user_name")
+        .sort({ id: -1 });
       res.send({
         data: list,
         total: countNumber,
