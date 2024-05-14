@@ -3,10 +3,11 @@ const path = require("path");
 const fs = require("fs");
 
 const miniToken = async (req, res, next) => {
-  let i_type = req.query.i || req.body.i;
-  console.log("miniToken", i_type);
+  let i_type = req.query.min || req.body.min;
+  console.log("miniToken", req.query);
   // i=1是微信小程序
-  if (req.body.i != 1) {
+  console.log("i_type", i_type);
+  if (i_type != 1 && i_type != "wx") {
     next();
     return;
   }
@@ -15,7 +16,7 @@ const miniToken = async (req, res, next) => {
   await fs.readFile(PUBLIC_PATH, async (err, data) => {
     if (err) throw err;
     let jsonTokenTime = JSON.parse(data.toString()).expires_in;
-    console.log(jsonTokenTime, dayTime, jsonTokenTime);
+    console.log(jsonTokenTime, dayTime, jsonTokenTime, "wwwwwwwwwwwwwwwwwww");
     if (!jsonTokenTime || dayTime > jsonTokenTime) {
       // 凭证过期
       await requestGet(

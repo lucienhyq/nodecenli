@@ -218,10 +218,14 @@ class from_controller {
   };
   musicFormRecord_list = async (req, res, next) => {
     try {
+      if (!req.query.form_id) {
+        formatErrorMessage(res, "请传入表单id");
+        return;
+      }
       let page = req.body.page ? req.body.page : 1;
       let countNumber = await music_score_record.find({}).count();
       let list = await music_score_record
-        .find({})
+        .find({ musicScore: req.body.form_id })
         .limit(this.pageNum)
         .skip(page <= 1 ? 0 : this.pageNum * page)
         .populate("member musicScore", "-_id id user_name")

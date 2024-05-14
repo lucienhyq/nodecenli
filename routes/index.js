@@ -38,9 +38,9 @@ const {
 // const request = require("request"); //http请求模块
 
 /* GET home page. */
-router.get("/", function (req, res, next) {
-  res.redirect("index.html");
-});
+// router.get("/", function (req, res, next) {
+//   res.redirect("index.html");
+// });
 // 检查是否有登录
 router.post("/checkLoginUser", Login.checkLogin, Login.checkLoginUser);
 router.get("/checkLoginUser", Login.checkLogin, Login.checkLoginUser);

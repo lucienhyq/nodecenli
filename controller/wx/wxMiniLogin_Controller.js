@@ -88,7 +88,7 @@ const postMethods = function (urlstr, req, res) {
             password: fields.password ? fields.password : "123456", //默认密码
             id: admin_id,
             create_time: dtime().format("YYYY-MM-DD HH:mm:ss"),
-            admin: "mini",
+            admin: "2",
             status: 3,
             avatar: fields.image ? fields.image : "",
           };

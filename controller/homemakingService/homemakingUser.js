@@ -39,6 +39,7 @@ class homemaking extends setting {
    * @param {*} res
    * @param {*} next
    */
+  // 查找会员id
   async findAdmin(req, res, next) {
     try {
       let json;
@@ -69,6 +70,7 @@ class homemaking extends setting {
       formatErrorMessage(res, error);
     }
   }
+  // 获取列表
   async homemakingList(req, res, next) {
     try {
       if (req.body.hmuid) {
@@ -107,6 +109,7 @@ class homemaking extends setting {
       console.log(error);
     }
   }
+  // 添加家政
   async addHomemaking(req, res, next) {
     try {
       let cBody = req.body;
@@ -303,7 +306,7 @@ class homemaking extends setting {
     }
   }
   /**
-   *
+   * 签到
    * @param {orderId} req
    * @param {*} res
    * @param {*} next

@@ -15,16 +15,23 @@ var login = async (req, res, next) => {
       });
       return;
     } else {
-      const tokenStr = jwt.sign(
-        { username: fields.user_name, id: user.id },
-        secretKey,
-        { expiresIn: "8h" }
-      );
-      // console.log(tokenStr,'sdasdas')
+      if (fields.login_type == "pc" && user.admin != 1) {
+        //登录管理后天需要验证是否是管理员
+        res.send({
+          result: 0,
+          msg: "无权限，不是管理员账号",
+        });
+        return;
+      }
       if (
         fields.password == user.password &&
         fields.user_name == user.user_name
       ) {
+        const tokenStr = jwt.sign(
+          { username: fields.user_name, id: user.id },
+          secretKey,
+          { expiresIn: "8h" }
+        );
         // 密码一样，添加session
         req.session.user = {
           userName: user.user_name,
