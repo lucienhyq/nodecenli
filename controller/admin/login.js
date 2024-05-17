@@ -19,7 +19,7 @@ var login = async (req, res, next) => {
         //登录管理后天需要验证是否是管理员
         res.send({
           result: 0,
-          msg: "无权限，不是管理员账号",
+          msg: "不是管理员账号,无权限",
         });
         return;
       }

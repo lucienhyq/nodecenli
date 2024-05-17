@@ -140,6 +140,14 @@ class from_controller {
         .findOne({ id: req.query.id })
         .populate("creatUid", "-_id id")
         .select("-_id -__v");
+      if (!find) {
+        res.send({
+          data: null,
+          result: 0,
+          msg: "fail",
+        });
+        return;
+      }
       res.status(200).send({
         data: find,
         result: 1,
