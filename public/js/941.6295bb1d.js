@@ -1,2 +1,0 @@
-"use strict";(self["webpackChunkp"]=self["webpackChunkp"]||[]).push([[941],{2941:function(t,e,a){a.r(e),a.d(e,{default:function(){return i}});var s=function(){var t=this,e=t._self._c;return e("div",{staticClass:"pcHome"},[t._v(" PC首页 ")])},n=[],c={data(){return{}},activated(){this.getData()},methods:{getData(){$http.post("api/apitest/firstHome",{},"获取中").then((t=>{console.log(t)})).catch((t=>{console.log(t)}))}}},o=c,l=a(1001),u=(0,l.Z)(o,s,n,!1,null,"0d37fa58",null),i=u.exports}}]);
-//# sourceMappingURL=941.6295bb1d.js.map

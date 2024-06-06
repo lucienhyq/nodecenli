@@ -1,5 +1,0 @@
-微信公众号秘钥 71ef6ea6470f58dcd741c05f1493b11d
-微信公众号appid wxab206bb4cbe7857a
-
-小程序秘钥 00c2105ad289a858de30209a10b73295
-小程序appid wxe6d74c44b857ba7b
