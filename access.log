@@ -1,0 +1,7 @@
+::1 - POST /api/register HTTP/1.1 - - - - ms
+::1 - POST /api/register HTTP/1.1 - - - - ms
+::1 - - [12/Jun/2024:01:53:09 +0000] "POST /api/register HTTP/1.1" - -
+::1 - - [12/Jun/2024:01:54:54 +0000] "POST /api/register HTTP/1.1" - - "-" "PostmanRuntime/7.38.0"
+::1 - - [12/Jun/2024:01:54:55 +0000] "POST /api/register HTTP/1.1" - - "-" "PostmanRuntime/7.38.0"
+::1 - - [12/Jun/2024:01:55:06 +0000] "POST /api/register HTTP/1.1" - - "-" "PostmanRuntime/7.38.0"
+::1 - - [12/Jun/2024:01:56:54 +0000] "POST /api/register HTTP/1.1" - - "-" "PostmanRuntime/7.38.0"
