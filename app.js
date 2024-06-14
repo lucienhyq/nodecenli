@@ -7,10 +7,23 @@ const ueser = require("./router/ueser");
 const app = express();
 const bodypaeser = require("body-parser");
 const cors = require("cors");
+const session = require("express-session");
 
+app.use(
+  session({
+    name: "referrs",
+    secret: "referrs",
+    cookie: {
+      maxAge: 86400000, //一天后过期
+    },
+    resave: false, //每次请求是否重新设置session
+    //	指每次请求重新设置 session cookie ,假如你设置的 cookie有效 10分钟
+    saveUninitialized: false, //每次请求是否初始化session
+  })
+);
 app.use(cors());
-app.use(bodypaeser.urlencoded({ limit: '5mb', extended: false }));
-app.use(bodypaeser.json({ limit: '5mb' }));
+app.use(bodypaeser.urlencoded({ limit: "5mb", extended: false }));
+app.use(bodypaeser.json({ limit: "5mb" }));
 // 确保log目录存在
 const logDirectory = path.join(__dirname, "log");
 if (!fs.existsSync(logDirectory)) {

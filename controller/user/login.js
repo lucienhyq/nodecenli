@@ -8,6 +8,7 @@ class Login {
     this.email = email;
     this.password = password;
     this.nick_name = nick_name;
+    this.userExists = {};
   }
 
   // 假设的验证邮箱格式方法
@@ -24,9 +25,16 @@ class Login {
       throw new Error("密码不能为空");
     }
   }
-  validateNickName(req, res, next) {
+  validateNickName(req) {
     if (!this.nick_name) {
       throw new Error("昵称不能为空");
+    }
+  }
+  validateIsLOgin(req, res, next) {
+    if (req.session.user && req.session.user.id) {
+      return false;
+    } else {
+      return true;
     }
   }
 
@@ -37,9 +45,9 @@ class Login {
       this.validatePassword(); // 调用验证方法
       const userExists = await db("users")
         .where("nick_name", this.nick_name)
-        .orWhere("email", this.email)
         .first();
       let result = await comparePassword(this.password, userExists.password);
+      this.userExists = userExists;
       if (!result) {
         throw new Error("用户名或密码错误");
       }

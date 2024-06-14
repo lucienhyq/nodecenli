@@ -27,6 +27,13 @@ class Register {
       throw new Error("昵称不能为空");
     }
   }
+  validateIsLOgin(req, res, next) {
+    if (req.session.user && req.session.user.id) {
+      return false;
+    } else {
+      return true;
+    }
+  }
   async validateCheck(req, res, next) {
     try {
       const userExists = await db("users")
