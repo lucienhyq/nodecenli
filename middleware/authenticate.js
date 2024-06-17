@@ -95,5 +95,18 @@ const register_authenticat = async (req, res, next) => {
     }
   }
 };
-
-module.exports = { authenticateUser, register_authenticat };
+const checkLogin = async (req, res, next) => {
+  try {
+    if (req.session.user) {
+      console.log("用户是已登录");
+      return next();
+    } else {
+      // return ResponseHandler.sendResponse(res, 401, 0, "用户未登录", null);
+      console.log("用户未登录");
+      return next();
+    }
+  } catch (error) {
+    return ResponseHandler.sendResponse(res, 500, 0, "服务器错误", null);
+  }
+};
+module.exports = { authenticateUser, register_authenticat, checkLogin };
