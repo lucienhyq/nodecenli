@@ -19,7 +19,7 @@ const adminSchema = new Schema(
     status: {
       type: Number,
       default: 1,
-    }, //1:普通管理、 2:超级管理员 3：小程序会员
+    }, //1:管理、 2:H5 3：小程序会员
     avatar: { type: String, default: "default.jpg" },
     city: String,
     session_key: {

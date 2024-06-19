@@ -1,14 +1,14 @@
-const UserAccessModel = require('../../models/admin/UserAccess');
-const logger = require('../../logs/logs').logger;
+const UserAccessModel = require("../../models/admin/UserAccess");
+const logger = require("../../logs/logs").logger;
 
 const UserAccess = async (req, res, next) => {
   let list = await UserAccessModel.find();
-  logger.info(req.session,list,'ddddddddddddddddddd')
+  logger.info(req.session, list, "ddddddddddddddddddd");
   res.status(200).send({
     result: 1,
-    msg: '已经登录',
-    data: list
-  })
-}
+    msg: "",
+    data: list,
+  });
+};
 
-module.exports = UserAccess
+module.exports = UserAccess;

@@ -10,7 +10,7 @@ const get_userAccess_Controller = require("../controller/admin/get_userAccess_Co
 const wx_GetUser_controller = require("../controller/admin/wx_GetUser_controller");
 const homemaking = require("../controller/homemakingService/homemakingUser");
 const wapLogin = require("../controller/admin/login");
-const Login = require("../middleware/checkLogin");
+const { checkLogin } = require("../middleware/checkLogin");
 const orderPay = require("../controller/orderPay/index");
 const Bills = require("../controller/bills/bills_Controller");
 const Weather = require("../controller/tool/Weather");
@@ -56,7 +56,7 @@ const like_model = require("../models/course/Article/like");
 router.get(
   "/likeTapMethod",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   (req, res, next) => {
     console.log(req.user._id, req.query.article);
@@ -73,59 +73,63 @@ router.get(
   }
 );
 
-// router.get("/userAccess", userAccess_Controller);
-router.get("/get_userAccess", get_userAccess_Controller);
+router.get(
+  "/get_userAccess",
+  checkLogin,
+  userAccess_Controller,
+  get_userAccess_Controller
+);
 router.get("/getMember", wxCheckLogin, wx_GetUser_controller);
 
 // 家政服务
 router.post(
   "/homeMaking_list",
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   homemaking.homemakingList
 );
 router.post(
   "/homeMakingAddUser",
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   homemaking.addHomemaking
 );
 router.post(
   "/updateWorkStatus",
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   homemaking.updateWorkStatus
 );
 router.post(
   "/updateHomeWork",
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   homemaking.updateWorkStatus
 );
 router.post(
   "/homeMakingDeleteUser",
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   homemaking.homework_delete
 );
 router.post(
   "/homework_creatOrder",
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   orderPay.homeMakingOrder
 );
-router.post("/FindAdmin", Login.checkLogin, wxCheckLogin, homemaking.findAdmin);
+router.post("/FindAdmin", checkLogin, wxCheckLogin, homemaking.findAdmin);
 router.post(
   "/homeMakingCode",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   homemaking.homeMakingCode
 );
 router.post(
   "/homeMakingReachSign",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   homemaking.homeMakingReachSign
 );
 router.post("/test", orderPay.testUpdateHmOrder);
@@ -133,28 +137,28 @@ router.post("/test", orderPay.testUpdateHmOrder);
 router.get(
   "/Bills_index",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   Bills.index
 );
 router.post(
   "/Bills_index",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   Bills.index
 );
 router.post(
   "/Bills_count",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   Bills.add
 );
 router.get(
   "/Weather_updateAppKey",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   wxCheckLogin,
   Weather.updateAppKey
 );
@@ -163,7 +167,7 @@ router.get("/Weather_Get", Weather.Weather_get);
 router.post(
   "/createForm",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   music_score_from.findUid,
   music_score_from.createAGradeForm
 );
@@ -171,21 +175,21 @@ router.post(
 router.post(
   "/getGradeFormList",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   music_score_from.getGradeFormList
 );
 // 查找指定表单数据
 router.get(
   "/findFormId",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   music_score_from.findFormId_list
 );
 // 更新指定表单
 router.post(
   "/updateForm",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   music_score_from.findUid,
   music_score_from.updateForm
 );
@@ -193,7 +197,7 @@ router.post(
 router.post(
   "/delForm",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   music_score_from.findUid,
   music_score_from.delForm
 );
@@ -201,7 +205,7 @@ router.post(
 router.post(
   "/musicFormRecord",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   music_score_from.findUid,
   music_score_from.findFormId,
   music_score_from.musicFormRecord
@@ -210,7 +214,7 @@ router.post(
 router.get(
   "/musicFormRecord_list",
   wxtoken_Controller,
-  Login.checkLogin,
+  checkLogin,
   music_score_from.findUid,
   music_score_from.findFormId,
   music_score_from.musicFormRecord_list
