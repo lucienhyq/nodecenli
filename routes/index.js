@@ -5,7 +5,7 @@ const AdminModel = require("../models/admin/admin");
 // 路由控制器 中间件
 const register_Controller = require("../controller/admin/register");
 const login_Controller = require("../controller/admin/login");
-const usetEdit_Controller = require("../controller/admin/usetEdit_Controller");
+const { userList } = require("../controller/admin/usetEdit_Controller");
 const referee_all_Controller = require("../controller/refereeController/referee_all");
 const referee_add_Controller = require("../controller/refereeController/referee_add");
 const referee_update_Controller = require("../controller/refereeController/referee_update");
@@ -52,8 +52,9 @@ router.get("/register", register_Controller);
 router.post("/login", login_Controller);
 router.get("/login", login_Controller);
 
+router.get("/memberList", checkLogin, userList);
 // 编辑会员信息
-router.post("/usetEdit", checkLogin, usetEdit_Controller);
+// router.post("/usetEdit", checkLogin, usetEdit_Controller);
 
 // 上传图片
 router.post("/posts", handleUpload);
@@ -173,11 +174,7 @@ router.post(
   appiontment.appiontmentSignCode
 );
 // 确认预约签到
-router.post(
-  "/appointmentSingIn",
-  checkLogin,
-  appiontment.appointmentSingIn
-);
+router.post("/appointmentSingIn", checkLogin, appiontment.appointmentSingIn);
 // 获取预约明细
 router.post("/get_appointment", appiontment.get_appointment);
 

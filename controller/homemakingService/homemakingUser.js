@@ -21,7 +21,6 @@ class setting {
       if (req.user) {
         let list = await admin.findOne({ id: req.user.uid });
         // 管理员账号
-        console.log(req.user, list, "wwwwwwwwwww");
         obj.admin = list.admin == 1 ? true : false;
         let isHomeMaking = await homemakingUser
           .findOne({ creatUid: req.user._id })
@@ -101,11 +100,6 @@ class homemaking extends setting {
           .populate("creatUid participants", "-_id user_name avatar mobile id");
       }
 
-      // 将查询结果中每个文档的work字段从字符串转换为JSON对象。
-      datainfo.map((item) => {
-        item.work = JSON.parse(item.work);
-      });
-
       // 记录查询结果到日志系统。
       logger.info(datainfo);
 
@@ -161,7 +155,7 @@ class homemaking extends setting {
         creatUid: adminResult._id, //创建人的_id
         img: cBody.img, //服务介绍图片
         mobile: adminResult.mobile, //手机号
-        work: cBody.work,
+        work: cBody.workTime,
         clientShow: cBody.clientShow == 1 ? true : false,
         takeOrder: cBody.takeOrder == 1 ? true : false,
       };
@@ -171,7 +165,7 @@ class homemaking extends setting {
         : JSON.parse(cBody.participants);
       if (participants) {
         const participantsResult = await admin.find({
-          id: { $in: participants },
+          id: { $in: participants.id },
         });
         // 将处理后的参与者数组添加到json对象中
         const resultArr = participantsResult.map((item) => {
@@ -194,34 +188,45 @@ class homemaking extends setting {
       formatErrorMessage(500, res, error);
     }
   }
-  // 更新在职状态
+  // 更新服务信息
   async updateWorkStatus(req, res, next) {
     try {
       if (!req.body.hmuid) {
         formatErrorMessage(200, res, "输入正确的家政职工id");
       }
+      logger.info("更新服务信息日志操作人:", req.session.user);
+      const cBody = req.body;
+      //获取创建人信息
+      let adminResult = await admin.findOne({ id: cBody.creatUid.id });
       let json = {
-        hmuid: req.body.hmuid,
+        makingName: cBody.makingName, //姓名
+        hmuid: cBody.hmuid, //服务id
+        creatUid: adminResult._id, //创建人的_id
+        img: cBody.img, //服务介绍图片
+        mobile: cBody.mobile, //手机号
+        work: cBody.work,
+        clientShow: cBody.clientShow == 1 ? true : false,
+        takeOrder: cBody.takeOrder == 1 ? true : false,
       };
-      if (req.body.realname) {
-        json.realname = req.body.realname;
+      // 检查并处理参与者数组
+      const participants = Array.isArray(cBody.participants)
+        ? cBody.participants
+        : JSON.parse(cBody.participants);
+      if (participants) {
+        let participantsResult_arr = [];
+        participants.forEach(async (ele) => {
+          participantsResult_arr.push(ele.id);
+        });
+        const participantsResult = await admin.find({
+          id: { $in: participantsResult_arr },
+        });
+        // // 将处理后的参与者数组添加到json对象中
+        const resultArr = participantsResult.map((item) => {
+          return item._id;
+        });
+        json.participants = resultArr;
       }
-      if (req.body.avatar) {
-        json.avatar = req.body.avatar;
-      }
-      if (req.body.mobile) {
-        json.mobile = req.body.mobile;
-      }
-      if (req.body.workTime) {
-        json.workTime = req.body.workTime;
-      }
-      if (req.body.clientShow) {
-        json.clientShow = req.body.clientShow;
-      }
-      if (req.body.bindUid) {
-        json.bindUid = req.body.bindUid;
-      }
-      console.log(json);
+      console.log(json, "wwwwwwwwwwwwww");
       try {
         await homemakingUser.updateOne({ hmuid: req.body.hmuid }, json);
         res.send({
