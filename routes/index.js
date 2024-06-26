@@ -5,7 +5,11 @@ const AdminModel = require("../models/admin/admin");
 // 路由控制器 中间件
 const register_Controller = require("../controller/admin/register");
 const login_Controller = require("../controller/admin/login");
-const { userList } = require("../controller/admin/usetEdit_Controller");
+const {
+  userList,
+  userEdit,
+  addUser,
+} = require("../controller/admin/usetEdit_Controller");
 const referee_all_Controller = require("../controller/refereeController/referee_all");
 const referee_add_Controller = require("../controller/refereeController/referee_add");
 const referee_update_Controller = require("../controller/refereeController/referee_update");
@@ -53,6 +57,8 @@ router.post("/login", login_Controller);
 router.get("/login", login_Controller);
 
 router.get("/memberList", checkLogin, userList);
+router.post("/memberEdit", checkLogin, userEdit);
+router.post("/memberAdd", checkLogin, addUser);
 // 编辑会员信息
 // router.post("/usetEdit", checkLogin, usetEdit_Controller);
 

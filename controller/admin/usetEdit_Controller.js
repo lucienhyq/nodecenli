@@ -1,5 +1,6 @@
 const logger = require("../../logs/logs").logger;
 const AdminModel = require("../../models/admin/admin");
+const getIdmethod = require("../../prototype/ids");
 
 // 优化1: 为update操作创建一个验证和清理输入的函数
 const validateAndUpdateUser = async (uid, updateData) => {
@@ -18,8 +19,6 @@ var userEdit = async (req, res, next) => {
         result: 0,
       });
     }
-
-    // 优化2: 使用异步await模式
     const updateData = req.query; // 未来可以加入更多验证和清理逻辑
     const result = await validateAndUpdateUser(
       req.session.user.uid,
@@ -45,12 +44,12 @@ var userEdit = async (req, res, next) => {
 
 var userList = async (req, res, next) => {
   try {
-    // 优化未做更改，因原逻辑已较为简洁且符合要求
-    let member_list = await AdminModel.find({}).select(
-      "id user_name mobile create_time"
-    );
+    let json = {};
+    if (req.query.member_id) {
+      json.id = req.query.member_id;
+    }
+    let member_list = await AdminModel.find(json);
     if (member_list.length === 0) {
-      // 边界条件优化: 处理查询结果为空的情况
       return res.send({
         data: [],
         msg: "没有找到用户",
@@ -67,8 +66,50 @@ var userList = async (req, res, next) => {
     next(error);
   }
 };
+var addUser = async (req, res, next) => {
+  try {
+    let { name, password, mobile } = req.body;
+    console.log(name, password, mobile, "wwwwwwwww");
+    if (!name || !password || !mobile) {
+      res.send({
+        data: "",
+        msg: "参数错误",
+        result: 0,
+      });
+      return;
+    }
+    console.log("env", process.env);
+
+    let result = await AdminModel.findOne({ mobile });
+    if (!result) {
+      const admin_id = await getIdmethod.getId("admin_id");
+      let json = {
+        user_name: name,
+        password: password,
+        mobile,
+        id: admin_id,
+      };
+      let addResult = await AdminModel.create(json);
+    } else {
+      res.send({
+        data: "",
+        msg: "手机号已经被使用",
+        result: 0,
+      });
+    }
+    res.send({
+      data: "",
+      msg: "",
+      result: 1,
+    });
+  } catch (error) {
+    logger.info(`用户列表错误: ${error}`); // 优化日志记录
+    next(error);
+  }
+};
 
 module.exports = {
   userList,
   userEdit,
+  addUser,
 };
