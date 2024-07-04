@@ -12,7 +12,7 @@ const secretKey = require('./js/jwt');
 //引入路由
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users");
-const orderRouter = require("./routes/order");
+const cardRouter = require("./routes/card");
 const viadanteRouter = require("./routes/viadante");
 const testRouter = require("./routes/apitest");
 const rollRouter = require("./routes/rollRouter");
@@ -63,7 +63,7 @@ app.use(async (req ,res , next) => {
 //引用路由
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/order', orderRouter);
+app.use('/card', cardRouter);
 app.use('/viadante', viadanteRouter);
 app.use('/apitest', testRouter);
 app.use('/rollapi', rollRouter);
