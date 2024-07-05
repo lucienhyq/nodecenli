@@ -53,8 +53,37 @@ class card_controller {
   ];
   static min_program_nav = ["首页", "工商", "代理记账", "知识产权"];
   static shareUid = 50;
-  constructor() {
-  }
+  static development_history = [
+    {
+      date: "2010",
+      desc: "公司成立",
+    },
+    {
+      date: "2011",
+      desc: "转型互联网营销",
+    },
+    {
+      date: "2012",
+      desc: "办公面积300方",
+    },
+    {
+      date: "2013",
+      desc: "团队外出参加运营管理培训课程",
+    },
+    {
+      date: "2014",
+      desc: "整合行业资源，参与创建广州市财务代理行业协会",
+    },
+    {
+      date: "2015",
+      desc: "开始组建多元企服产品生态链",
+    },
+    {
+      date: "2016",
+      desc: `荣获"广东省守合同重信用企业单位"`,
+    },
+  ];
+  constructor() {}
   index = async (req, res, next) => {
     let adminList = await Admin.findOne({ id: card_controller.shareUid });
     res.send({
@@ -62,8 +91,9 @@ class card_controller {
       data: {
         business: card_controller.main_business,
         admin: adminList,
+        development_history: card_controller.development_history,
       },
-      message: "获取成功",
+      msg: "获取成功",
     });
   };
 }

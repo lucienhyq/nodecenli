@@ -48,7 +48,7 @@ app.use((req, res, next) => {
     next()
   } else {
     expressjwt({ secret: secretKey, algorithms: ["HS256"] }).unless({
-      path: ['/login', '/qrCode', '/register', '/checkLoginUser', '/uploads', '/outLogin', '/posts', '/wxtoken', '/wxMiniLogin', "/firstHome", "/get_appointment", { url: /^\/apitest\/.*/, methods: ['GET', 'POST'] }],
+      path: ['/homeSidebar','/login', '/qrCode', '/register', '/checkLoginUser', '/uploads', '/outLogin', '/posts', '/wxtoken', '/wxMiniLogin', "/firstHome", "/get_appointment", { url: /^\/apitest\/.*/, methods: ['GET', 'POST'] }],
     })
     next()
   }
