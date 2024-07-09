@@ -83,8 +83,12 @@ class card_controller {
       desc: `荣获"广东省守合同重信用企业单位"`,
     },
   ];
+  static min_program_Appid = "";
+  static get_min_program_Appid() {
+    return this.min_program_Appid;
+  }
   constructor() {}
-  index = async (req, res, next) => {
+  card_Index = async (req, res, next) => {
     let adminList = await Admin.findOne({ id: card_controller.shareUid });
     res.send({
       result: 1,
@@ -95,6 +99,6 @@ class card_controller {
       },
       msg: "获取成功",
     });
-  };
+  }
 }
 module.exports = new card_controller();

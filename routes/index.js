@@ -61,7 +61,7 @@ router.post("/memberEdit", checkLogin, userEdit);
 router.post("/memberAdd", checkLogin, addUser);
 router.get("/homeSidebar", async (req, res) => {
   res.send({
-    data: ["pcHome", "member"],
+    data: ["pcHome", "member","cardHome"],
     result: 1,
     msg: "成功",
   });
