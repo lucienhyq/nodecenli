@@ -48,7 +48,7 @@ var userList = async (req, res, next) => {
     if (req.query.member_id) {
       json.id = req.query.member_id;
     }
-    let member_list = await AdminModel.find(json);
+    let member_list = await AdminModel.find(json).select('-_id -__v -weatherKey -password -wx');
     if (member_list.length === 0) {
       return res.send({
         data: [],
