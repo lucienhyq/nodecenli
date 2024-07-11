@@ -23,8 +23,10 @@ var app = express();
 //引入解析post参数的模块
 var bodypaeser = require("body-parser");
 app.use(cors());
+app.use(express.json());
 app.use(bodypaeser.urlencoded({ limit: '5mb', extended: false }));
 app.use(bodypaeser.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(
   session({
     name: "referrs",

@@ -154,7 +154,16 @@ router.post(
 // 支付订单
 // router.post("/orderPay", multipartMiddleware, orderPay_Controller);
 
-//签到
+// let secret = '71ef6ea6470f58dcd741c05f1493b11d';
+// let appid = 'wxab206bb4cbe7857a';
+// &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d
+
+// 公众号接受用户发送的消息
+router.post("/wx", wxaccessToken_Controller);
+// 验证微信公众号 服务器
+router.get("/wx", multipartMiddleware, wxIndex_Controller);
+
+//签到 appointment
 router.post(
   "/appointmentIndex",
   multipartMiddleware,
@@ -191,15 +200,6 @@ router.post(
 router.post("/appointmentSingIn", checkLogin, appiontment.appointmentSingIn);
 // 获取预约明细
 router.post("/get_appointment", appiontment.get_appointment);
-
-// let secret = '71ef6ea6470f58dcd741c05f1493b11d';
-// let appid = 'wxab206bb4cbe7857a';
-// &appid=wxab206bb4cbe7857a&secret=71ef6ea6470f58dcd741c05f1493b11d
-
-// 公众号接受用户发送的消息
-router.post("/wx", wxaccessToken_Controller);
-// 验证微信公众号 服务器
-router.get("/wx", multipartMiddleware, wxIndex_Controller);
 
 // 格式化错误信息
 function formatErrorMessage(res, message) {

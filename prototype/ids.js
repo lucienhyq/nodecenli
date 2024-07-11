@@ -16,7 +16,8 @@ const idList = [
   "admin_id",
   "statis_id",
   "musicScoreForm_id",
-  "musicScoreForm_record_id"
+  "musicScoreForm_record_id",
+  "cardRecord_id"
 ];
 var getId = async function (type) {
   if (!idList.includes(type)) {

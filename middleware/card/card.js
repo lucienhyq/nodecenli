@@ -1,4 +1,5 @@
 const Admin = require("../../models/admin/admin");
+const cardSettiing = require("../../models/card_business/setting");
 class card_controller {
   static is_admin = false;
   static main_business = [
@@ -83,22 +84,100 @@ class card_controller {
       desc: `荣获"广东省守合同重信用企业单位"`,
     },
   ];
-  static min_program_Appid = "";
-  static get_min_program_Appid() {
-    return this.min_program_Appid;
-  }
   constructor() {}
+  cardCheckShare = async (req, res, next) => {
+    try {
+      let shareUid;
+      if (req.body.mid || req.query.mid) {
+        // 有分享人的id
+        shareUid = req.body.mid || req.query.mid;
+        let user = await Admin.findOne({ id: shareUid }).select(
+          "-_id user_name"
+        );
+        return { shareMember: user };
+      }
+      return false;
+    } catch (error) {
+      return false;
+    }
+  };
   card_Index = async (req, res, next) => {
-    let adminList = await Admin.findOne({ id: card_controller.shareUid });
+    let Setting_result = await cardSettiing.findOne().select("-_id -__v");
+    let cardCheckShare_result = await this.cardCheckShare(req, res, next);
+    let json = {
+      data: Setting_result,
+    };
+    if (cardCheckShare_result) {
+      json.shareFromMember = cardCheckShare_result.shareMember;
+    }
     res.send({
       result: 1,
-      data: {
-        business: card_controller.main_business,
-        admin: adminList,
-        development_history: card_controller.development_history,
-      },
+      data: json,
       msg: "获取成功",
     });
-  }
+  };
+  card_setting_save = async (req, res, next) => {
+    try {
+      let {
+        company_name,
+        company_address,
+        company_desc,
+        development_history,
+        main_business,
+        shareUid,
+      } = req.body;
+      let findSetting = await cardSettiing.find();
+      if (
+        !company_name ||
+        !company_address ||
+        !development_history ||
+        !main_business
+      ) {
+        res.status(200).send({
+          result: 0,
+          data: [],
+          msg: "参数错误",
+        });
+        return;
+      }
+      if (findSetting.length == 0) {
+        // 创建
+        let saveSetting = await cardSettiing.create({
+          company_name,
+          company_address,
+          company_desc,
+          development_history: card_controller.development_history,
+          main_business: card_controller.main_business,
+          shareUid,
+        });
+      } else {
+        // 更新
+        let updateSetting = await cardSettiing.updateOne(
+          { _id: findSetting[0]._id },
+          {
+            company_name,
+            company_address,
+            company_desc,
+            development_history,
+            main_business,
+            shareUid,
+          }
+        );
+        console.log("qqqqqqqqqqqqqq", company_desc);
+      }
+      let Setting_result = await cardSettiing.findOne();
+      res.status(200).send({
+        result: 1,
+        data: Setting_result,
+        msg: "成功",
+      });
+    } catch (error) {
+      res.status(200).send({
+        result: 0,
+        data: error,
+        msg: "失败",
+      });
+    }
+  };
 }
 module.exports = new card_controller();
