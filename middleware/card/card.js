@@ -124,19 +124,47 @@ class card_controller {
     }
   };
   card_Index = async (req, res, next) => {
-    let Setting_result = await cardSettiing.findOne().select("-_id -__v");
-    let cardCheckShare_result = await this.cardCheckShare(req, res, next);
-    let json = {
-      data: Setting_result,
-    };
-    if (cardCheckShare_result) {
-      json.shareFromMember = cardCheckShare_result.shareMember;
+    try {
+      let Setting_result = await cardSettiing.findOne().select("-_id -__v");
+      let cardCheckShare_result = await this.cardCheckShare(req, res, next);
+      console.log(Setting_result);
+      if (!Setting_result) {
+        let result_json = {
+          company_name: "",
+          company_address: "",
+          company_desc: "",
+          development_history: card_controller.development_history,
+          main_business: card_controller.main_business,
+          shareUid: "",
+          team_style: "",
+        };
+        res.send({
+          result: 1,
+          data: {
+            data: result_json,
+          },
+          msg: "默认设置",
+        });
+      } else {
+        let json = {
+          data: Setting_result,
+        };
+        if (cardCheckShare_result) {
+          json.shareFromMember = cardCheckShare_result.shareMember;
+        }
+        res.send({
+          result: 1,
+          data: json,
+          msg: "获取成功",
+        });
+      }
+    } catch (error) {
+      res.send({
+        result: 0,
+        data: [],
+        msg: error,
+      });
     }
-    res.send({
-      result: 1,
-      data: json,
-      msg: "获取成功",
-    });
   };
   card_setting_save = async (req, res, next) => {
     try {
@@ -183,7 +211,7 @@ class card_controller {
             development_history,
             main_business,
             shareUid,
-            team_style
+            team_style,
           }
         );
       }
