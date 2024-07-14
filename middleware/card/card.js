@@ -1,55 +1,68 @@
 const Admin = require("../../models/admin/admin");
 const cardSettiing = require("../../models/card_business/setting");
+const { check, validationResult } = require("express-validator");
 class card_controller {
   static is_admin = false;
   static main_business = [
     {
       text: "公司注册",
       icon: "icon-gongsizhuce1",
+      show: true,
     },
     {
       text: "代理记账",
       icon: "icon-dailijizhang",
+      show: true,
     },
     {
       text: "出口退税",
       icon: "icon-chukoutuishui",
+      show: true,
     },
     {
       text: "工商变更",
       icon: "icon-SAAS-gongshangfuwu",
+      show: true,
     },
     {
       text: "税务筹划",
       icon: "icon-zengzhishuishenbaonashuishiyongyuxiaoguimonashuiren",
+      show: true,
     },
     {
       text: "高新企业",
       icon: "icon-guojiagaoxinqiye",
+      show: true,
     },
     {
       text: "一般纳税人",
       icon: "icon-shuiwuguanlixitong",
+      show: true,
     },
     {
       text: "香港公司",
       icon: "icon-xianggang",
+      show: true,
     },
     {
       text: "知识产权",
       icon: "icon-zhishichanquan",
+      show: true,
     },
     {
       text: "法律服务",
       icon: "icon-falvfuwu",
+      show: true,
     },
     {
       text: "地址挂靠",
       icon: "icon-dizhi",
+      show: true,
     },
     {
       text: "各类资质代办",
       icon: "icon-zizhidaiban",
+      show: true,
     },
   ];
   static min_program_nav = ["首页", "工商", "代理记账", "知识产权"];
@@ -84,6 +97,15 @@ class card_controller {
       desc: `荣获"广东省守合同重信用企业单位"`,
     },
   ];
+  static validateInput() {
+    // 传参验证
+    return [
+      check("company_name").not().isEmpty(),
+      check("company_address").not().isEmpty(),
+      check("development_history").not().isEmpty(),
+      check("main_business").not().isEmpty(),
+    ];
+  }
   constructor() {}
   cardCheckShare = async (req, res, next) => {
     try {
@@ -118,6 +140,15 @@ class card_controller {
   };
   card_setting_save = async (req, res, next) => {
     try {
+      const errors = validationResult(req);
+      if (!errors.isEmpty()) {
+        return res.status(422).send({
+          result: 0,
+          data: [],
+          msg: "参数错误",
+          errors: errors.array(),
+        });
+      }
       let {
         company_name,
         company_address,
@@ -125,35 +156,26 @@ class card_controller {
         development_history,
         main_business,
         shareUid,
+        team_style,
       } = req.body;
-      let findSetting = await cardSettiing.find();
-      if (
-        !company_name ||
-        !company_address ||
-        !development_history ||
-        !main_business
-      ) {
-        res.status(200).send({
-          result: 0,
-          data: [],
-          msg: "参数错误",
-        });
-        return;
-      }
-      if (findSetting.length == 0) {
+      let findSetting = await cardSettiing.findOne();
+      // 防止公司简介为空
+      if (!company_desc) company_desc = "";
+      if (!findSetting) {
         // 创建
-        let saveSetting = await cardSettiing.create({
+        await cardSettiing.create({
           company_name,
           company_address,
           company_desc,
           development_history: card_controller.development_history,
           main_business: card_controller.main_business,
           shareUid,
+          team_style,
         });
       } else {
         // 更新
-        let updateSetting = await cardSettiing.updateOne(
-          { _id: findSetting[0]._id },
+        await cardSettiing.updateOne(
+          { _id: findSetting._id },
           {
             company_name,
             company_address,
@@ -161,9 +183,9 @@ class card_controller {
             development_history,
             main_business,
             shareUid,
+            team_style
           }
         );
-        console.log("qqqqqqqqqqqqqq", company_desc);
       }
       let Setting_result = await cardSettiing.findOne();
       res.status(200).send({
@@ -172,7 +194,8 @@ class card_controller {
         msg: "成功",
       });
     } catch (error) {
-      res.status(200).send({
+      console.log(error);
+      res.status(500).send({
         result: 0,
         data: error,
         msg: "失败",
@@ -180,4 +203,4 @@ class card_controller {
     }
   };
 }
-module.exports = new card_controller();
+module.exports = { instance: new card_controller(), card_controller };

@@ -18,7 +18,9 @@ function upload(req, res, imgPath) {
         // `updateBaseUrl + imgPath + req.file.filename` 完整的服务器虚拟目录
         if(req.url == '/homemaking_posts'){
           resolve(`${req.protocol}://${req.get('host')}/uploads/homeMakingPpsts/${req.file.filename}`);
-        }else{
+        } else if(req.url == '/cardUpload'){
+          resolve(`${req.protocol}://${req.get('host')}/uploads/cardUpload/${req.file.filename}`);
+        } else{
           resolve(`${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`);
         }
       }

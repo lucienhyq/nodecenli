@@ -33,7 +33,23 @@ const cardSetBussinessSchema = new Schema(
     timestamps: true,
   }
 );
-
+cardSetBussinessSchema.add({
+  // 办公环境
+  office_environment: {
+    type: Object,
+    default: {},
+  },
+  // 荣誉资质
+  honor: {
+    type: Object,
+    default: {},
+  },
+  // 团队风采
+  team_style: {
+    type: Object,
+    default: {},
+  },
+});
 const cardSetBussiness = db.model("cardBussiness", cardSetBussinessSchema);
 
 module.exports = cardSetBussiness;

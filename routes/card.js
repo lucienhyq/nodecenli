@@ -1,9 +1,48 @@
 var express = require("express");
 var router = express.Router();
-var card_controller = require("../controller/card/card_controller");
+const upload = require("../js/upload");
+const wxCheckLogin = require("../middleware/wxCheckLogin");
+const { checkLogin, checkLoginUser } = require("../middleware/checkLogin");
+var {
+  instance: cardControllerInstance,
+  card_controller,
+} = require("../middleware/card/card");
 
-router.post("/card_Index", card_controller.card_Index);
-router.post("/setting/save", card_controller.card_Setting);
-router.get("/setting/save", card_controller.card_Setting);
+router.post(
+  "/card_Index",
+  checkLogin,
+  wxCheckLogin,
+  cardControllerInstance.card_Index
+);
+router.post(
+  "/setting/save",
+  checkLogin,
+  wxCheckLogin,
+  card_controller.validateInput(),
+  cardControllerInstance.card_setting_save
+);
 
+router.get(
+  "/setting/save",
+  checkLogin,
+  wxCheckLogin,
+  card_controller.validateInput(),
+  cardControllerInstance.card_setting_save
+);
+// 上传图片
+router.post("/cardUpload", handleUpload);
+function handleUpload(req, res, next) {
+  upload(req, res)
+    .then((imgsrc) => {
+      console.log(imgsrc, "ddddddd");
+      res.send({ data: imgsrc, result: 1 });
+    })
+    .catch((err) => {
+      res.status(500).send({
+        data: "",
+        mgs: err,
+        result: 0,
+      });
+    });
+}
 module.exports = router;
