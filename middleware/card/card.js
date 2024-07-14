@@ -129,6 +129,7 @@ class card_controller {
       let cardCheckShare_result = await this.cardCheckShare(req, res, next);
       console.log(Setting_result);
       if (!Setting_result) {
+        // 数据库没有存起来的数据返回默认设置根据类的设置
         let result_json = {
           company_name: "",
           company_address: "",
