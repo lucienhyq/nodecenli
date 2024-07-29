@@ -137,7 +137,7 @@ class card_controller {
           development_history: card_controller.development_history,
           main_business: card_controller.main_business,
           shareUid: "",
-          team_style: "",
+          team_style: [],
         };
         res.send({
           result: 1,
