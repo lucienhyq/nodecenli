@@ -18,73 +18,67 @@ const task = async () => {
         await article_model.deleteMany({});
         // 重置文章id
         await setArticleId();
+        await firstHome();
       }
     });
   });
 };
-var record = 0;
+// var record = 0;
 const firstHome = async (req, res, next) => {
-  let news = await getNbaNews(req);
-  logger.info(news);
-  let arr = [];
-  record += 1;
-  if (record === 1) {
+  try {
+    let news = await getNbaNews(req);
     await task();
-  }
-  if (news) {
-    for (let index = 0; index < news.length; index++) {
-      const element = news[index];
-      let farr = filterObj(element, [
-        "news_id",
-        "title",
-        "thumbnail_2x",
-        "vid",
-      ]);
-      if (!arr.length) {
-        arr[0] = farr;
-      } else {
-        arr = arr.concat(farr);
-      }
-      // 查找当前文章是否存在数据库中
-      let len = await article_model.find({ news_id: farr.news_id });
-      if (len.length <= 0) {
-        let jsonsa = {
-          id: await getArticleId(),
-          title: farr.title,
-          poster: farr.thumbnail_2x,
-          news_id: farr.news_id,
-        };
-        if (farr.vid) {
-          jsonsa.vid = farr.vid;
-          jsonsa.conten = "";
+    let arr = news[0].contents;
+    if (arr) {
+      for (let index = 0; index < arr.length; index++) {
+        const element = arr[index].article;
+        let farr = filterObj(element, [
+          "news_id",
+          "title",
+          "thumbnail_2x",
+          "vid",
+        ]);
+        // 查找当前文章是否存在数据库中
+        let len = await article_model.find({ news_id: farr.news_id });
+        if (len.length <= 0) {
+          let jsonsa = {
+            id: await getArticleId(),
+            title: farr.title,
+            poster: "",
+            news_id: farr.news_id,
+          };
+          logger.info(jsonsa);
+          if (farr.vid) {
+            jsonsa.vid = farr.vid;
+            jsonsa.conten = "";
+          }
+          jsonsa.poster = await downfile_img(farr.thumbnail_2x);
+          let articleDetail = await getArticleConten(jsonsa);
+          // 获取新闻详情
+          jsonsa.conten = articleDetail.cnt_html;
+          // 获取视频资源链接
+          jsonsa.videoSrc = articleDetail.videoSrc;
+          // console.log(jsonsa);
+          article_model.create(jsonsa);
         }
-        let articleDetail = await getArticleConten(farr);
-        // 获取新闻详情
-        jsonsa.conten = articleDetail.cnt_html;
-        // 获取视频资源链接
-        jsonsa.videoSrc = articleDetail.videoSrc;
-        // console.log(jsonsa);
-        article_model.create(jsonsa);
       }
     }
-  }
-  try {
   } catch (error) {
-    logger.info(error);
+    console.log("q:::::::::", error);
+    logger.error(error);
   }
-  // let findList = await article_model.find({}).skip(nowPageNum).limit(pageSize).sort({ id: -1 })
+  let findList = await article_model.find({}).sort({ id: -1 });
   res.status(200).send({
     msg: "",
-    data: {
-      json: await article_model.find({}).sort({ id: -1 }).limit(15),
-    },
+    data: findList,
     result: 1,
   });
 };
 module.exports = firstHome;
 
 var getNbaNews = function (req) {
-  let url = `https://china.nba.cn/cms/v1/news/list?column_id=57&page_size=15`;
+  let time = Date.parse(new Date()) / 1000;
+  let url = `https://api.nba.cn/cms/v2/web/column/modules/list?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=40baf4718eae0144157f77ff781dc984&install_id=1536133115&network=N%2FA&os_type=3&os_version=1.0.0&page_no=1&page_size=20&page_type=2&sign=sign_v2&sign2=87272D9C122EDAFBE75CF4E80AD374FC9E245A6E848E9CE4379C502CDFC8A53F&t=${time}`;
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {
@@ -108,11 +102,47 @@ var filterObj = function (obj, arr) {
     });
   return result;
 };
+const path = require("path"); //
+// 定义 resolve 函数
+const resolve = (dir) => {
+  // 获取当前工作目录的上级目录
+  const rootDir = path.resolve(__dirname, '..');
+  return path.resolve(rootDir, dir);
+};
+
+// 下载图片的函数
+var downfile_img = function (url) {
+  return new Promise((resolve, reject) => {
+    let imgUrl = url;
+    let imgName = decodeURIComponent(imgUrl.split("/").pop());
+    let imgPath = path.join(resolve('uploads/article'), imgName);
+
+    // 确保目录存在
+    const uploadDir = resolve('uploads/article');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    console.log(`当前工作目录: ${__dirname}`);
+    console.log(`根目录: ${rootDir}`);
+    console.log(`上传目录: ${uploadDir}`);
+    console.log(`图片路径: ${imgPath}`);
+
+    console.log(imgUrl);
+    request(imgUrl)
+      .pipe(fs.createWriteStream(imgPath))
+      .on("close", function () {
+        resolve(imgPath);
+      })
+      .on("error", function (err) {
+        reject(err);
+      });
+  });
+};
 
 var getArticleId = function () {
   return new Promise(async (resolve, reject) => {
     let articleId = await getIdmethod.getId("article_id");
-    logger.info("firstHome ===> getArticleId", articleId);
     resolve(articleId);
   });
 };
@@ -124,7 +154,8 @@ var setArticleId = function () {
 };
 
 var getArticleConten = function (farr) {
-  url = "https://china.nba.cn/cms/v1/news/info?news_id=" + farr.news_id;
+  let time = Date.parse(new Date()) / 1000;
+  let url = `https://api.nba.cn/cms/v2/news/info?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=82e78b39c4dbd0000dbe4d53275d948a&install_id=1536133115&network=N%2FA&news_id=${farr.news_id}&os_type=3&os_version=1.0.0&sign=sign_v2&sign2=6AADE1DA1D373731DCEA8808CAFA2BDC36FCC61806AF917AE91F8A510BDE70A0&t=${time}`;
   let videoSrc = "";
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {

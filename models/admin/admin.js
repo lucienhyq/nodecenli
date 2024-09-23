@@ -67,6 +67,12 @@ adminSchema.add({
     type: String,
     default: "",
   },
+  real_name: { type: String, default: "" },
+  mid: {
+    // 关系链
+    type: String,
+    default: "",
+  },
 });
 
 // 对模型方法进行扩展，例如添加验证密码的方法。

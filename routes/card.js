@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const upload = require("../js/upload");
 const wxCheckLogin = require("../middleware/wxCheckLogin");
-const { checkLogin, checkLoginUser } = require("../middleware/checkLogin");
+const { checkLogin } = require("../middleware/checkLogin");
 var {
   instance: cardControllerInstance,
   card_controller,

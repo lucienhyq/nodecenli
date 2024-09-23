@@ -127,7 +127,7 @@ class card_controller {
     try {
       let Setting_result = await cardSettiing.findOne().select("-_id -__v");
       let cardCheckShare_result = await this.cardCheckShare(req, res, next);
-      console.log(Setting_result);
+      // console.log(Setting_result);
       if (!Setting_result) {
         // 数据库没有存起来的数据返回默认设置根据类的设置
         let result_json = {

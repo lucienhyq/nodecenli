@@ -46,9 +46,7 @@ var getId = async function (type) {
 };
 var setId = async function (type) {
   let findobj = await Ids.findOne();
-  console.log(findobj[type]);
   findobj.article_id = 0;
-  console.log(findobj);
   await Ids.updateOne({ _v: 0 }, findobj);
 };
 

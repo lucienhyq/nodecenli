@@ -1,18 +1,16 @@
 const AdminModel = require("../../models/admin/admin");
-const formidable = require("formidable");
 const secretKey = require("../../js/jwt");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 var login = async (req, res, next) => {
   let fields = req.method == "GET" ? req.query : req.body;
-  console.log(fields, "dddddddddd", req.method);
-  // console.log('ddddddddf',fields)
   try {
     var user = await AdminModel.findOne({ user_name: fields.user_name });
     if (!user || !fields) {
       res.send({
         result: 0,
         msg: "没有此用户",
+        data: "",
       });
       return;
     }
@@ -36,19 +34,16 @@ var login = async (req, res, next) => {
       });
       return;
     }
-
     const tokenStr = jwt.sign(
       { username: fields.user_name, id: user.id },
       secretKey,
       { expiresIn: "8h" }
     );
-
     // 注意：通常不会将密码存储在session中，已注释掉
     req.session.user = {
       userName: user.user_name,
       uid: user.id,
     };
-
     res.send({
       result: 1,
       msg: "登录成功",

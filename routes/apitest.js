@@ -15,6 +15,8 @@ const orderPay = require("../controller/orderPay/index");
 const Bills = require("../controller/bills/bills_Controller");
 const Weather = require("../controller/tool/Weather");
 const music_score_from = require("../controller/music_score_from/music_score_from");
+const request = require("request"); //网络请求
+
 // const Music_score = require("../")
 // 获取微信小程序
 router.post("/wxtoken", wxtoken_Controller, (req, res, next) => {
@@ -36,6 +38,38 @@ router.get(
 );
 // 微信小程序首页
 router.get("/firstHome", firstHome_Controller);
+router.get("/getNbaNews", async (req, res, next) => {
+  let news_id = req.query.news_id;
+  console.log(news_id, "ddddddd");
+  let time = Date.parse(new Date()) / 1000;
+  let url = `https://api.nba.cn/cms/v2/news/info?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=82e78b39c4dbd0000dbe4d53275d948a&install_id=1536133115&network=N%2FA&news_id=${news_id}&os_type=3&os_version=1.0.0&sign=sign_v2&sign2=6AADE1DA1D373731DCEA8808CAFA2BDC36FCC61806AF917AE91F8A510BDE70A0&t=${time}`;
+  try {
+    await request(url, async (err, response, body) => {
+      if (err) {
+        logger.error(error);
+        res.send({
+          data: error,
+          result: 0,
+          msg: "fail",
+        });
+      } else {
+        logger.info(body);
+        res.send({
+          data: JSON.parse(body).data,
+          result: 1,
+          msg: "成功",
+        });
+      }
+    });
+  } catch (error) {
+    logger.error(error);
+    res.send({
+      data: error,
+      result: 0,
+      msg: "fail",
+    });
+  }
+});
 
 // NBA文章详情
 const article_model = require("../models/course/Article/Article");
@@ -52,6 +86,7 @@ router.get("/getArticle", async (req, res, next) => {
 // 根据课程id获取课程详情
 router.get("/getCourse", wxCheckLogin, course.courseList);
 const like_model = require("../models/course/Article/like");
+const { logger } = require("../logs/logs");
 // 记录点赞数
 router.get(
   "/likeTapMethod",

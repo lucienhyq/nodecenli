@@ -22,10 +22,10 @@ const course = require("../middleware/course/index");
 const appiontment = require("../middleware/appointment/appointmentMid");
 // const coursePay_Controller = require("../controller/course/coursePay_Controller");
 // const orderPay_Controller = require("../controller/orderPay_Controller");
-const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
+// const appointmentIndex_Controller = require("../controller/course/appointmentIndex_Controller");
 const appointmentRecord_Controller = require("../controller/course/appointmentRecord_Controller");
 // 获取预约签到二维码
-const appiontmentSignCode_Controller = require("../controller/course/appiontmentSignCode_Controller");
+// const appiontmentSignCode_Controller = require("../controller/course/appiontmentSignCode_Controller");
 const wxIndex_Controller = require("../controller/wx/index");
 const wxaccessToken_Controller = require("../controller/wx/index");
 // 中间件
@@ -36,15 +36,15 @@ const referee = require("../controller/refereeController/referee");
 const wxCheckLogin = require("../middleware/wxCheckLogin");
 // 创建订单
 const orderController = require("../controller/orderPay/index");
-const userAccess_Controller = require("../controller/admin/userAccess_Controller");
-const {
-  homemakingList,
-} = require("../controller/homemakingService/homemakingUser");
+// const userAccess_Controller = require("../controller/admin/userAccess_Controller");
+// const {
+//   homemakingList,
+// } = require("../controller/homemakingService/homemakingUser");
 // const request = require("request"); //http请求模块
 
 /* GET home page. */
 // router.get("/", function (req, res, next) {
-//   res.redirect("index.html");
+//   res.redirect("")
 // });
 // 检查是否有登录
 router.post("/checkLoginUser", checkLogin, checkLoginUser);

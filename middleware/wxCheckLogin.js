@@ -9,14 +9,15 @@ const USER_INFO_KEY = "user";
 const wxCheckLogin = async (req, res, next) => {
   // min:pc是不用进行小程序验证
   const minPresent = req.body.min || req.query.min;
-  if (!minPresent) {
+  logger.info(
+    ":::::::::::::::min:pc是不用进行小程序验证",
+    minPresent,
+    req.user
+  );
+  if (minPresent) {
     next();
     return;
   }
-
-  logger.info(WX_CHECK_LOGIN_LOG, req.body.min, req.query.min, req.session.user);
-  logger.info(`${SESSION_ID_KEY} || ${SESSION_ID_KEY}`, req.query[SESSION_ID_KEY], req.body[SESSION_ID_KEY]);
-
   if (req.session.user) {
     logger.info("直接带session.user进来的", req.session.user, req.user._id);
     req.user = {
@@ -27,6 +28,8 @@ const wxCheckLogin = async (req, res, next) => {
     next();
     return;
   }
+  // logger.info(WX_CHECK_LOGIN_LOG, req.body.min, req.query.min, req.session.user);
+  // logger.info(`${SESSION_ID_KEY} || ${SESSION_ID_KEY}`, req.query[SESSION_ID_KEY], req.body[SESSION_ID_KEY]);
 
   const sessionId = req.query[SESSION_ID_KEY] || req.body[SESSION_ID_KEY];
   if (!sessionId) {

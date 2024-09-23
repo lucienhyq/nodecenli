@@ -1,8 +1,8 @@
 const jwt = require("jsonwebtoken");
 const secretKey = require("../js/jwt");
 const logger = require("../logs/logs").logger;
-const wxMiniLogin_Controller = require("../controller/wx/wxMiniLogin_Controller");
-const wxCheckLogin = require("../middleware/wxCheckLogin");
+// const wxMiniLogin_Controller = require("../controller/wx/wxMiniLogin_Controller");
+// const wxCheckLogin = require("../middleware/wxCheckLogin");
 const AdminModel = require("../models/admin/admin");
 class Login {
   static async verToken(token) {
@@ -18,18 +18,10 @@ class Login {
   }
 
   async checkLogin(req, res, next) {
-    logger.info(req.query, req.route.path, req.method);
-
+    logger.info(req.query, req.route.path, req.method,'21');
     let token = req.headers["authorization"];
     if (!token) {
-      logger.info(
-        req.route.path,
-        req.method,
-        "token=undefined:",
-        token,
-        req.query.min,
-        req.body.min
-      );
+      logger.info(req.route.path, "token=undefined:");
       if (req.query.min === "wx" || req.body.min === "wx") {
         return next();
       }
@@ -52,17 +44,19 @@ class Login {
       req.session.user = decoded;
       const data_info = await AdminModel.findOne({ id: decoded.id });
       if (!data_info) {
-        return res.send({
+        res.send({
           result: 0,
           data: null,
-          msg: "请登录",
+          msg: "请登录,没找到该用户",
         });
+        return;
       }
       req.user = {
         userName: data_info.user_name,
         uid: data_info.id,
         _id: data_info._id,
       };
+      logger.info("qqqqqqq:::::::")
       return next();
     } catch (error) {
       logger.error(req.query, req.route.path, req.method, error);
