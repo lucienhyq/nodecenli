@@ -186,6 +186,7 @@ class card_controller {
         main_business,
         shareUid,
         team_style,
+        phone,
       } = req.body;
       let findSetting = await cardSettiing.findOne();
       // 防止公司简介为空
@@ -200,6 +201,7 @@ class card_controller {
           main_business: card_controller.main_business,
           shareUid,
           team_style,
+          phone
         });
       } else {
         // 更新
@@ -213,6 +215,7 @@ class card_controller {
             main_business,
             shareUid,
             team_style,
+            phone
           }
         );
       }

@@ -28,6 +28,10 @@ const cardSetBussinessSchema = new Schema(
       type: Number,
       default: "",
     },
+    phone: {
+      type: Number,
+      default: "",
+    },
   },
   {
     timestamps: true,

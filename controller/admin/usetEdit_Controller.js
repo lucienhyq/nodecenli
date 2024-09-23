@@ -12,7 +12,7 @@ const validateAndUpdateUser = async (uid, updateData) => {
 var userEdit = async (req, res, next) => {
   try {
     // 安全性优化: 验证会话用户
-    if (!req.session.user || !req.session.user.uid) {
+    if (!req.session.user || !req.session.user.id ) {
       return res.send({
         data: "",
         success: "请登录",
@@ -21,7 +21,7 @@ var userEdit = async (req, res, next) => {
     }
     const updateData = req.query; // 未来可以加入更多验证和清理逻辑
     const result = await validateAndUpdateUser(
-      req.session.user.uid,
+      req.session.user.id,
       updateData
     );
     if (!result) {
@@ -33,7 +33,7 @@ var userEdit = async (req, res, next) => {
     }
     res.send({
       data: "",
-      success: "修改成功",
+      msg: "修改成功",
       result: 1,
     });
   } catch (error) {

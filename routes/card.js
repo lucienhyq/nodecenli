@@ -7,13 +7,14 @@ var {
   instance: cardControllerInstance,
   card_controller,
 } = require("../middleware/card/card");
-
+// 获取卡片
 router.post(
   "/card_Index",
   checkLogin,
   wxCheckLogin,
   cardControllerInstance.card_Index
 );
+// 保存
 router.post(
   "/setting/save",
   checkLogin,
@@ -29,6 +30,7 @@ router.get(
   card_controller.validateInput(),
   cardControllerInstance.card_setting_save
 );
+// 保存 end
 // 上传图片
 router.post("/cardUpload", handleUpload);
 function handleUpload(req, res, next) {
