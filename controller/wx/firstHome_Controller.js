@@ -1,12 +1,12 @@
-const courseModel = require("../../models/course/course");
-const refereeListModel = require("../../models/refereeList/refereeList");
-const acquirePost_Controller = require("../../controller/acquirePost");
+// const courseModel = require("../../models/course/course");
+// const refereeListModel = require("../../models/refereeList/refereeList");
+// const acquirePost_Controller = require("../../controller/acquirePost");
 const request = require("request"); //网络请求
-const cheerio = require("cheerio"); //爬虫 扩展模块
+// const cheerio = require("cheerio"); //爬虫 扩展模块
 const article_model = require("../../models/course/Article/Article");
 const getIdmethod = require("../../prototype/ids");
 const cron = require("node-cron");
-
+const fs = require("fs");
 const logger = require("../../logs/logs").logger;
 const task = async () => {
   cron.schedule("59 23 * * *", async () => {
@@ -15,9 +15,9 @@ const task = async () => {
     article_model.countDocuments(async (err, count) => {
       if (count > 0) {
         // 清除全部文章
-        await article_model.deleteMany({});
+        // await article_model.deleteMany({});
         // 重置文章id
-        await setArticleId();
+        // await setArticleId();
         await firstHome();
       }
     });
@@ -29,6 +29,7 @@ const firstHome = async (req, res, next) => {
     let news = await getNbaNews(req);
     await task();
     let arr = news[0].contents;
+    let jsonsa;
     if (arr) {
       for (let index = 0; index < arr.length; index++) {
         const element = arr[index].article;
@@ -41,7 +42,7 @@ const firstHome = async (req, res, next) => {
         // 查找当前文章是否存在数据库中
         let len = await article_model.find({ news_id: farr.news_id });
         if (len.length <= 0) {
-          let jsonsa = {
+          jsonsa = {
             id: await getArticleId(),
             title: farr.title,
             poster: "",
@@ -58,7 +59,6 @@ const firstHome = async (req, res, next) => {
           jsonsa.conten = articleDetail.cnt_html;
           // 获取视频资源链接
           jsonsa.videoSrc = articleDetail.videoSrc;
-          // console.log(jsonsa);
           article_model.create(jsonsa);
         }
       }
@@ -103,39 +103,43 @@ var filterObj = function (obj, arr) {
   return result;
 };
 const path = require("path"); //
+const { Promise } = require("mongoose");
 // 定义 resolve 函数
 const resolve = (dir) => {
   // 获取当前工作目录的上级目录
-  const rootDir = path.resolve(__dirname, '..');
+  const rootDir = path.resolve(__dirname, "../..");
   return path.resolve(rootDir, dir);
 };
+const generateFileName = function (url) {
+  const timestamp = Date.now();
+  const extensionMatch = url.match(/\.([^.]+)(\?.*)?$/);
+  const extension = extensionMatch ? extensionMatch[1] : "";
+  return `${timestamp}.${extension}`;
+};
+require("dotenv").config();
+const SERVER_DOMAIN = process.env.SERVER_DOMAIN || "http://yourserver.com";
 
 // 下载图片的函数
-var downfile_img = function (url) {
+var downfile_img = async (url) => {
+  // return new Promise((resolve, reject) => {
+  let imgUrl = url;
+  let imgName = generateFileName(imgUrl);
+  let imgPath = path.join(resolve("uploads/article"), imgName);
+  // 确保目录存在
+  const uploadDir = resolve("uploads/article");
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
   return new Promise((resolve, reject) => {
-    let imgUrl = url;
-    let imgName = decodeURIComponent(imgUrl.split("/").pop());
-    let imgPath = path.join(resolve('uploads/article'), imgName);
-
-    // 确保目录存在
-    const uploadDir = resolve('uploads/article');
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-
-    console.log(`当前工作目录: ${__dirname}`);
-    console.log(`根目录: ${rootDir}`);
-    console.log(`上传目录: ${uploadDir}`);
-    console.log(`图片路径: ${imgPath}`);
-
-    console.log(imgUrl);
     request(imgUrl)
       .pipe(fs.createWriteStream(imgPath))
-      .on("close", function () {
-        resolve(imgPath);
+      .on("close", function (info) {
+        const fullPath = `${SERVER_DOMAIN}/uploads/article/${imgName}`;
+        resolve(fullPath);
       })
       .on("error", function (err) {
         reject(err);
+        logger.err(err, "下载nba图片失败");
       });
   });
 };
@@ -182,10 +186,7 @@ var getArticleConten = function (farr) {
 };
 
 var getNBAvideo = function (farr) {
-  let url =
-    "https://china.nba.cn/cms/v1/video/playurl?vid=" +
-    farr.vid +
-    "&quality=shd";
+  let url = "https://api.nba.cn/cms/v1/video/playurl?vid=" + farr.vid + "&quality=shd";
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {
