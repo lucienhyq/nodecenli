@@ -25,8 +25,10 @@ const task = async () => {
 };
 // var record = 0;
 const firstHome = async (req, res, next) => {
+  let navList;
   try {
     let news = await getNbaNews(req);
+    navList = await getNavList();
     await task();
     let arr = news[0].contents;
     let jsonsa;
@@ -70,12 +72,28 @@ const firstHome = async (req, res, next) => {
   let findList = await article_model.find({}).sort({ id: -1 });
   res.status(200).send({
     msg: "",
-    data: findList,
+    data: {
+      list: findList,
+      navList: navList,
+    },
     result: 1,
   });
 };
 module.exports = firstHome;
 
+var getNavList = function () {
+  let time = Date.parse(new Date()) / 1000;
+  let url = `https://api.nba.cn/cms/v1/news/config?affiliation=1&app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&category=news_rotation&channel=NBA&device_id=40baf4718eae0144157f77ff781dc984&install_id=1536133115&network=N%2FA&os_type=3&os_version=1.0.0&sign=sign_v2&sign2=87272D9C122EDAFBE75CF4E80AD374FC9E245A6E848E9CE4379C502CDFC8A53F&t=${time}`;
+  return new Promise((resolve, reject) => {
+    request(url, async (err, response, body) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(JSON.parse(body).data.news_rotation);
+      }
+    });
+  });
+};
 var getNbaNews = function (req) {
   let time = Date.parse(new Date()) / 1000;
   let url = `https://api.nba.cn/cms/v2/web/column/modules/list?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=40baf4718eae0144157f77ff781dc984&install_id=1536133115&network=N%2FA&os_type=3&os_version=1.0.0&page_no=1&page_size=20&page_type=2&sign=sign_v2&sign2=87272D9C122EDAFBE75CF4E80AD374FC9E245A6E848E9CE4379C502CDFC8A53F&t=${time}`;
@@ -186,7 +204,8 @@ var getArticleConten = function (farr) {
 };
 
 var getNBAvideo = function (farr) {
-  let url = "https://api.nba.cn/cms/v1/video/playurl?vid=" + farr.vid + "&quality=shd";
+  let url =
+    "https://api.nba.cn/cms/v1/video/playurl?vid=" + farr.vid + "&quality=shd";
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {
