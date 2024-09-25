@@ -42,8 +42,8 @@ const firstHome = async (req, res, next) => {
           "vid",
         ]);
         // 查找当前文章是否存在数据库中
-        let len = await article_model.find({ news_id: farr.news_id });
-        if (len.length <= 0) {
+        let articles = await article_model.find({ news_id: farr.news_id });
+        if (articles.length === 0) {
           jsonsa = {
             id: await getArticleId(),
             title: farr.title,
@@ -69,7 +69,11 @@ const firstHome = async (req, res, next) => {
     console.log("q:::::::::", error);
     logger.error(error);
   }
-  let findList = await article_model.find({}).sort({ id: -1 });
+  let findList = await article_model.aggregate([
+    { $group: { _id: "$news_id", document: { $first: "$$ROOT" } } },
+    { $replaceRoot: { newRoot: "$document" } },
+    { $sort: { id: -1 } },
+  ]);
   res.status(200).send({
     msg: "",
     data: {

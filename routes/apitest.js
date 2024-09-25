@@ -16,6 +16,7 @@ const Bills = require("../controller/bills/bills_Controller");
 const Weather = require("../controller/tool/Weather");
 const music_score_from = require("../controller/music_score_from/music_score_from");
 const request = require("request"); //网络请求
+const movieController = require("../middleware/movie");
 
 // const Music_score = require("../")
 // 获取微信小程序
@@ -38,6 +39,7 @@ router.get(
 );
 // 微信小程序首页
 router.get("/firstHome", firstHome_Controller);
+// 获取nba新闻详情
 router.get("/getNbaNews", async (req, res, next) => {
   let news_id = req.query.news_id;
   let time = Date.parse(new Date()) / 1000;
@@ -69,6 +71,9 @@ router.get("/getNbaNews", async (req, res, next) => {
     });
   }
 });
+
+// 不太灵影视 搜索列表
+router.get("/searchVideoList", movieController.searchMovie);
 
 // NBA文章详情
 const article_model = require("../models/course/Article/Article");
