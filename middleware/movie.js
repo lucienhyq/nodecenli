@@ -184,7 +184,7 @@ class movieController {
         }
       }
       res.send({
-        data: body,
+        data: arrData,
         result: 1,
         msg: "success",
       });

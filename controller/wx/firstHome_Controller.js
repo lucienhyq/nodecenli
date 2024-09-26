@@ -166,12 +166,14 @@ var downfile_img = async (url) => {
   });
 };
 
+// 获取文章id
 var getArticleId = function () {
   return new Promise(async (resolve, reject) => {
     let articleId = await getIdmethod.getId("article_id");
     resolve(articleId);
   });
 };
+// 重置文章id
 var setArticleId = function () {
   return new Promise(async (resolve, reject) => {
     let articleId = await getIdmethod.setId("article_id");
@@ -179,6 +181,7 @@ var setArticleId = function () {
   });
 };
 
+// 获取nba文章详情
 var getArticleConten = function (farr) {
   let time = Date.parse(new Date()) / 1000;
   let url = `https://api.nba.cn/cms/v2/news/info?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=82e78b39c4dbd0000dbe4d53275d948a&install_id=1536133115&network=N%2FA&news_id=${farr.news_id}&os_type=3&os_version=1.0.0&sign=sign_v2&sign2=6AADE1DA1D373731DCEA8808CAFA2BDC36FCC61806AF917AE91F8A510BDE70A0&t=${time}`;
@@ -206,7 +209,7 @@ var getArticleConten = function (farr) {
     });
   });
 };
-
+// 获取文章里面的视频链接
 var getNBAvideo = function (farr) {
   let url =
     "https://api.nba.cn/cms/v1/video/playurl?vid=" + farr.vid + "&quality=shd";
