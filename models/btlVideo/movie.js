@@ -1,55 +1,9 @@
 var mongoose = require("mongoose");
 const db = require("../../db");
+const { array } = require("../../js/multerConfig");
 
 const Schema = mongoose.Schema;
 
-// 定义子模型
-const DynamicEntrySchema = new Schema({
-  new: {
-    type: Boolean,
-    default: false,
-  },
-  id: {
-    type: Number,
-    required: true,
-  },
-  text_html: {
-    type: String,
-    default: "",
-  },
-  audio_html: {
-    type: String,
-    default: "",
-  },
-  zname: {
-    type: String,
-    required: true,
-  },
-  ecb: {
-    type: String,
-    default: "",
-  },
-  zsize: {
-    type: String,
-    required: true,
-  },
-  zqxd: {
-    type: String,
-    required: true,
-  },
-  zlink: {
-    type: String,
-    required: true,
-  },
-  down: {
-    type: String,
-    required: true,
-  },
-  ezt: {
-    type: String,
-    required: true,
-  },
-});
 const Movie = new Schema(
   {
     id: {
@@ -91,9 +45,12 @@ Movie.add({
     default: "",
   },
   dynamicData: {
-    type: Map,
-    of: DynamicEntrySchema,
-    default: () => new Map(),
+    type: Array,
+    default: [],
+  },
+  isTvseries: {
+    type: Boolean,
+    default: false,
   },
 });
 Movie.index({ id: 1 });

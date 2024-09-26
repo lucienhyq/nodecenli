@@ -74,7 +74,9 @@ router.get("/getNbaNews", async (req, res, next) => {
 
 // 不太灵影视 搜索列表
 router.get("/searchVideoList", movieController.searchMovie);
-
+// 不太灵影视 电影首页
+router.get("/getMovieIndex", movieController.getMovieIndex);
+router.get("/getTvseriesIndex", movieController.getMovieIndex);
 // NBA文章详情
 const article_model = require("../models/course/Article/Article");
 

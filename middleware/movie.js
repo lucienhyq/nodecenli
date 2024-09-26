@@ -5,7 +5,7 @@ const { logger } = require("../logs/logs");
 
 class movieController {
   static newOptions = {
-    timeout: 7000, // 设置超时时间为7秒
+    timeout: 10000, // 设置超时时间为7秒
     headers: {
       "User-Agent":
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 Edg/128.0.0.0",
@@ -72,7 +72,7 @@ class movieController {
           url: url,
         };
         const body = await movieController.fetchWithCookie(url, options);
-        logger.info(":qqqqqqqqqqq:::::::::::::", body);
+        // logger.info(":qqqqqqqqqqq:::::::::::::", body);
         let ecca = JSON.parse(body).data.ecca;
         resolve({ ecca: ecca, summary: JSON.parse(body).data.summary });
       } catch (error) {
@@ -82,14 +82,69 @@ class movieController {
     });
   }
 
-  async getMovie(req, res, next) {}
+  async getMovieIndex(req, res, next) {
+    try {
+      let { page } = req.query;
+      // 确保 URL 被正确编码
+      let encodedPage = encodeURIComponent(page);
+      let url = `https://www.1bt0.com/prod/core/system/getVideoMovieList?sa=1&sb=&sc=&sct=&scn=0&sd=&sdt=&sdn=&se=&set=&sen=&sf=&sft=&sfn=&sg=1&sh=&sht=&shn=0&page=${encodedPage}`;
+      if (req.route.path == "/getTvseriesIndex") {
+        url = `https://www.1bt0.com/prod/core/system/getVideoMovieList?sa=2&sb=&sc=&sct=&scn=0&sd=&sdt=&sdn=&se=&set=&sen=&sf=&sft=&sfn=&sg=1&sh=&sht=&shn=0&page=${encodedPage}`;
+      }
+      // 请求选项
+      const options = {
+        ...movieController.newOptions,
+        url: url,
+      };
+
+      const body = await movieController.fetchWithCookie(url, options);
+      let arrData = JSON.parse(body).data.list;
+      for (let i = 0; i < arrData.length; i++) {
+        let { id, title, eqxd, epic, edbf, diqu, niandai } = arrData[i];
+        let Movie_arr = await Movie.find({ id: id });
+        if (Movie_arr.length === 0) {
+          if (id) {
+            let detail_arr = await movieController.getVideoDetail(id);
+            Movie.create({
+              id,
+              title,
+              eqxd,
+              pica: epic,
+              doubanfen: edbf,
+              diqu,
+              niandai,
+              dynamicData: detail_arr.ecca,
+              summary: detail_arr.summary,
+              isTvseries: req.route.path == "/getTvseriesIndex" ? true : false,
+            });
+          } else {
+            logger.info("数据已存在", id, title);
+          }
+        }
+      }
+      res.send({
+        data: {
+          list: arrData,
+          total: JSON.parse(body).data.total,
+        },
+        result: 1,
+        msg: "success",
+      });
+    } catch (error) {
+      logger.error(error);
+      res.send({
+        data: error,
+        result: 0,
+        msg: "fail",
+      });
+    }
+  }
 
   async getMovieList_carete() {}
 
   searchMovie = async (req, res, next) => {
     try {
       let { page, keyword } = req.query;
-      console.log(page, keyword, "wwwwww");
 
       // 确保 URL 被正确编码
       let encodedKeyword = encodeURIComponent(keyword);
@@ -104,7 +159,7 @@ class movieController {
 
       const body = await movieController.fetchWithCookie(url, options);
 
-      logger.info(url, "ddddddd", movieController.newOptions);
+      // logger.info(url, "ddddddd", movieController.newOptions);
       let arrData = JSON.parse(body).data;
       for (let i = 0; i < arrData.length; i++) {
         let { id, title, eqxd, pica, doubanfen, diqu, niandai } = arrData[i];
@@ -112,17 +167,6 @@ class movieController {
         if (Movie_arr.length === 0) {
           if (id) {
             let detail_arr = await movieController.getVideoDetail(id);
-            let data = detail_arr.ecca;
-            const dynamicDataMap = new Map();
-            for (const key in data) {
-              if (data.hasOwnProperty(key)) {
-                dynamicDataMap.set(
-                  key,
-                  data[key].map((entry) => new DynamicEntry(entry))
-                );
-              }
-            }
-            logger.info(detail_arr.ecca);
             Movie.create({
               id,
               title,
@@ -131,15 +175,12 @@ class movieController {
               doubanfen,
               diqu,
               niandai,
-              dynamicData: dynamicDataMap,
+              dynamicData: detail_arr.ecca,
               summary: detail_arr.summary,
             });
           }
         } else {
-          // if (i == 0) {
-          // let detail_arr = await movieController.getVideoDetail(id);
-          // console.log(detail_arr, "wwwwwwww");
-          // }
+          logger.info("数据已存在", id, title);
         }
       }
       res.send({
@@ -157,8 +198,5 @@ class movieController {
     }
   };
 }
-const DynamicEntry = function (entry) {
-  return new DynamicEntrySchema(entry);
-}; // 子模型构造函数
 
 module.exports = new movieController();
