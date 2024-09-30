@@ -19,7 +19,7 @@ const articleSchema = new Schema({
     type: String,
   },
   videoSrc: String,
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Like" }],
+  likes: [{ type: Schema.Types.ObjectId, ref: 'like', field: "_id" }],
   // comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
 });
 articleSchema.add({
@@ -28,6 +28,27 @@ articleSchema.add({
     type: Number,
     default: 0,
   },
+  // 作者
+  source: {
+    type: String,
+    default: "",
+  },
+  updated_time: {
+    type: String,
+    default: "",
+  },
+  cnt_attr: {
+    type: Array,
+    default: [],
+  },
 });
+// 添加虚拟字段来表示 likes 用户
+articleSchema.virtual('likeUsers', {
+  ref: 'like',
+  localField: 'likes',
+  foreignField: '_id',
+  justOne: false,
+});
+articleSchema.index({ id: 1 }, { unique: true });
 const article = db.model("Article", articleSchema);
 module.exports = article;
