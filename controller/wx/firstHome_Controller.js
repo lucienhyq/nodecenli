@@ -213,16 +213,20 @@ class firstHome_Controller {
       console.log("q:::::::::", error);
       logger.error(error);
     }
+    console.log("req.query.page", req.query);
     let findList = await article_model.aggregate([
       { $group: { _id: "$news_id", document: { $first: "$$ROOT" } } },
       { $replaceRoot: { newRoot: "$document" } },
       { $sort: { id: -1 } },
+      { $skip: req.query.page ? req.query.page * 10 : 0 },
+      { $limit: 10 },
     ]);
     res.status(200).send({
       msg: "",
       data: {
         list: findList,
         navList: navList,
+        total: await article_model.countDocuments(),
       },
       result: 1,
     });
@@ -235,7 +239,6 @@ class firstHome_Controller {
     let like = new like_model({
       article: articleinfo._id,
       user: userinfo._id,
-      pageView: 1,
     });
     like.save();
     articleinfo.likes.push(like._id);
@@ -248,13 +251,6 @@ class firstHome_Controller {
   };
   getLike = async (req, res, next) => {
     try {
-      // let likeArr = await like_model
-      //   .findOne({ _id: "66fa6b7acdb1c24613c09a62" })
-      //   // .populate("article user");
-      //   .populate([
-      //     { path: 'article'{ type: Schema.Types.ObjectId, ref: "Admin", field: "_id" }, select: 'title' }, // 只选择文章标题
-      //     { path: 'article.likeUsers', select: 'user' } // 选择点赞用户的详细信息
-      //   ]);
       let likeArr = await article_model
         .findOne({ _id: "66fa469879c0d911241b37ab" })
         .populate({
@@ -298,30 +294,28 @@ class firstHome_Controller {
           });
         } else {
           let bodyInfo = JSON.parse(body).data;
-          let findInfo = await article_model.findOne({ news_id: news_id });
+          logger.info("dddddddddddddd", bodyInfo.cnt_attr);
           if (article_len == 1) {
-            if (findInfo.pageviews == 0) {
-              await article_model
-                .updateOne(
-                  { news_id: news_id },
-                  {
-                    $inc: { pageviews: 1 }, // 递增 pageviews
-                    $set: {
-                      source: bodyInfo.source, // 设置 source 字段
-                      updated_time: bodyInfo.updated_time
-                        ? bodyInfo.updated_time
-                        : bodyInfo.publish_time, // 设置 updated_time 字段
-                      cnt_attr: bodyInfo.cnt_attr, // 设置 cnt_attr 字段
-                    },
-                  }
-                )
-                .then((res) => {
-                  console.log(res, "更新成功");
-                })
-                .catch((err) => {
-                  console.log(err, "更新失败");
-                });
-            }
+            await article_model
+              .updateOne(
+                { news_id: news_id },
+                {
+                  $inc: { pageviews: 1 }, // 递增 pageviews
+                  $set: {
+                    source: bodyInfo.source, // 设置 source 字段
+                    updated_time: bodyInfo.updated_time
+                      ? bodyInfo.updated_time
+                      : bodyInfo.publish_time, // 设置 updated_time 字段
+                    cnt_attr: bodyInfo.cnt_attr, // 设置 cnt_attr 字段
+                  },
+                }
+              )
+              .then((res) => {
+                logger.info(res, "更新成功");
+              })
+              .catch((err) => {
+                logger.error(err);
+              });
           } else {
             let json = {
               id: await getArticleId(),
@@ -339,10 +333,22 @@ class firstHome_Controller {
           }
           let Article = await article_model
             .findOne({ news_id: news_id })
-            .populate("likes", "-_id");
-          console.log(Article.likes);
+            .populate({
+              path: "likes",
+              select: "user article", // 选择需要填充的字段
+              populate: [
+                {
+                  path: "user",
+                  select: "id user_name -_id",
+                },
+                {
+                  path: "article",
+                  select: "id title -_id",
+                },
+              ],
+            });
           res.send({
-            data: findInfo,
+            data: Article,
             result: 1,
             msg: "成功",
           });
