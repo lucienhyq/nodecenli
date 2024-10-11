@@ -15,7 +15,6 @@ const orderPay = require("../controller/orderPay/index");
 const Bills = require("../controller/bills/bills_Controller");
 const Weather = require("../controller/tool/Weather");
 const music_score_from = require("../controller/music_score_from/music_score_from");
-const request = require("request"); //网络请求
 const movieController = require("../middleware/movie");
 
 // const Music_score = require("../")
@@ -38,47 +37,35 @@ router.get(
   wapLogin
 );
 // 微信小程序首页
-router.get("/firstHome", firstHome_Controller);
+router.get("/firstHome", firstHome_Controller.firstHome);
 // 获取nba新闻详情
-router.get("/getNbaNews", async (req, res, next) => {
-  let news_id = req.query.news_id;
-  let time = Date.parse(new Date()) / 1000;
-  let url = `https://api.nba.cn/cms/v2/news/info?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=82e78b39c4dbd0000dbe4d53275d948a&install_id=1536133115&network=N%2FA&news_id=${news_id}&os_type=3&os_version=1.0.0&sign=sign_v2&sign2=6AADE1DA1D373731DCEA8808CAFA2BDC36FCC61806AF917AE91F8A510BDE70A0&t=${time}`;
-  try {
-    await request(url, async (err, response, body) => {
-      if (err) {
-        logger.error(error);
-        res.send({
-          data: error,
-          result: 0,
-          msg: "fail",
-        });
-      } else {
-        logger.info(body);
-        res.send({
-          data: JSON.parse(body).data,
-          result: 1,
-          msg: "成功",
-        });
-      }
-    });
-  } catch (error) {
-    logger.error(error);
-    res.send({
-      data: error,
-      result: 0,
-      msg: "fail",
-    });
-  }
-});
-
+router.get("/getNbaNews", firstHome_Controller.getNewsList);
+// 点赞
+router.get(
+  "/likeTapMethod",
+  checkLogin,
+  firstHome_Controller.Like
+  // (req, res, next) => {
+  //   console.log(req.user._id, req.query.article);
+  //   // like_model.create({})
+  //   let json = {
+  //     user: req.user._id, //会员id
+  //     article: req.query.article, // 文章id
+  //   };
+  //   let likeDoc = like_model.countDocuments((err, count) => {
+  //     return count;
+  //   });
+  //   console.log(likeDoc, "22222222222222222");
+  //   res.send("ddddddddddd");
+  // }
+);
+router.get("/getLike", firstHome_Controller.getLike);
 // 不太灵影视 搜索列表
 router.get("/searchVideoList", movieController.searchMovie);
 // 不太灵影视 电影首页
 router.get("/getMovieIndex", movieController.getMovieIndex);
 router.get("/getTvseriesIndex", movieController.getMovieIndex);
 // NBA文章详情
-const article_model = require("../models/course/Article/Article");
 
 router.get("/getArticle", async (req, res, next) => {
   let articleId = req.query.articleId;
@@ -91,28 +78,7 @@ router.get("/getArticle", async (req, res, next) => {
 });
 // 根据课程id获取课程详情
 router.get("/getCourse", wxCheckLogin, course.courseList);
-const like_model = require("../models/course/Article/like");
-const { logger } = require("../logs/logs");
-// 记录点赞数
-router.get(
-  "/likeTapMethod",
-  wxtoken_Controller,
-  checkLogin,
-  wxCheckLogin,
-  (req, res, next) => {
-    console.log(req.user._id, req.query.article);
-    // like_model.create({})
-    let json = {
-      user: req.user._id, //会员id
-      article: req.query.article, // 文章id
-    };
-    let likeDoc = like_model.countDocuments((err, count) => {
-      return count;
-    });
-    console.log(likeDoc, "22222222222222222");
-    res.send("ddddddddddd");
-  }
-);
+
 
 router.get(
   "/get_userAccess",

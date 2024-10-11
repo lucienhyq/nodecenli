@@ -10,6 +10,7 @@ const Movie = new Schema(
       type: Number,
       default: 0,
     },
+    // 标题
     title: {
       type: String,
       default: "",
@@ -18,18 +19,22 @@ const Movie = new Schema(
       type: String,
       default: "",
     },
+    // 图片
     pica: {
       type: String,
       default: "",
     },
+    // 评分
     doubanfen: {
       type: String,
       default: "",
     },
+    // 地区
     diqu: {
       type: String,
       default: "",
     },
+    // 年代
     niandai: {
       type: String,
       default: "",
@@ -40,18 +45,21 @@ const Movie = new Schema(
   }
 );
 Movie.add({
+  // 简介
   summary: {
     type: String,
     default: "",
   },
+  // 资源
   dynamicData: {
     type: Array,
     default: [],
   },
+  // 是否是电视剧
   isTvseries: {
     type: Boolean,
     default: false,
-  },
+  }
 });
 Movie.index({ id: 1 });
 

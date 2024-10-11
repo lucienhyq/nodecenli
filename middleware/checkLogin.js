@@ -18,10 +18,16 @@ class Login {
   }
 
   async checkLogin(req, res, next) {
-    logger.info(req.query, req.route.path, req.method,'21');
     let token = req.headers["authorization"];
     if (!token) {
-      logger.info(req.route.path, "token=undefined:");
+      logger.info(req.route.path, "token=undefined:",req.session);
+      if(req.session.user){ 
+        req.user = {
+          userName: req.session.user.userName,
+          uid: req.session.user.uid
+        };
+        return next()
+      };
       if (req.query.min === "wx" || req.body.min === "wx") {
         return next();
       }
