@@ -74,7 +74,7 @@ const firstHome = async (req, res, next) => {
     { $replaceRoot: { newRoot: "$document" } },
     { $sort: { id: -1 } },
   ]);
-  res.status(200).send({
+  res.send({
     msg: "",
     data: {
       list: findList,
