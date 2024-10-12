@@ -19,7 +19,7 @@ const articleSchema = new Schema({
     type: String,
   },
   videoSrc: String,
-  likes: [{ type: Schema.Types.ObjectId, ref: 'like', field: "_id" }],
+  likes: [{ type: Schema.Types.ObjectId, ref: "like", field: "_id" }],
   // comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
 });
 articleSchema.add({
@@ -43,10 +43,10 @@ articleSchema.add({
   },
 });
 // 添加虚拟字段来表示 likes 用户
-articleSchema.virtual('likeUsers', {
-  ref: 'like',
-  localField: 'likes',
-  foreignField: '_id',
+articleSchema.virtual("likeUsers", {
+  ref: "like",
+  localField: "likes",
+  foreignField: "_id",
   justOne: false,
 });
 articleSchema.index({ id: 1 }, { unique: true });

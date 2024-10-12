@@ -4,6 +4,7 @@
 const request = require("request"); //网络请求
 // const cheerio = require("cheerio"); //爬虫 扩展模块
 const article_model = require("../../models/course/Article/Article");
+const playersModel = require("../../models/course/Article/player");
 const like_model = require("../../models/course/Article/like");
 const getIdmethod = require("../../prototype/ids");
 const cron = require("node-cron");
@@ -41,7 +42,7 @@ const getNavList = function () {
 const getNbaNews = function (req) {
   let time = Date.parse(new Date()) / 1000;
   let url = `https://api.nba.cn/cms/v2/web/column/modules/list?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=40baf4718eae0144157f77ff781dc984&install_id=1536133115&network=N%2FA&os_type=3&os_version=1.0.0&page_no=1&page_size=20&page_type=2&sign=sign_v2&sign2=87272D9C122EDAFBE75CF4E80AD374FC9E245A6E848E9CE4379C502CDFC8A53F&t=${time}`;
-  console.log(url)
+  console.log(url);
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {
@@ -67,9 +68,7 @@ const filterObj = function (obj, arr) {
 };
 const path = require("path"); //
 const { Promise } = require("mongoose");
-const article = require("../../models/course/Article/Article");
 const Admin = require("../../models/admin/admin");
-const { urlencoded } = require("body-parser");
 // 定义 resolve 函数
 const resolvePath = (dir) => {
   // 获取当前工作目录的上级目录
@@ -86,14 +85,14 @@ require("dotenv").config();
 const SERVER_DOMAIN = process.env.SERVER_DOMAIN || "http://yourserver.com";
 
 // 下载图片的函数
-const downfile_img = async (url) => {
+const downfile_img = async (url, options = {}) => {
   // return new Promise((resolve, reject) => {
   let imgUrl = url;
   let imgName = generateFileName(imgUrl);
   let imgPath = path.join(resolvePath("uploads/article"), imgName);
   // 确保目录存在
   const uploadDir = resolvePath("uploads/article");
-  if (!fs.existsSync(uploadDir)) {
+  if (!(await fs.existsSync(uploadDir))) {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
   return new Promise((resolve, reject) => {
@@ -369,27 +368,104 @@ class firstHome_Controller {
   getStartDetail = async (req, res, next) => {
     let time = Date.parse(new Date()) / 1000;
     let fullName = req.query.fullName ? req.query.fullName : "";
-    let url = `https://api.nba.cn/sib/v2/players/list?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=82e78b39c4dbd0000dbe4d53275d948a&install_id=4260924495&network=N%2FA&os_type=3&os_version=1.0.0&page_no=1&page_size=100&retireStat=A&sign=sign_v2&sign2=5D1FBF927CF213A9D42A7923C4751E2838F4657682B3EEE764060F73DAAC64A0&t=${time}&fullName=${encodeURIComponent(
+    let pageNo = req.query.pageNo || 1;
+    let url = `https://api.nba.cn/sib/v2/players/list?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=82e78b39c4dbd0000dbe4d53275d948a&install_id=4260924495&network=N%2FA&os_type=3&os_version=1.0.0&page_no=${pageNo}&page_size=100&retireStat=A&sign=sign_v2&sign2=5D1FBF927CF213A9D42A7923C4751E2838F4657682B3EEE764060F73DAAC64A0&t=${time}&fullName=${encodeURIComponent(
       fullName
     )}`;
     try {
-      await request(url, async (err, response, body) => {
-        if (err) {
-          logger.error(err);
-          res.send({
-            data: err,
-            result: 0,
-            msg: "fail",
+      let resBody = await requestPromise(url);
+      resBody = JSON.parse(resBody);
+      console.log(!resBody.data, "wwwwww");
+      if (!resBody.data || resBody.data.length == 0) {
+        res.status(500).send({
+          msg: "err",
+          result: 0,
+          data: "查询失败,没有该现役球员",
+        });
+        return;
+      }
+      for (const player of resBody.data) {
+        // 检查球员是否已存在于 playersModel 中
+        const existingPlayer = await playersModel.findOne({
+          playerId: player.playerId,
+        });
+        if (existingPlayer) {
+          // 如果球员已存在，则更新现有记录
+          existingPlayer.set({
+            season: player.season,
+            lastNameEn: player.lastNameEn,
+            firstNameEn: player.firstNameEn,
+            lastName: player.lastName,
+            firstName: player.firstName,
+            teamId: player.teamId,
+            teamAbbr: player.teamAbbr,
+            teamName: player.teamName,
+            position: player.position,
+            teamCity: player.teamCity,
+            teamLogoDark: player.teamLogoDark,
+            teamLogoLight: player.teamLogoLight,
+            height: player.height,
+            weight: player.weight,
+            heightMetric: player.heightMetric,
+            weightMetric: player.weightMetric,
+            birthDate: player.birthDate,
+            jerseyNo: player.jerseyNo,
+            playerCode: player.playerCode,
+            country: player.country,
+            school: player.school,
+            draftSeason: player.draftSeason,
+            rookieSeason: player.rookieSeason,
+            experience: player.experience,
+            displayName: player.displayName,
+            retireYear: player.retireYear,
+            startYear: player.startYear,
           });
+
+          await existingPlayer.save();
         } else {
-          res.status(200).send({
-            msg: "success",
-            result: 1,
-            data: JSON.parse(body),
+          // 如果球员不存在，则创建新的球员记录
+          const newPlayer = new playersModel({
+            playerId: player.playerId,
+            season: player.season,
+            lastNameEn: player.lastNameEn,
+            firstNameEn: player.firstNameEn,
+            lastName: player.lastName,
+            firstName: player.firstName,
+            teamId: player.teamId,
+            teamAbbr: player.teamAbbr,
+            teamName: player.teamName,
+            position: player.position,
+            teamCity: player.teamCity,
+            teamLogoDark: player.teamLogoDark,
+            teamLogoLight: player.teamLogoLight,
+            height: player.height,
+            weight: player.weight,
+            heightMetric: player.heightMetric,
+            weightMetric: player.weightMetric,
+            birthDate: player.birthDate,
+            jerseyNo: player.jerseyNo,
+            playerCode: player.playerCode,
+            country: player.country,
+            school: player.school,
+            draftSeason: player.draftSeason,
+            rookieSeason: player.rookieSeason,
+            experience: player.experience,
+            displayName: player.displayName,
+            retireYear: player.retireYear,
+            startYear: player.startYear,
+            avatar: await downfile_img(player.avatar),
+            halfPhotoBig: await downfile_img(player.halfPhotoBig),
           });
+          await newPlayer.save();
         }
+      }
+      res.status(200).send({
+        msg: "success",
+        result: 1,
+        data: resBody.data,
       });
     } catch (error) {
+      console.log(error);
       res.status(500).send({
         data: null,
         result: 0,
@@ -398,5 +474,16 @@ class firstHome_Controller {
     }
   };
 }
-
+const requestPromise = function (url) {
+  return new Promise((resolve, reject) => {
+    request(url, async (err, response, body) => {
+      if (err) {
+        logger.error(err);
+        reject(err);
+      } else {
+        resolve(body);
+      }
+    });
+  });
+};
 module.exports = new firstHome_Controller();
