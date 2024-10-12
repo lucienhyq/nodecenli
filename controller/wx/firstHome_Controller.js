@@ -41,6 +41,7 @@ const getNavList = function () {
 const getNbaNews = function (req) {
   let time = Date.parse(new Date()) / 1000;
   let url = `https://api.nba.cn/cms/v2/web/column/modules/list?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=40baf4718eae0144157f77ff781dc984&install_id=1536133115&network=N%2FA&os_type=3&os_version=1.0.0&page_no=1&page_size=20&page_type=2&sign=sign_v2&sign2=87272D9C122EDAFBE75CF4E80AD374FC9E245A6E848E9CE4379C502CDFC8A53F&t=${time}`;
+  console.log(url)
   return new Promise((resolve, reject) => {
     request(url, async (err, response, body) => {
       if (err) {
@@ -68,6 +69,7 @@ const path = require("path"); //
 const { Promise } = require("mongoose");
 const article = require("../../models/course/Article/Article");
 const Admin = require("../../models/admin/admin");
+const { urlencoded } = require("body-parser");
 // 定义 resolve 函数
 const resolvePath = (dir) => {
   // 获取当前工作目录的上级目录
@@ -360,6 +362,38 @@ class firstHome_Controller {
         data: error,
         result: 0,
         msg: "fail",
+      });
+    }
+  };
+  // 获取球星资料
+  getStartDetail = async (req, res, next) => {
+    let time = Date.parse(new Date()) / 1000;
+    let fullName = req.query.fullName ? req.query.fullName : "";
+    let url = `https://api.nba.cn/sib/v2/players/list?app_key=tiKB2tNdncnZFPOi&app_version=1.1.0&channel=NBA&device_id=82e78b39c4dbd0000dbe4d53275d948a&install_id=4260924495&network=N%2FA&os_type=3&os_version=1.0.0&page_no=1&page_size=100&retireStat=A&sign=sign_v2&sign2=5D1FBF927CF213A9D42A7923C4751E2838F4657682B3EEE764060F73DAAC64A0&t=${time}&fullName=${encodeURIComponent(
+      fullName
+    )}`;
+    try {
+      await request(url, async (err, response, body) => {
+        if (err) {
+          logger.error(err);
+          res.send({
+            data: err,
+            result: 0,
+            msg: "fail",
+          });
+        } else {
+          res.status(200).send({
+            msg: "success",
+            result: 1,
+            data: JSON.parse(body),
+          });
+        }
+      });
+    } catch (error) {
+      res.status(500).send({
+        data: null,
+        result: 0,
+        msg: "Internal server error",
       });
     }
   };

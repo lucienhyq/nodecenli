@@ -40,6 +40,7 @@ router.get(
 router.get("/firstHome", firstHome_Controller.firstHome);
 // 获取nba新闻详情
 router.get("/getNbaNews", firstHome_Controller.getNewsList);
+router.get("/getStartDetail", firstHome_Controller.getStartDetail);
 // 点赞
 router.get(
   "/likeTapMethod",
@@ -78,7 +79,6 @@ router.get("/getArticle", async (req, res, next) => {
 });
 // 根据课程id获取课程详情
 router.get("/getCourse", wxCheckLogin, course.courseList);
-
 
 router.get(
   "/get_userAccess",
